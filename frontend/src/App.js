@@ -1,12 +1,16 @@
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import LoginRegister from './page/LoginRegister/LoginRegister';
+import AdminPanel from './page/AdminPanel/AdminPanel';
 
 function App() {
   return (
-    <div>
-      <LoginRegister/>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/*" element={<LoginRegister />} />
+        <Route path="/admin" element={<AdminPanel />} />
+      </Routes>
+    </Router>
   );
 }
 

@@ -1,5 +1,5 @@
 
-body {
+.body_login {
     font-family: Arial, sans-serif;
     background-color: #f8f8f8;
     margin: 0;
@@ -23,7 +23,7 @@ body {
     text-align: center;
   }
   
-  p {
+  .description {
     text-align: center;
     color: #666;
     margin-bottom: 20px;

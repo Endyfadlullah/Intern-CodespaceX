@@ -5,10 +5,11 @@ const LoginRegister = () => {
     const [isLogin, setIsLogin] = useState(true);
 
     return (
+      <div className="body_login">
       <div className="container">
         <div className="form-container">
           <h2>Welcome to Codespace X</h2>
-          <p>Please Log in to an existing account, or create a new account</p>
+          <p className='description'>Please Log in to an existing account, or create a new account</p>
           <div className="toggle-buttons">
             <button 
               className={isLogin ? 'active' : ''} 
@@ -64,6 +65,7 @@ const LoginRegister = () => {
             </form>
           )}
         </div>
+      </div>
       </div>
     );
 }

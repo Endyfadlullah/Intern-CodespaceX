@@ -1,0 +1,33 @@
+.input-container {
+    display: flex;
+    align-items: center;
+    width: 250px;
+    height: 30px;
+    border: 1px solid #f0f0f0; 
+    border-radius: 4px; 
+    overflow: hidden;
+  }
+  
+  .input-field {
+    flex: 1;
+    height: 100%;
+    border: none;
+    
+    font-size: 16px;
+    background: #ecebeb;
+  }
+  
+  .input-field:focus {
+    outline: none; 
+  }
+  
+  .share-icon {
+    background: #ecebeb; 
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    cursor: pointer;
+  }
+  
