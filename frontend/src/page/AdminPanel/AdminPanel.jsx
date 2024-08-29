@@ -2,7 +2,8 @@ import React from 'react';
 import Sidebar from '../../components/AdminPanel/Sidebar/Sidebar';
 import './AdminPanel.css';
 import Dashboard from './Dashboard/Dashboard';
-import Header from '../../components/AdminPanel/Header/HeaderMain';
+import Notification from '../../components/AdminPanel/Header/Notification/Notification';
+import Avatar from '../../components/AdminPanel/Header/Avatar/Avatar';
 
 const AdminPanel = () => {
   return (
@@ -12,7 +13,8 @@ const AdminPanel = () => {
         </div>
         <div className='main'>
             <div className='header'>
-                <Header />
+                <Notification/>
+                <Avatar/>
             </div>
             <div className='submain'>
                 <Dashboard />

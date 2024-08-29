@@ -1,0 +1,97 @@
+/* Style for the container of the dropdown */
+.menu-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Style for the button that triggers the dropdown */
+  .menu-trigger {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .menu-trigger img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Base style for the dropdown menu */
+  .dropdown-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 180px; /* Increased width */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    z-index: 1000;
+  }
+  
+  /* Active state for the dropdown */
+  .dropdown-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  /* Header style for the dropdown */
+  .dropdown-menu h3 {
+    margin: 0;
+    padding: 15px;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .dropdown-menu h3 span {
+    display: block;
+    font-size: 14px;
+    font-weight: normal;
+    color: #888;
+  }
+  
+  /* List style within the dropdown */
+  .dropdown-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Individual dropdown item */
+  .dropdownItem {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dropdownItem:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Icon within the dropdown item */
+  .dropdownItem svg {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+  
+  /* Link style within the dropdown */
+  .dropdownItem a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+  }
+  
