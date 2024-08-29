@@ -12,7 +12,6 @@ const LoginRegister = () => {
     const [inputPassword, setInputPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (event) => {
@@ -25,10 +24,14 @@ const LoginRegister = () => {
                 password: inputPassword,
             });
             localStorage.setItem("token", response.data.token);
+            alert("Login successful!"); // Alert sukses
             navigate("/admin");
         } catch (error) {
             console.error("Login failed:", error);
-            setShow(true);
+
+            // Ambil pesan kesalahan dari response
+            const errorMessage = error.response?.data?.errors || "Login failed! Please try again.";
+            alert(`Login failed: ${errorMessage}`); // Menampilkan alert dengan pesan kesalahan
         } finally {
             setLoading(false);
         }
@@ -45,10 +48,14 @@ const LoginRegister = () => {
                 password: inputPassword,
             });
             console.log("Registration successful:", response.data);
+            alert("Registration successful!"); // Alert sukses
             navigate("/"); 
         } catch (error) {
             console.error("Registration failed:", error);
-            setShow(true);
+
+            // Ambil pesan kesalahan dari response
+            const errorMessage = error.response?.data?.errors || "Registration failed! Please try again.";
+            alert(`Registration failed: ${errorMessage}`); // Menampilkan alert dengan pesan kesalahan
         } finally {
             setLoading(false);
         }
