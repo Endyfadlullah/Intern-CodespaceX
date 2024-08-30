@@ -19,10 +19,10 @@ const Dashboard = () => {
     };
 
     const menuItems = [
-        { text: 'All Items', onClick: () => alert('All Items Clicked') },
-        { text: 'In Progress', onClick: () => alert('In Progress Clicked') },
-        { text: 'Reviewing', onClick: () => alert('Reviewing Clicked') },
-        { text: 'Completed', onClick: () => alert('Completed Clicked') },
+        { text: 'All Items'  },
+        { text: 'In Progress' },
+        { text: 'Reviewing'  },
+        { text: 'Completed' },
     ];
 
 
