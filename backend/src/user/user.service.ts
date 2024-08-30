@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 
+
 @Injectable()
 export class UserService {
   constructor(
@@ -218,3 +219,62 @@ export class UserService {
     };
   }
 }
+
+@Injectable()
+export class AdminService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findAllUsers() {
+    return this.prisma.user.findMany();
+  }
+
+  async findUserById(id: number) {
+    return this.prisma.user.findUnique({ where: { ID_user: id } });
+  }
+
+  async updateUserById(id: number, data: UpdateUserRequest): Promise<User> {
+    // Prepare the updated data
+    const updatedData: Partial<User> = {};
+
+    if (data.email) {
+      updatedData.Email = data.email;
+    }
+    
+    if (data.password) {
+      updatedData.Password = await bcrypt.hash(data.password, 10);
+    }
+    
+    // if (data.username) {
+    //   updatedData.Username = data.username;
+    // }
+    
+    // if (data.mobile_number) {
+    //   updatedData.Mobile_number = data.mobile_number;
+    // }
+    
+    // if (data.position) {
+    //   updatedData.Position = data.position;
+    // }
+    
+    // if (data.role) {
+    //   updatedData.Role = data.role;
+    // }
+    
+    // if (data.picture) {
+    //   updatedData.Picture = data.picture;
+    // }
+    
+    // if (data.status) {
+    //   updatedData.Status = data.status;
+    // }
+
+    updatedData.Updated_at = new Date(); // Ensure Updated_at is set
+
+    return this.prisma.user.update({ where: { ID_user: id }, data: updatedData });
+  }
+
+  async deleteUserById(id: number) {
+    return this.prisma.user.delete({ where: { ID_user: id } });
+  }
+}
+
