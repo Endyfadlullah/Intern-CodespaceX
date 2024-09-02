@@ -14,19 +14,54 @@ datasource db {
 }
 
 model User {
-  ID_user          Int       @id @default(autoincrement())
-  Username         String
-  Email            String    @unique
-  Password         String
-  Mobile_number    String?
-  Position         String?
-  Role             String    @default("customer")
-  Picture          String?
-  Status           String    @default("active")
-  Token            String?   @db.Text
-  Created_at       DateTime  @default(now())
-  Updated_at       DateTime  @updatedAt
-  Deleted_at       DateTime?
-  ResetPasswordToken  String?   @db.Text
-  ResetTokenExpires   DateTime?
+  ID_user            Int       @id @default(autoincrement())
+  Username           String
+  Email              String    @unique
+  Password           String
+  Mobile_number      String?
+  Position           String?
+  Role               String    @default("customer")
+  Picture            String?
+  Status             String    @default("active")
+  Token              String?   @db.Text
+  Created_at         DateTime  @default(now())
+  Updated_at         DateTime  @updatedAt
+  Deleted_at         DateTime?
+  ResetPasswordToken String?   @db.Text
+  ResetTokenExpires  DateTime?
+  
+  // Relasi ke Project
+  Projects           Project[] @relation("UserProjects")
+
+  // Relasi ke Project_Talent
+  Project_Talents    Project_Talent[] @relation("UserTalents")
+}
+
+model Project {
+  ID_project        Int       @id @default(autoincrement())
+  ID_user           Int       
+  Image             String?
+  Project_title     String
+  Platform          String
+  Deadline          DateTime
+  Client            String
+  Talent_in_Charge  String
+
+  // Relasi ke User
+  user              User      @relation(fields: [ID_user], references: [ID_user], name: "UserProjects")
+
+  // Relasi ke Project_Talent
+  talents           Project_Talent[] @relation("ProjectTalents")
+}
+
+model Project_Talent {
+  ID_talent         Int       @id @default(autoincrement())
+  ID_project        Int       
+  ID_user           Int       
+
+  // Relasi ke User
+  user              User      @relation(fields: [ID_user], references: [ID_user], name: "UserTalents")
+  
+  // Relasi ke Project
+  project           Project   @relation(fields: [ID_project], references: [ID_project], name: "ProjectTalents")
 }

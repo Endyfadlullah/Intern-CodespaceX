@@ -14,10 +14,12 @@ import { PrismaService } from 'src/conmmon/prisma.service';
 import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import {  User, Project, Project_Talent } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import * as utc from 'dayjs/plugin/utc';
 import * as timezone from 'dayjs/plugin/timezone';
+
+
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
