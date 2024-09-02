@@ -247,24 +247,18 @@ export class AdminService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAllUsersByRole(role?: string): Promise<User[]> {
-    // Default where clause to filter by Deleted_at being null
-    let whereClause: any = {
-        Deleted_at: null,
-    };
+    // Jika role adalah 'All Roles', tidak memfilter berdasarkan role
+    const whereClause = role && role !== 'All Roles' 
+      ? { Role: role, Deleted_at: null }
+      : { Deleted_at: null };
 
-    // Check if a specific role is provided and not 'All Roles'
-    if (role && role !== 'All Roles') {
-        whereClause = {
-            ...whereClause,
-            Role: role
-        };
-    }
-
-    // Execute the query with the built where clause
+    // Menjalankan query dengan whereClause yang sudah dibangun
     return this.prisma.user.findMany({
         where: whereClause,
     });
-}
+  }
+
+
 
 
 
@@ -378,6 +372,11 @@ export class AdminService {
       throw new HttpException('Failed to soft delete user', HttpStatus.BAD_REQUEST);
     }
   }
+
+  async ReadAllTalent(): Promise<User[]> {
+    return this.prisma.user.findMany({ where: { Role: 'talent', Deleted_at: null} });
+  }
+  
 }
 
 

@@ -1,14 +1,15 @@
-import { 
-  Body, 
-  Controller, 
-  Delete, 
-  Get, 
-  HttpException, 
-  HttpStatus, 
-  Param, 
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Query,
+  HttpException,
+  HttpStatus,
+  Param,
   Post,  // Add Post import for creating user
-  Put, 
-  UseGuards 
+  Put,
+  UseGuards
 } from '@nestjs/common';
 import { AdminService } from '../user/user.service'; // Ensure AdminService is correctly imported
 import { UpdateUser, CreateUser } from 'src/model/user.model';
@@ -21,7 +22,7 @@ import { Roles } from 'src/conmmon/auth.decorator'; // Ensure Roles decorator is
 @ApiTags('Admin') // Tag for admin-related routes
 @Controller('/api/admin') // Base route for admin
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) { }
 
   @Post('/users')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -36,11 +37,12 @@ export class AdminController {
     }
   }
 
+
   @Get('/users')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiBearerAuth()
-  async findAll(@Param('role') role?: string) {
+  async findAll(@Query('role') role?: string) {
     try {
       return await this.adminService.findAllUsersByRole(role);
     } catch (error) {
@@ -48,6 +50,7 @@ export class AdminController {
       throw new HttpException('Failed to fetch users', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
 
   @Get('/users/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -90,4 +93,19 @@ export class AdminController {
       throw new HttpException('Failed to soft delete user', HttpStatus.BAD_REQUEST);
     }
   }
+
+
+  @Get('/project/talent')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  async findAlluser() {
+    try {
+      return await this.adminService.ReadAllTalent();
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      throw new HttpException('Failed to fetch users', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
 }
