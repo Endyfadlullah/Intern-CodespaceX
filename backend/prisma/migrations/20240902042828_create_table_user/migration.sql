@@ -13,6 +13,8 @@ CREATE TABLE `User` (
     `Created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `Updated_at` DATETIME(3) NOT NULL,
     `Deleted_at` DATETIME(3) NULL,
+    `ResetPasswordToken` TEXT NULL,
+    `ResetTokenExpires` DATETIME(3) NULL,
 
     UNIQUE INDEX `User_Email_key`(`Email`),
     PRIMARY KEY (`ID_user`)
