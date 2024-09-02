@@ -27,7 +27,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { ParseIntPipe } from '@nestjs/common';
 
-@ApiTags('User') // Tag for user-related routes
+@ApiTags('AUTH') // Tag for user-related routes
 @Controller('/api')
 export class UserController {
   constructor(
