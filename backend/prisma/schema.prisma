@@ -27,4 +27,6 @@ model User {
   Created_at       DateTime  @default(now())
   Updated_at       DateTime  @updatedAt
   Deleted_at       DateTime?
+  ResetPasswordToken  String?   @db.Text
+  ResetTokenExpires   DateTime?
 }
