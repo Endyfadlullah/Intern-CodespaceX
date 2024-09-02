@@ -12,7 +12,7 @@ import {
   Put, 
   UseGuards 
 } from '@nestjs/common';
-import { UserService, AdminService } from './user.service';
+import { UserService, AdminService } from '../user/user.service';
 import { 
   LoginUserRequest, 
   RegisterUserRequest, 

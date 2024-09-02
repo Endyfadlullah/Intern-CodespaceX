@@ -10,7 +10,7 @@ import {
   Put, 
   UseGuards 
 } from '@nestjs/common';
-import { AdminService } from './user.service'; // Ensure AdminService is correctly imported
+import { AdminService } from '../user/user.service'; // Ensure AdminService is correctly imported
 import { UpdateUser, CreateUser } from 'src/model/user.model';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
