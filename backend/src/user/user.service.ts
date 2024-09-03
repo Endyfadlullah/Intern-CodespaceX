@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { ValidationService } from 'src/conmmon/validation.service';
+import { ValidationService } from 'src/common/validation.service';
 import {
   LoginUserRequest,
   RegisterUserRequest,
@@ -9,38 +9,36 @@ import {
   CreateUser,
   CreateProject,
   CreateProjectTalent,
-  UpdateProject
+  UpdateProject,
 } from 'src/model/user.model';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
-import { PrismaService } from 'src/conmmon/prisma.service';
+import { PrismaService } from 'src/common/prisma.service';
 import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import {  User, Project, Project_Talent } from '@prisma/client';
+import { CustomMailerService } from '../mailer/mailer.service';
+import { ZodError } from 'zod';
+import { User, Project, Project_Talent } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import * as utc from 'dayjs/plugin/utc';
 import * as timezone from 'dayjs/plugin/timezone';
-
-
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 function getAdjustedDate(): Date {
-   // Get current date and time
-   const currentDate = new Date();
+  // Get current date and time
+  const currentDate = new Date();
 
-   // Calculate timezone offset in milliseconds (Asia/Jakarta is UTC+7)
-   const timezoneOffsetMillis = 7 * 60 * 60 * 1000; // 7 hours in milliseconds
- 
-   // Adjust current date to Asia/Jakarta timezone
-   const adjustedDate = new Date(currentDate.getTime() + timezoneOffsetMillis);
- 
-   return adjustedDate;
+  // Calculate timezone offset in milliseconds (Asia/Jakarta is UTC+7)
+  const timezoneOffsetMillis = 7 * 60 * 60 * 1000; // 7 hours in milliseconds
+
+  // Adjust current date to Asia/Jakarta timezone
+  const adjustedDate = new Date(currentDate.getTime() + timezoneOffsetMillis);
+
+  return adjustedDate;
 }
-
-
 
 @Injectable()
 export class UserService {
@@ -49,50 +47,50 @@ export class UserService {
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
     private prismaService: PrismaService,
     private jwtService: JwtService,
+    private customMailerService: CustomMailerService,
   ) {}
 
   async register(request: RegisterUserRequest): Promise<UserResponse> {
     this.logger.debug(`Mendaftarkan pengguna baru: ${JSON.stringify(request)}`);
-  
+
     // Validasi input pengguna
-    const registerRequest: RegisterUserRequest = 
+    const registerRequest: RegisterUserRequest =
       this.validationService.validate(UserValidation.REGISTER, request);
-  
+
     // Cek apakah email sudah terdaftar
     const existingUser = await this.prismaService.user.findUnique({
       where: { Email: registerRequest.email },
     });
-  
+
     if (existingUser) {
       throw new HttpException('Email sudah terdaftar', HttpStatus.BAD_REQUEST);
     }
-  
+
     // Hash password pengguna
     const hashedPassword = await bcrypt.hash(registerRequest.password, 10);
-  
+
     // Buat pengguna baru dengan data yang diperlukan
     const user = await this.prismaService.user.create({
       data: {
         Username: registerRequest.username,
         Email: registerRequest.email,
         Password: hashedPassword,
-        Created_at: getAdjustedDate(),  // Diisi otomatis waktu sekarang saat dibuat
-        Updated_at: getAdjustedDate(),  // Diisi otomatis waktu sekarang saat data dimasukkan
+        Created_at: getAdjustedDate(), // Diisi otomatis waktu sekarang saat dibuat
+        Updated_at: getAdjustedDate(), // Diisi otomatis waktu sekarang saat data dimasukkan
       },
     });
-  
+
     // Return data pengguna yang telah terdaftar
     return {
-        email: user.Email,
-        username: user.Username,
-        mobile_number: user.Mobile_number,
-        position: user.Position,
-        role: user.Role,
-        picture: user.Picture,
-        status: user.Status
+      email: user.Email,
+      username: user.Username,
+      mobile_number: user.Mobile_number,
+      position: user.Position,
+      role: user.Role,
+      picture: user.Picture,
+      status: user.Status,
     };
   }
-  
 
   async login(request: LoginUserRequest): Promise<UserResponse> {
     // Validasi request
@@ -128,7 +126,11 @@ export class UserService {
     }
 
     // Buat payload dan token JWT
-    const payload = { email: user.Email, username: user.Username, role: user.Role };
+    const payload = {
+      email: user.Email,
+      username: user.Username,
+      role: user.Role,
+    };
     const token = this.jwtService.sign(payload);
 
     // Perbarui token di database
@@ -140,13 +142,13 @@ export class UserService {
     this.logger.debug(`User logged in successfully. Token: ${token}`);
 
     return {
-        email: user.Email,
-        username: user.Username,
-        mobile_number: user.Mobile_number,
-        position: user.Position,
-        role: user.Role,
-        picture: user.Picture,
-        status: user.Status,
+      email: user.Email,
+      username: user.Username,
+      mobile_number: user.Mobile_number,
+      position: user.Position,
+      role: user.Role,
+      picture: user.Picture,
+      status: user.Status,
       token,
     };
   }
@@ -162,13 +164,12 @@ export class UserService {
         Role: true,
         Picture: true,
         Status: true,
-        
-      }
+      },
     });
 
     // Pemetaan data agar sesuai dengan tipe UserResponse
-    const formattedUsers: UserResponse[] = users.map(user => ({
-        id : user.ID_user,
+    const formattedUsers: UserResponse[] = users.map((user) => ({
+      id: user.ID_user,
       username: user.Username,
       email: user.Email,
       mobile_number: user.Mobile_number,
@@ -180,8 +181,6 @@ export class UserService {
 
     return formattedUsers;
   }
-  
-  
 
   async update(user: User, request: UpdateUserRequest): Promise<UserResponse> {
     this.logger.debug(
@@ -197,7 +196,7 @@ export class UserService {
     // Pastikan email valid
     const email = user.Email || updateRequest.email;
     if (!email) {
-        throw new Error('Email is required to update user');
+      throw new Error('Email is required to update user');
     }
 
     const updatedData: Partial<User> = {};
@@ -216,18 +215,93 @@ export class UserService {
 
     // Kembalikan data pengguna yang telah diperbarui
     return {
-        email: result.Email,
-        username: result.Username,
-        mobile_number: result.Mobile_number,
-        position: result.Position,
-        role: result.Role,
-        picture: result.Picture,
-        status: result.Status
+      email: result.Email,
+      username: result.Username,
+      mobile_number: result.Mobile_number,
+      position: result.Position,
+      role: result.Role,
+      picture: result.Picture,
+      status: result.Status,
     };
-}
+  }
 
+  async forgotPassword(email: string): Promise<void> {
+    const user = await this.prismaService.user.findUnique({
+      where: { Email: email },
+    });
 
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
 
+    // Generate a 6-digit numeric token
+    const token = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Gunakan getAdjustedDate untuk mendapatkan waktu kadaluarsa token
+    const expires = getAdjustedDate();
+    expires.setHours(expires.getHours() + 1); // Token berlaku selama 1 jam
+
+    // Simpan token ke database
+    await this.prismaService.user.update({
+      where: { Email: email },
+      data: {
+        ResetPasswordToken: token,
+        ResetTokenExpires: expires,
+      },
+    });
+
+    // Kirim email dengan token
+    await this.customMailerService.sendResetPasswordEmail(email, token);
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    // Validasi input
+    try {
+      UserValidation.RESET_PASSWORD.parse({
+        token,
+        newPassword,
+      });
+    } catch (error) {
+      if (error instanceof ZodError) {
+        throw new HttpException(error.errors, HttpStatus.BAD_REQUEST);
+      }
+      throw error;
+    }
+
+    // Gunakan getAdjustedDate untuk mendapatkan waktu saat ini
+    const now = getAdjustedDate();
+
+    // Cari pengguna dengan token reset yang valid
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        ResetPasswordToken: token,
+        ResetTokenExpires: {
+          gte: now, // Gunakan now untuk perbandingan
+        },
+      },
+    });
+
+    if (!user) {
+      throw new HttpException(
+        'Token tidak valid atau sudah kadaluarsa',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Hash password baru
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Perbarui password dan hapus token reset
+    await this.prismaService.user.update({
+      where: { Email: user.Email },
+      data: {
+        Password: hashedPassword,
+        ResetPasswordToken: null,
+        ResetTokenExpires: null,
+        Updated_at: getAdjustedDate(),
+      },
+    });
+  }
 
   async logout(user: User): Promise<UserResponse> {
     const result = await this.prismaService.user.update({
@@ -236,13 +310,13 @@ export class UserService {
     });
 
     return {
-        email: user.Email,
-        username: user.Username,
-        mobile_number: user.Mobile_number,
-        position: user.Position,
-        role: user.Role,
-        picture: user.Picture,
-        status: user.Status
+      email: user.Email,
+      username: user.Username,
+      mobile_number: user.Mobile_number,
+      position: user.Position,
+      role: user.Role,
+      picture: user.Picture,
+      status: user.Status,
     };
   }
 }
@@ -253,19 +327,16 @@ export class AdminService {
 
   async findAllUsersByRole(role?: string): Promise<User[]> {
     // Jika role adalah 'All Roles', tidak memfilter berdasarkan role
-    const whereClause = role && role !== 'All Roles' 
-      ? { Role: role, Deleted_at: null }
-      : { Deleted_at: null };
+    const whereClause =
+      role && role !== 'All Roles'
+        ? { Role: role, Deleted_at: null }
+        : { Deleted_at: null };
 
     // Menjalankan query dengan whereClause yang sudah dibangun
     return this.prisma.user.findMany({
-        where: whereClause,
+      where: whereClause,
     });
   }
-
-
-
-
 
   async findUserById(id: number) {
     return this.prisma.user.findUnique({ where: { ID_user: id } });
@@ -278,38 +349,41 @@ export class AdminService {
     if (data.email) {
       updatedData.Email = data.email;
     }
-    
+
     if (data.password) {
       updatedData.Password = await bcrypt.hash(data.password, 10);
     }
-    
+
     if (data.username) {
       updatedData.Username = data.username;
     }
-    
+
     if (data.mobile_number) {
       updatedData.Mobile_number = data.mobile_number;
     }
-    
+
     if (data.position) {
       updatedData.Position = data.position;
     }
-    
+
     if (data.role) {
       updatedData.Role = data.role;
     }
-    
+
     if (data.picture) {
       updatedData.Picture = data.picture;
     }
-    
+
     if (data.status) {
       updatedData.Status = data.status;
     }
 
-    updatedData.Updated_at = getAdjustedDate();  
+    updatedData.Updated_at = getAdjustedDate();
 
-    return this.prisma.user.update({ where: { ID_user: id }, data: updatedData });
+    return this.prisma.user.update({
+      where: { ID_user: id },
+      data: updatedData,
+    });
   }
 
   async deleteUserById(id: number) {
@@ -340,14 +414,13 @@ export class AdminService {
         Role: createUserDto.role || 'customer', // Default to 'customer'
         Picture: createUserDto.picture,
         Status: createUserDto.status || 'active', // Default to 'active'
-        Created_at: getAdjustedDate(),  // Set creation date
-        Updated_at: getAdjustedDate(),  // Set updated date
+        Created_at: getAdjustedDate(), // Set creation date
+        Updated_at: getAdjustedDate(), // Set updated date
       },
     });
 
     return newUser;
   }
-
 
   async softDeleteUserById(id: number) {
     const user = await this.prisma.user.findUnique({
@@ -374,7 +447,10 @@ export class AdminService {
         },
       });
     } catch (error) {
-      throw new HttpException('Failed to soft delete user', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Failed to soft delete user',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -382,40 +458,44 @@ export class AdminService {
     return this.prisma.user.findMany({
       where: {
         Role: 'talent',
-        Deleted_at: null, 
+        Deleted_at: null,
       },
     });
   }
-  
+
   async createProject(createProjectDto: CreateProject): Promise<Project> {
     // Periksa apakah proyek dengan judul yang sama sudah ada
     const existingProject = await this.prisma.project.findFirst({
       where: { Project_title: createProjectDto.project_title },
     });
-  
+
     if (existingProject) {
-      throw new HttpException('Project title already in use', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Project title already in use',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-  
+
     // Buat proyek baru
     const newProject = await this.prisma.project.create({
       data: {
         Project_title: createProjectDto.project_title,
         Platform: createProjectDto.platform,
-        Deadline: new Date(createProjectDto.deadline),  // Konversi string ke Date
+        Deadline: new Date(createProjectDto.deadline), // Konversi string ke Date
         Status: createProjectDto.status,
         Image: createProjectDto.image,
-        user: { connect: { ID_user: createProjectDto.userId } }, 
-        Created_at: getAdjustedDate(),  // Set creation date
-        Updated_at: getAdjustedDate(),  // Set updated date
-
+        user: { connect: { ID_user: createProjectDto.userId } },
+        Created_at: getAdjustedDate(), // Set creation date
+        Updated_at: getAdjustedDate(), // Set updated date
       },
     });
-  
+
     return newProject;
   }
-  
-  async createProjectTalent(createProjectTalent: CreateProjectTalent): Promise<Project_Talent> {
+
+  async createProjectTalent(
+    createProjectTalent: CreateProjectTalent,
+  ): Promise<Project_Talent> {
     const { ID_project, ID_user } = createProjectTalent;
 
     return this.prisma.project_Talent.create({
@@ -429,7 +509,7 @@ export class AdminService {
   async findAllProjects() {
     return this.prisma.project.findMany({
       where: {
-        Deleted_at: null, 
+        Deleted_at: null,
       },
     });
   }
@@ -458,34 +538,37 @@ export class AdminService {
   async updateProjectById(id: number, data: UpdateProject): Promise<Project> {
     // Prepare the updated data
     const updatedData: Partial<Project> = {};
-  
+
     if (data.ID_user !== undefined) {
       updatedData.ID_user = data.ID_user;
     }
-  
+
     if (data.Image) {
       updatedData.Image = data.Image;
     }
-  
+
     if (data.Project_title) {
       updatedData.Project_title = data.Project_title;
     }
-  
+
     if (data.Platform) {
       updatedData.Platform = data.Platform;
     }
-  
+
     if (data.Deadline) {
       updatedData.Deadline = new Date(data.Deadline);
     }
-  
+
     if (data.Status) {
       updatedData.Status = data.Status;
     }
-  
+
     updatedData.Updated_at = getAdjustedDate(); // Use your function to set the current date and time
-  
-    return this.prisma.project.update({ where: { ID_project: id }, data: updatedData });
+
+    return this.prisma.project.update({
+      where: { ID_project: id },
+      data: updatedData,
+    });
   }
 
   async softDeleteProjectById(id: number) {
@@ -505,7 +588,10 @@ export class AdminService {
         },
       });
     } catch (error) {
-      throw new HttpException('Failed to soft delete user', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Failed to soft delete user',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -517,13 +603,15 @@ export class AdminService {
         user: true, // Include the related User data
       },
     });
-  
+
     if (projectTalents.length === 0) {
-      throw new Error('No ProjectTalent records found for the given Project ID');
+      throw new Error(
+        'No ProjectTalent records found for the given Project ID',
+      );
     }
-  
+
     // Map and customize the response
-    return projectTalents.map(pt => ({
+    return projectTalents.map((pt) => ({
       ID_talent: pt.ID_talent,
       ID_project: pt.ID_project,
       ID_user: pt.ID_user,
@@ -535,32 +623,30 @@ export class AdminService {
       },
     }));
   }
-  
+
   async softDeleteProjectTalentById(id: number) {
-     // Find the Project_Talent record by ID
-  const projectTalent = await this.prisma.project_Talent.findUnique({
-    where: { ID_talent: id },
-  });
+    // Find the Project_Talent record by ID
+    const projectTalent = await this.prisma.project_Talent.findUnique({
+      where: { ID_talent: id },
+    });
 
-  // Check if the record exists
-  if (!projectTalent) {
-    throw new Error('ProjectTalent not found');
+    // Check if the record exists
+    if (!projectTalent) {
+      throw new Error('ProjectTalent not found');
+    }
+
+    // Update the record to set Deleted_at field to the current date and time
+    return this.prisma.project_Talent.update({
+      where: { ID_talent: id },
+      data: {
+        Deleted_at: new Date(), // Set Deleted_at to the current date and time
+      },
+    });
   }
-
-  // Update the record to set Deleted_at field to the current date and time
-  return this.prisma.project_Talent.update({
-    where: { ID_talent: id },
-    data: {
-      Deleted_at: new Date(), // Set Deleted_at to the current date and time
-    },
-  });
-  }
-
-
 
   async countProjectStatuses() {
     const statuses = ['Rejected', 'In Progress', 'On Going', 'Done'];
-  
+
     const counts = await Promise.all(
       statuses.map(async (status) => {
         const count = await this.prisma.project.count({
@@ -569,20 +655,11 @@ export class AdminService {
             Deleted_at: null, // Ensure deleted_at is null
           },
         });
-        console.log(`Status: ${status}, Count: ${count}`)
+        console.log(`Status: ${status}, Count: ${count}`);
         return { status, count };
-      })
+      }),
     );
-  
+
     return counts;
   }
-  
-  
-  
-
-
 }
-
-
-
-

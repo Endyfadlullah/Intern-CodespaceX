@@ -9,13 +9,13 @@ export class RegisterUserRequest {
       
   @ApiProperty({
     description: 'The email of the user',
-    example: 'user@example.com',
+    example: 'user@gmail.com',
   })
   email: string;
 
   @ApiProperty({
     description: 'The password of the user',
-    example: 'Password123!',
+    example: 'Password123',
   })
   password: string;
 }
@@ -77,13 +77,13 @@ export class UserResponse {
 export class LoginUserRequest {
   @ApiProperty({
     description: 'The email of the user',
-    example: 'user@example.com',
+    example: 'user@gmail.com',
   })
   email: string;
 
   @ApiProperty({
     description: 'The password of the user',
-    example: 'Password123!',
+    example: 'Password123',
   })
   password: string;
 }
@@ -160,6 +160,56 @@ export class UpdateUser{
     required: false,
   })
   status?: string;
+}
+
+export class ForgotPasswordRequest {
+  @ApiProperty({
+    description: 'The email of the user',
+    example: 'user@gmail.com',
+  })
+  email: string;
+}
+
+export class ForgotPasswordResponse {
+  @ApiProperty({
+    description: 'Indicates whether the email was successfully sent',
+    example: true,
+  })
+  success: boolean;
+
+  @ApiProperty({
+    description: 'Message providing additional information',
+    example: 'Reset password token has been sent to your email.',
+  })
+  message: string;
+}
+
+export class ResetPasswordRequest {
+  @ApiProperty({
+    description: 'Reset password token',
+    example: '123456', // Token contoh 6 digit
+  })
+  token!: string;
+
+  @ApiProperty({
+    description: 'New password for the user',
+    example: 'NewPassword123',
+  })
+  newPassword!: string;
+}
+
+export class ResetPasswordResponse {
+  @ApiProperty({
+    description: 'Indicates whether the password was successfully reset',
+    example: true,
+  })
+  success: boolean;
+
+  @ApiProperty({
+    description: 'Message providing additional information',
+    example: 'Password has been successfully reset.',
+  })
+  message: string;
 }
 
 

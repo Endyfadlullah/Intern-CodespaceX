@@ -1,13 +1,19 @@
 import { Module } from '@nestjs/common';
-// import { AppController } from './app.controller';
-// import { AppService } from './app.service';
-import { CommonModule } from './conmmon/common.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { MailerConfigModule } from './mailer/mailer.module'; 
 import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module'; 
+import { CommonModule } from './common/common.module';
 
 @Module({
-  imports: [CommonModule, UserModule, AuthModule],
-  controllers: [],
-  providers: [],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    MailerConfigModule,
+    UserModule,
+    CommonModule,
+  ],
 })
 export class AppModule {}

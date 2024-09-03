@@ -10,22 +10,28 @@ import {
   Patch,
   Post,
   Put,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { UserService, AdminService } from '../user/user.service';
 import {
+  ForgotPasswordResponse,
   LoginUserRequest,
   RegisterUserRequest,
   UpdateUserRequest,
-  UserResponse
+  ResetPasswordResponse,
+  UserResponse,
 } from 'src/model/user.model';
 import { WebResponse } from 'src/model/web.model';
-import { Auth, Roles } from 'src/conmmon/auth.decorator';
+import { Auth, Roles } from 'src/common/auth.decorator';
 import { User } from '@prisma/client';
-import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { ParseIntPipe } from '@nestjs/common';
+import {
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+} from '../model/user.model';
 
 @ApiTags('AUTH') // Tag for user-related routes
 @Controller('/api')
@@ -40,7 +46,7 @@ export class UserController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Register a new user',
-    description: 'Registers a new user with the provided registration details.'
+    description: 'Registers a new user with the provided registration details.',
   })
   async register(
     @Body() request: RegisterUserRequest,
@@ -59,7 +65,8 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Login a user',
-    description: 'Authenticates a user with the provided login credentials and returns a token.'
+    description:
+      'Authenticates a user with the provided login credentials and returns a token.',
   })
   async login(
     @Body() request: LoginUserRequest,
@@ -74,25 +81,39 @@ export class UserController {
     }
   }
 
-  @Patch('/forget-password')
-  @UseGuards(JwtAuthGuard)
+  @Post('/forgot-password')
   @HttpCode(HttpStatus.OK)
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'Update user details',
-    description: 'Updates the user details including password when the user is authenticated.'
-  })
-  async update(
-    @Auth() user: User,
-    @Body() request: UpdateUserRequest,
-  ): Promise<WebResponse<UserResponse>> {
+  // @ApiOperation({ summary: 'Forgot password - send reset token' })
+  @ApiBody({ type: ForgotPasswordRequest })
+  async forgotPassword(
+    @Body() request: ForgotPasswordRequest,
+  ): Promise<ForgotPasswordResponse> {
     try {
-      console.log('Update request:', request);
-      const result = await this.userService.update(user, request);
-      return { data: result };
+      await this.userService.forgotPassword(request.email);
+      return {
+        success: true,
+        message: 'Reset password token has been sent to your email.',
+      };
     } catch (error) {
-      console.error('Update error:', error);
-      throw new HttpException('Update failed', HttpStatus.BAD_REQUEST);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('/reset-password')
+  @HttpCode(HttpStatus.OK)
+  // @ApiOperation({ summary: 'Reset password using token' })
+  @ApiBody({ type: ResetPasswordRequest })
+  async resetPassword(
+    @Body() request: ResetPasswordRequest,
+  ): Promise<ResetPasswordResponse> {
+    try {
+      await this.userService.resetPassword(request.token, request.newPassword);
+      return {
+        success: true,
+        message: 'Password has been successfully reset.',
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 }
