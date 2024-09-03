@@ -1,28 +1,28 @@
-import { 
-  Body, 
-  Controller, 
-  Delete, 
-  Get, 
-  HttpCode, 
-  HttpException, 
-  HttpStatus, 
-  Param, 
-  Patch, 
-  Post, 
-  Put, 
-  UseGuards 
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Put,
+  UseGuards
 } from '@nestjs/common';
 import { UserService, AdminService } from '../user/user.service';
-import { 
-  LoginUserRequest, 
-  RegisterUserRequest, 
-  UpdateUserRequest, 
-  UserResponse 
+import {
+  LoginUserRequest,
+  RegisterUserRequest,
+  UpdateUserRequest,
+  UserResponse
 } from 'src/model/user.model';
 import { WebResponse } from 'src/model/web.model';
 import { Auth, Roles } from 'src/conmmon/auth.decorator';
 import { User } from '@prisma/client';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { ParseIntPipe } from '@nestjs/common';
@@ -38,6 +38,10 @@ export class UserController {
   // User routes
   @Post('/register/')
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Register a new user',
+    description: 'Registers a new user with the provided registration details.'
+  })
   async register(
     @Body() request: RegisterUserRequest,
   ): Promise<WebResponse<UserResponse>> {
@@ -53,6 +57,10 @@ export class UserController {
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Login a user',
+    description: 'Authenticates a user with the provided login credentials and returns a token.'
+  })
   async login(
     @Body() request: LoginUserRequest,
   ): Promise<WebResponse<UserResponse>> {
@@ -70,6 +78,10 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Update user details',
+    description: 'Updates the user details including password when the user is authenticated.'
+  })
   async update(
     @Auth() user: User,
     @Body() request: UpdateUserRequest,
@@ -83,5 +95,4 @@ export class UserController {
       throw new HttpException('Update failed', HttpStatus.BAD_REQUEST);
     }
   }
-
 }
