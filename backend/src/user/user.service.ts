@@ -7,7 +7,9 @@ import {
   UserResponse,
   UpdateUser,
   CreateUser,
-  CreateProject
+  CreateProject,
+  CreateProjectTalent,
+  UpdateProject
 } from 'src/model/user.model';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
@@ -377,7 +379,12 @@ export class AdminService {
   }
 
   async ReadAllTalent(): Promise<User[]> {
-    return this.prisma.user.findMany({ where: { Role: 'talent', Deleted_at: null} });
+    return this.prisma.user.findMany({
+      where: {
+        Role: 'talent',
+        Deleted_at: null, 
+      },
+    });
   }
   
   async createProject(createProjectDto: CreateProject): Promise<Project> {
@@ -398,13 +405,182 @@ export class AdminService {
         Deadline: new Date(createProjectDto.deadline),  // Konversi string ke Date
         Status: createProjectDto.status,
         Image: createProjectDto.image,
-        user: { connect: { ID_user: createProjectDto.userId } }, // Hubungkan proyek dengan user
+        user: { connect: { ID_user: createProjectDto.userId } }, 
+        Created_at: getAdjustedDate(),  // Set creation date
+        Updated_at: getAdjustedDate(),  // Set updated date
+
       },
     });
   
     return newProject;
   }
   
+  async createProjectTalent(createProjectTalent: CreateProjectTalent): Promise<Project_Talent> {
+    const { ID_project, ID_user } = createProjectTalent;
+
+    return this.prisma.project_Talent.create({
+      data: {
+        ID_project,
+        ID_user,
+      },
+    });
+  }
+
+  async findAllProjects() {
+    return this.prisma.project.findMany({
+      where: {
+        Deleted_at: null, 
+      },
+    });
+  }
+
+  async findProjectById(id: number) {
+    return this.prisma.project.findUnique({
+      where: { ID_project: id },
+      select: {
+        ID_project: true,
+        ID_user: true,
+        user: {
+          select: {
+            Username: true,
+            Picture: true,
+          },
+        },
+        Image: true,
+        Project_title: true,
+        Platform: true,
+        Deadline: true,
+        Status: true,
+      },
+    });
+  }
+
+  async updateProjectById(id: number, data: UpdateProject): Promise<Project> {
+    // Prepare the updated data
+    const updatedData: Partial<Project> = {};
+  
+    if (data.ID_user !== undefined) {
+      updatedData.ID_user = data.ID_user;
+    }
+  
+    if (data.Image) {
+      updatedData.Image = data.Image;
+    }
+  
+    if (data.Project_title) {
+      updatedData.Project_title = data.Project_title;
+    }
+  
+    if (data.Platform) {
+      updatedData.Platform = data.Platform;
+    }
+  
+    if (data.Deadline) {
+      updatedData.Deadline = new Date(data.Deadline);
+    }
+  
+    if (data.Status) {
+      updatedData.Status = data.Status;
+    }
+  
+    updatedData.Updated_at = getAdjustedDate(); // Use your function to set the current date and time
+  
+    return this.prisma.project.update({ where: { ID_project: id }, data: updatedData });
+  }
+
+  async softDeleteProjectById(id: number) {
+    const user = await this.prisma.project.findUnique({
+      where: { ID_project: id },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    try {
+      return await this.prisma.project.update({
+        where: { ID_project: id },
+        data: {
+          Deleted_at: getAdjustedDate(),
+        },
+      });
+    } catch (error) {
+      throw new HttpException('Failed to soft delete user', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async findProjectTalentByProjectId(projectId: number) {
+    // Fetch Project_Talent records where the ID_project matches
+    const projectTalents = await this.prisma.project_Talent.findMany({
+      where: { ID_project: projectId, Deleted_at: null },
+      include: {
+        user: true, // Include the related User data
+      },
+    });
+  
+    if (projectTalents.length === 0) {
+      throw new Error('No ProjectTalent records found for the given Project ID');
+    }
+  
+    // Map and customize the response
+    return projectTalents.map(pt => ({
+      ID_talent: pt.ID_talent,
+      ID_project: pt.ID_project,
+      ID_user: pt.ID_user,
+      user: {
+        Username: pt.user.Username,
+        Picture: pt.user.Picture,
+        Position: pt.user.Position,
+        Role: pt.user.Role,
+      },
+    }));
+  }
+  
+  async softDeleteProjectTalentById(id: number) {
+     // Find the Project_Talent record by ID
+  const projectTalent = await this.prisma.project_Talent.findUnique({
+    where: { ID_talent: id },
+  });
+
+  // Check if the record exists
+  if (!projectTalent) {
+    throw new Error('ProjectTalent not found');
+  }
+
+  // Update the record to set Deleted_at field to the current date and time
+  return this.prisma.project_Talent.update({
+    where: { ID_talent: id },
+    data: {
+      Deleted_at: new Date(), // Set Deleted_at to the current date and time
+    },
+  });
+  }
+
+
+
+  async countProjectStatuses() {
+    const statuses = ['Rejected', 'In Progress', 'On Going', 'Done'];
+  
+    const counts = await Promise.all(
+      statuses.map(async (status) => {
+        const count = await this.prisma.project.count({
+          where: {
+            Status: status.trim(), // Trim to handle any extra spaces
+            Deleted_at: null, // Ensure deleted_at is null
+          },
+        });
+        console.log(`Status: ${status}, Count: ${count}`)
+        return { status, count };
+      })
+    );
+  
+    return counts;
+  }
+  
+  
+  
+
+
 }
 
 

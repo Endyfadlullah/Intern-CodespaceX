@@ -45,6 +45,9 @@ model Project {
   Platform          String
   Deadline          DateTime
   Status            String?   // Tambahkan properti Status jika belum ada
+  Created_at        DateTime  @default(now())
+  Updated_at        DateTime  @updatedAt
+  Deleted_at        DateTime?
 
   // Relasi ke User
   user              User      @relation(fields: [ID_user], references: [ID_user], name: "UserProjects")
@@ -57,6 +60,9 @@ model Project_Talent {
   ID_talent         Int       @id @default(autoincrement())
   ID_project        Int       
   ID_user           Int       
+  Created_at        DateTime  @default(now())
+  Updated_at        DateTime  @updatedAt
+  Deleted_at        DateTime?
 
   // Relasi ke User
   user              User      @relation(fields: [ID_user], references: [ID_user], name: "UserTalents")

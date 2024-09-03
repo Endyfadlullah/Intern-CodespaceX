@@ -266,6 +266,63 @@ export class CreateProject{
   userId: number;
 }
 
-export class ReadProject{
-  
+export class CreateProjectTalent {
+  @ApiProperty({
+    description: 'ID dari Project',
+    example: '1',
+  })
+  ID_project: number;
+
+  @ApiProperty({
+    description: 'ID dari User dengan role Talent',
+    example: '1',
+  })
+  ID_user: number;
 }
+
+export class UpdateProject {
+  @ApiProperty({
+    description: 'ID dari User yang terkait dengan Project',
+    example: 1,
+    required: false,
+  })
+  ID_user?: number;
+
+  @ApiProperty({
+    description: 'URL gambar atau logo Project',
+    example: 'https://example.com/image.png',
+    required: false,
+  })
+  Image?: string;
+
+  @ApiProperty({
+    description: 'Judul unik dari Project',
+    example: 'Project Management System',
+    required: false,
+  })
+  Project_title?: string;
+
+  @ApiProperty({
+    description: 'Platform yang digunakan untuk Project',
+    example: 'Web, Mobile, Desktop',
+    required: false,
+  })
+  Platform?: string;
+
+  @ApiProperty({
+    description: 'Deadline untuk penyelesaian Project',
+    example: '2024-12-31T23:59:59Z',
+    required: false,
+    format: 'date-time',
+  })
+  Deadline?: string;
+
+  @ApiProperty({
+    description: 'Status saat ini dari Project',
+    example: 'In Progress, Completed, On Hold',
+    required: false,
+  })
+  Status?: string;
+}
+
+
