@@ -6,7 +6,8 @@ import {
   UpdateUserRequest,
   UserResponse,
   UpdateUser,
-  CreateUser
+  CreateUser,
+  CreateProject
 } from 'src/model/user.model';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
@@ -377,6 +378,31 @@ export class AdminService {
 
   async ReadAllTalent(): Promise<User[]> {
     return this.prisma.user.findMany({ where: { Role: 'talent', Deleted_at: null} });
+  }
+  
+  async createProject(createProjectDto: CreateProject): Promise<Project> {
+    // Periksa apakah proyek dengan judul yang sama sudah ada
+    const existingProject = await this.prisma.project.findFirst({
+      where: { Project_title: createProjectDto.project_title },
+    });
+  
+    if (existingProject) {
+      throw new HttpException('Project title already in use', HttpStatus.BAD_REQUEST);
+    }
+  
+    // Buat proyek baru
+    const newProject = await this.prisma.project.create({
+      data: {
+        Project_title: createProjectDto.project_title,
+        Platform: createProjectDto.platform,
+        Deadline: new Date(createProjectDto.deadline),  // Konversi string ke Date
+        Status: createProjectDto.status,
+        Image: createProjectDto.image,
+        user: { connect: { ID_user: createProjectDto.userId } }, // Hubungkan proyek dengan user
+      },
+    });
+  
+    return newProject;
   }
   
 }

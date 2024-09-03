@@ -28,8 +28,7 @@ CREATE TABLE `Project` (
     `Project_title` VARCHAR(191) NOT NULL,
     `Platform` VARCHAR(191) NOT NULL,
     `Deadline` DATETIME(3) NOT NULL,
-    `Client` VARCHAR(191) NOT NULL,
-    `Talent_in_Charge` VARCHAR(191) NOT NULL,
+    `Status` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`ID_project`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

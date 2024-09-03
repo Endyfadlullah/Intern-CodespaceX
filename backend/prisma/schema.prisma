@@ -41,11 +41,10 @@ model Project {
   ID_project        Int       @id @default(autoincrement())
   ID_user           Int       
   Image             String?
-  Project_title     String
+  Project_title     String    @unique
   Platform          String
   Deadline          DateTime
-  Client            String
-  Talent_in_Charge  String
+  Status            String?   // Tambahkan properti Status jika belum ada
 
   // Relasi ke User
   user              User      @relation(fields: [ID_user], references: [ID_user], name: "UserProjects")

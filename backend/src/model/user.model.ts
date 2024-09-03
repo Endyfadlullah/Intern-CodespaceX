@@ -224,3 +224,48 @@ export class CreateUser{
 export class ReadUser{
   
 }
+
+export class CreateProject{
+  @ApiProperty({
+    description: 'The image of project',
+    example: 'https://example.com/project-image.jpg',
+    required: false,
+  })
+  image?: string;
+
+  @ApiProperty({
+    description: 'The project name',
+    example: 'Manhattan Project',
+  })
+  project_title: string;
+  
+  @ApiProperty({
+    description: 'The platform project',
+    example: 'Mobile App',
+    required: false,
+  })
+  platform: string;
+
+  @ApiProperty({
+    description: 'The mobile number of the user',
+    example: '03-10-2024',
+  })
+  deadline?: string;
+
+  @ApiProperty({
+    description: 'The status of the project',
+    example: 'On Going',
+    default: 'On Going',
+  })
+  status: string;
+
+  @ApiProperty({
+    description: 'ID dari user',
+    example: '1',
+  })
+  userId: number;
+}
+
+export class ReadProject{
+  
+}

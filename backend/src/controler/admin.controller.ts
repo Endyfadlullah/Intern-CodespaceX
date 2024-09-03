@@ -12,7 +12,7 @@ import {
   UseGuards
 } from '@nestjs/common';
 import { AdminService } from '../user/user.service'; // Ensure AdminService is correctly imported
-import { UpdateUser, CreateUser } from 'src/model/user.model';
+import { UpdateUser, CreateUser, CreateProject } from 'src/model/user.model';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -108,4 +108,16 @@ export class AdminController {
     }
   }
 
+  @Post('/project')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  async createProject(@Body() createProjectRequest: CreateProject) {
+    try {
+      return await this.adminService.createProject(createProjectRequest);
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw new HttpException('Failed to create user', HttpStatus.BAD_REQUEST);
+    }
+  }
 }
