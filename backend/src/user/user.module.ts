@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { UserService, AdminService } from './user.service'; // Import AdminService
-import { UserController } from '../controler/user.controller';
+import { UserController } from '../controler/auth.controller';
 import { AdminController } from '../controler/admin.controller';
 import { PrismaService } from 'src/common/prisma.service';
 import { ValidationService } from 'src/common/validation.service';

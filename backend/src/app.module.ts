@@ -15,5 +15,6 @@ import { CommonModule } from './common/common.module';
     UserModule,
     CommonModule,
   ],
+  
 })
 export class AppModule {}
