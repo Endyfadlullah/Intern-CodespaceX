@@ -10,6 +10,9 @@ import {
   CreateProject,
   CreateProjectTalent,
   UpdateProject,
+  CreateCheckpointAttachment,
+  CreateCheckpoint,
+  UpdateCheckpoint,
 } from 'src/model/user.model';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
@@ -19,7 +22,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { CustomMailerService } from '../mailer/mailer.service';
 import { ZodError } from 'zod';
-import { User, Project, Project_Talent } from '@prisma/client';
+import { User, Project, Project_Talent, Project_Checkpoint, Project_Checkpoint_Attachment } from '@prisma/client';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -662,4 +665,149 @@ export class AdminService {
 
     return counts;
   }
+
+  async createCheckpoint(createCheckpointDto: CreateCheckpoint): Promise<Project_Checkpoint> {
+    
+    // Buat proyek baru
+    const newCheckpoint = await this.prisma.project_Checkpoint.create({
+      data: {
+        Checkpoint_title: createCheckpointDto.checkpoint_title,
+        Description: createCheckpointDto.description,
+        project: { connect: { ID_project: createCheckpointDto.projectId } }, 
+        Created_at: getAdjustedDate(),  // Set creation date
+        Updated_at: getAdjustedDate(),  // Set updated date
+      },
+    });
+  
+    return newCheckpoint;
+  }
+
+  async findCheckpointById(id: number) {
+    return this.prisma.project_Checkpoint.findMany({
+      where: { ID_project: id },
+      select: {
+        ID_checkpoint: true,
+        Checkpoint_title: true,
+        Description: true,
+        project: {
+          select: {
+            ID_project: true,
+            Project_title: true,
+          },
+        },
+      },
+    });
+  }
+
+  async updateCheckpointById(id: number, data: UpdateCheckpoint): Promise<Project_Checkpoint> {
+    // Prepare the updated data
+    const updatedData: Partial<Project_Checkpoint> = {};
+  
+    if (data.ID_project !== undefined) {
+      updatedData.ID_project = data.ID_project;
+    }
+  
+    if (data.Checkpoint_title) {
+      updatedData.Checkpoint_title = data.Checkpoint_title;
+    }
+  
+    if (data.Description) {
+      updatedData.Description = data.Description;
+    }
+  
+    updatedData.Updated_at = getAdjustedDate(); // Gunakan fungsi Anda untuk mengatur waktu saat ini
+  
+    return this.prisma.project_Checkpoint.update({
+      where: { ID_checkpoint: id },
+      data: updatedData,
+    });
+  }
+
+async softDeleteCheckpointById(id: number) {
+  const checkpoint = await this.prisma.project_Checkpoint.findUnique({
+    where: { ID_checkpoint: id },
+  });
+
+  if (!checkpoint) {
+    throw new HttpException('Checkpoint not found', HttpStatus.NOT_FOUND);
+  }
+
+  try {
+    return await this.prisma.project_Checkpoint.update({
+      where: { ID_checkpoint: id },
+      data: {
+        Deleted_at: getAdjustedDate(),
+      },
+    });
+  } catch (error) {
+    throw new HttpException(
+      'Failed to soft delete checkpoint',
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+}
+  
+  async createCheckpointAttachment(createCheckpointAttachment: CreateCheckpointAttachment): Promise<Project_Checkpoint_Attachment> {
+    const { ID_checkpoint } = createCheckpointAttachment;
+
+    return this.prisma.project_Checkpoint_Attachment.create({
+      data: {
+        Url: createCheckpointAttachment.url,
+        ID_checkpoint,
+      },
+    });
+  }
+
+  async readAllCheckpointAttachments(): Promise<Project_Checkpoint_Attachment[]> {
+    return this.prisma.project_Checkpoint_Attachment.findMany({
+      where: {
+        Deleted_at: null,
+      },
+      include: {
+        checkpoint: true,  // Menyertakan informasi checkpoint terkait
+      },
+    });
+  }
+
+  async findCheckpointAttachmentsById(checkpointId: number) {
+    // Fetch Project_Checkpoint_Attachment records where the ID_checkpoint matches
+    const checkpointAttachments = await this.prisma.project_Checkpoint_Attachment.findMany({
+      where: { ID_checkpoint: checkpointId, Deleted_at: null },
+    });
+  
+    if (checkpointAttachments.length === 0) {
+      throw new Error(
+        'No CheckpointAttachment records found for the given Checkpoint ID',
+      );
+    }
+  
+    // Map and customize the response
+    return checkpointAttachments.map((attachment) => ({
+      ID_attachment: attachment.ID_attachment,
+      ID_checkpoint: attachment.ID_checkpoint,
+      Url: attachment.Url,
+      Created_at: attachment.Created_at,
+      Updated_at: attachment.Updated_at,
+    }));
+  }
+  
+  async softDeleteCheckpointAttachmentById(id: number) {
+    // Find the Project_Checkpoint_Attachment record by ID
+    const checkpointAttachment = await this.prisma.project_Checkpoint_Attachment.findUnique({
+      where: { ID_attachment: id },
+    });
+  
+    // Check if the record exists
+    if (!checkpointAttachment) {
+      throw new Error('CheckpointAttachment not found');
+    }
+  
+    // Update the record to set Deleted_at field to the current date and time
+    return this.prisma.project_Checkpoint_Attachment.update({
+      where: { ID_attachment: id },
+      data: {
+        Deleted_at: new Date(), // Set Deleted_at to the current date and time
+      },
+    });
+  }  
 }

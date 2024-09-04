@@ -19,6 +19,9 @@ import {
   CreateProject,
   CreateProjectTalent,
   UpdateProject,
+  CreateCheckpoint,
+  UpdateCheckpoint,
+  CreateCheckpointAttachment,
 } from 'src/model/user.model';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -336,6 +339,171 @@ export class AdminController {
       console.error(`Error soft deleting project talent with ID ${id}:`, error);
       throw new HttpException(
         'Failed to soft delete project talent',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Post('/project/checkpoint')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Create a new checkpoint',
+    description: 'Creates a new checkpoint with the provided details.'
+  })
+  async createCheckpoint(@Body() createChekpointRequest: CreateCheckpoint) {
+    try {
+      return await this.adminService.createCheckpoint(createChekpointRequest);
+    } catch (error) {
+      console.error('Error creating chekcpoint:', error);
+      throw new HttpException('Failed to create checkpoint', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Get('/project/checkpoint/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get checkpoint by ID',
+    description: 'Fetches detailed information of a checkpoint by its ID.',
+  })
+  async findCheckpoint(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.adminService.findCheckpointById(id);
+    } catch (error) {
+      console.error(`Error fetching project checkpoint with ID ${id}:`, error);
+      throw new HttpException(
+        'Failed to fetch checpoint',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Put('/project/checkpoint/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Update checkpoint by ID',
+    description:
+      'Updates checkpoint information based on the provided ID and details.',
+  })
+  async updateCheckpoint(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCheckpointRequest: UpdateCheckpoint,
+  ) {
+    try {
+      return await this.adminService.updateCheckpointById(
+        id,
+        updateCheckpointRequest,
+      );
+    } catch (error) {
+      console.error(`Error updating checkpoint with ID ${id}:`, error);
+      throw new HttpException(
+        'Failed to update checkpoint',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Put('/project/checkpoint/:id/soft-delete')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Soft delete checkpoint by ID',
+    description:
+      'Soft deletes a checkpoint by its ID, marking the checkpoint as deleted but not physically removing it from the database.',
+  })
+  async softDeleteCheckpoint(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.adminService.softDeleteCheckpointById(id);
+    } catch (error) {
+      console.error(`Error soft deleting checkpoint with ID ${id}:`, error);
+      throw new HttpException(
+        'Failed to soft delete checkpoint',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Post('/project/checkpoint/attachment')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Create a new project checkpoint attachment',
+    description: 'Adds a new attachment to a project checkpoint with the provided details.',
+  })
+  async createCheckpointAttachment(@Body() createCheckpointAttachment: CreateCheckpointAttachment) {
+    try {
+      return await this.adminService.createCheckpointAttachment(createCheckpointAttachment);
+    } catch (error) {
+      console.error('Error creating checkpoint attachment:', error);
+      throw new HttpException(
+        'Failed to create checkpoint attachment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get('/project/checkpoint/attachment')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get all checkpoint attachments',
+    description: 'Fetches a list of all attachments associated with project checkpoints.',
+  })
+  async findAllCheckpointAttachments() {
+    try {
+      return await this.adminService.readAllCheckpointAttachments();
+    } catch (error) {
+      console.error('Error fetching checkpoint attachments:', error);
+      throw new HttpException(
+        'Failed to fetch checkpoint attachments',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  
+  @Get('/project/checkpoint/attachment/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get checkpoint attachments by checkpoint ID',
+    description: 'Fetches attachments associated with a specific checkpoint by its ID.',
+  })
+  async findCheckpointAttachments(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.adminService.findCheckpointAttachmentsById(id);
+    } catch (error) {
+      console.error(`Error fetching attachments for checkpoint with ID ${id}:`, error);
+      throw new HttpException(
+        'Failed to fetch checkpoint attachments',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Put('/project/checkpoint/attachment/:id/soft-delete')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Soft delete checkpoint attachment by ID',
+    description: 'Soft deletes a checkpoint attachment by its ID, marking it as deleted but not physically removing it from the database.',
+  })
+  async softDeleteCheckpointAttachment(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.adminService.softDeleteCheckpointAttachmentById(id);
+    } catch (error) {
+      console.error(`Error soft deleting checkpoint attachment with ID ${id}:`, error);
+      throw new HttpException(
+        'Failed to soft delete checkpoint attachment',
         HttpStatus.BAD_REQUEST,
       );
     }

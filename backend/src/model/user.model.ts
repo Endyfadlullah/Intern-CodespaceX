@@ -375,4 +375,58 @@ export class UpdateProject {
   Status?: string;
 }
 
+export class CreateCheckpoint{
+  @ApiProperty({
+    description: 'ID dari project',
+    example: '1',
+  })
+  projectId: number;
+  
+  @ApiProperty({
+    description: 'The title of checkpoint',
+    example: 'Kickoff Meeting',
+  })
+  checkpoint_title: string;
+  
+  @ApiProperty({
+    description: 'The description of project checkpoint',
+    example: 'we successfuly held kickoff meeting , setting clear goals and expectations to  start the project on the right track',
+  })
+  description: string;
+}
 
+export class UpdateCheckpoint {
+  @ApiProperty({
+    description: 'ID dari Project yang terkait dengan Checkpoint',
+    example: 1,
+    required: false,
+  })
+  ID_project?: number;
+
+  @ApiProperty({
+    description: 'Judul unik dari Checkpoint',
+    example: 'Kickoff Meeting 10',
+    required: false,
+  })
+  Checkpoint_title?: string;
+
+  @ApiProperty({
+    description: 'Deskripsi dari Checkpoint',
+    example: 'bdlkasijfbioljsajbfoilawj iwJBFOIWAB9OIUF LIKJAWBFILWEBF.',
+    required: false,
+  })
+  Description?: string;
+}
+
+export class CreateCheckpointAttachment {
+  @ApiProperty({
+    description: 'ID dari Checkpoint',
+    example: '1',
+  })
+  ID_checkpoint: number;
+  @ApiProperty({
+    description: 'url untuk file di drive',
+    example: 'https://drive.example.com/',
+  })
+  url: string;
+}

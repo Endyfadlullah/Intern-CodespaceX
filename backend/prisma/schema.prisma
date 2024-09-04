@@ -54,6 +54,9 @@ model Project {
 
   // Relasi ke Project_Talent
   talents           Project_Talent[] @relation("ProjectTalents")
+
+  // Relasi ke Project_Checkpoint
+  checkpoints     Project_Checkpoint[]  @relation("ProjectCheckpoints")
 }
 
 model Project_Talent {
@@ -69,4 +72,32 @@ model Project_Talent {
   
   // Relasi ke Project
   project           Project   @relation(fields: [ID_project], references: [ID_project], name: "ProjectTalents")
+}
+
+model Project_Checkpoint {
+  ID_checkpoint           Int                               @id @default(autoincrement())
+  ID_project              Int
+  Checkpoint_title        String
+  Description             String
+  Created_at              DateTime                          @default(now())
+  Updated_at              DateTime                          @updatedAt
+  Deleted_at              DateTime?
+
+  // Relasi ke Project
+  project                 Project                           @relation(fields: [ID_project], references: [ID_project], name: "ProjectCheckpoints")
+
+  // Relasi ke Project_Checkpoint_Attachment
+  attachments             Project_Checkpoint_Attachment[]   @relation("CheckpointAttachments")
+}
+
+model Project_Checkpoint_Attachment {
+  ID_attachment           Int                               @id @default(autoincrement())
+  ID_checkpoint           Int
+  Url                     String
+  Created_at              DateTime                          @default(now())
+  Updated_at              DateTime                          @updatedAt
+  Deleted_at              DateTime?
+
+  // Relasi ke Project_Checkpoint
+  checkpoint              Project_Checkpoint                @relation(fields: [ID_checkpoint], references: [ID_checkpoint], name: "CheckpointAttachments")
 }
