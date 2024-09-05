@@ -53,6 +53,47 @@ export class AdminController {
       );
     }
   }
+  @Get('/dashboard/project')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get project dashboard',
+    description:
+    'Fetches detailed information about projects, including project ID, title, status, platform, and the pictures of associated talents. Optionally filters projects by status (e.g., "On Going", "In Progress", "Done"). If no status or "All" is provided, returns all projects regardless of status.',
+  })
+  async getProject(@Query('status') status?: string) {
+    try {
+      return await this.adminService.readProjectDashboard(status);
+    } catch (error) {
+      console.error('Error fetching project status counts:', error);
+      throw new HttpException(
+        'Failed to fetch project status counts',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/dashboard/project/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get project dashboard',
+    description:
+    'Fetches detailed information about projects, including project ID, title, status, platform, and the pictures of associated talents. Optionally filters projects by status (e.g., "On Going", "In Progress", "Done"). If no status or "All" is provided, returns all projects regardless of status.',
+  })
+  async getProjectbyid(@Query('ID Project') id?: number) {
+    try {
+      return await this.adminService.readProjectDashboardDropdown(id);
+    } catch (error) {
+      console.error('Error fetching project status counts:', error);
+      throw new HttpException(
+        'Failed to fetch project status counts',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   @Post('/users')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -445,26 +486,6 @@ export class AdminController {
       throw new HttpException(
         'Failed to create checkpoint attachment',
         HttpStatus.BAD_REQUEST,
-      );
-    }
-  }
-
-  @Get('/project/checkpoint/attachment')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'Get all checkpoint attachments',
-    description: 'Fetches a list of all attachments associated with project checkpoints.',
-  })
-  async findAllCheckpointAttachments() {
-    try {
-      return await this.adminService.readAllCheckpointAttachments();
-    } catch (error) {
-      console.error('Error fetching checkpoint attachments:', error);
-      throw new HttpException(
-        'Failed to fetch checkpoint attachments',
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
