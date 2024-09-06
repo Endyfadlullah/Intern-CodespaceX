@@ -13,6 +13,8 @@ import {
   CreateCheckpointAttachment,
   CreateCheckpoint,
   UpdateCheckpoint,
+  CreateInvoice,
+  Items_Invoice
 } from 'src/model/user.model';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
@@ -22,7 +24,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { CustomMailerService } from '../mailer/mailer.service';
 import { ZodError } from 'zod';
-import { User, Project, Project_Talent, Project_Checkpoint, Project_Checkpoint_Attachment } from '@prisma/client';
+import { User, Project, Project_Talent, Project_Checkpoint, Project_Checkpoint_Attachment, Invoice, Invoice_ItemList } from '@prisma/client';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -866,6 +868,58 @@ async softDeleteCheckpointById(id: number) {
 
     return this.prisma.$queryRawUnsafe(query);
   }
+
+  async createInvoice(createInvoice: CreateInvoice): Promise<Invoice> {
+    const { ID_project, Payment_Due, Payment_Type, Total_Termin, Termin_Number, Notes } = createInvoice;
+  
+    try {
+      // Menghitung jumlah invoice yang sudah ada
+      const invoiceCount = await this.prisma.invoice.count();
+      // Format ID_Invoice dengan padding
+      const newID = `INV-${String(invoiceCount + 1).padStart(6, '0')}`;
+  
+      const newInvoice = await this.prisma.invoice.create({
+        data: {
+          ID_Invoice: newID,  // Menggunakan ID yang sudah diformat
+          ID_project,
+          Payment_Due,
+          Payment_Type,
+          Total_Termin,
+          Termin_Number,
+          Notes,
+          Created_at: new Date(),  // Menggunakan waktu saat ini
+          Updated_at: new Date(),  // Menggunakan waktu saat ini
+        },
+      });
+  
+      return newInvoice;
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+      throw new HttpException(
+        'Failed to create invoice',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+  
+  
+
+async createItemsInvoice(createItemsInvoice: Items_Invoice): Promise<Invoice_ItemList> {
+    const { ID_Invoice, Tittle, Description, Quantity, Price } = createItemsInvoice;
+
+    return this.prisma.invoice_ItemList.create({
+      data: {
+        ID_Invoice,
+        Tittle,
+        Description,
+        Quantity,
+        Price,
+        Created_at: getAdjustedDate(),  // Set creation date
+        Updated_at: getAdjustedDate(),  // Set updated date
+      },
+    });
+}
+
   
   
 }

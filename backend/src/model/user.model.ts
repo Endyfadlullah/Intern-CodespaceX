@@ -430,3 +430,84 @@ export class CreateCheckpointAttachment {
   })
   url: string;
 }
+
+
+export class CreateInvoice{
+
+  @ApiProperty({
+    description: 'ID dari Project terkait',
+    example: 1,
+  })
+  ID_project: number;
+
+  @ApiProperty({
+    description: 'Tanggal jatuh tempo pembayaran',
+    example: '2024-09-06T00:00:00.000Z',  
+  })
+  Payment_Due: Date;
+
+  @ApiProperty({
+    description: 'Jenis pembayaran',
+    example: 'Transfer Bank',
+  })
+  Payment_Type: string;
+
+  @ApiProperty({
+    description: 'Jumlah total termin pembayaran',
+    example: 3,
+    required: false,  
+  })
+  Total_Termin?: number;
+
+  @ApiProperty({
+    description: 'Nomor termin saat ini',
+    example: 1,
+    required: false,
+  })
+  Termin_Number?: number;
+
+  @ApiProperty({
+    description: 'Catatan tambahan untuk invoice',
+    example: 'Pembayaran untuk termin pertama',
+    required: false,
+  })
+  Notes?: string;
+}
+
+export class Items_Invoice {
+  @ApiProperty({
+    description: 'ID dari Item List, auto-increment',
+    example: 1,
+  })
+  ID_ItemList: number;
+
+  @ApiProperty({
+    description: 'ID dari Invoice',
+    example: 'INV-000001',
+  })
+  ID_Invoice: string;
+
+  @ApiProperty({
+    description: 'Judul dari item',
+    example: 'Jasa Pembuatan Website',
+  })
+  Tittle: string;
+
+  @ApiProperty({
+    description: 'Deskripsi item',
+    example: 'Pembuatan website e-commerce dengan fitur lengkap',
+  })
+  Description: string;
+
+  @ApiProperty({
+    description: 'Jumlah item',
+    example: 2,
+  })
+  Quantity: number;
+
+  @ApiProperty({
+    description: 'Harga per item dalam format desimal dengan dua tempat desimal',
+    example: 500000.00,
+  })
+  Price: number; 
+}

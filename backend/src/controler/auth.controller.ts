@@ -1,33 +1,21 @@
 import {
   Body,
   Controller,
-  Delete,
-  Get,
   HttpCode,
   HttpException,
   HttpStatus,
-  Param,
-  Patch,
   Post,
-  Put,
-  UseGuards,
 } from '@nestjs/common';
 import { UserService, AdminService } from '../user/user.service';
 import {
   ForgotPasswordResponse,
   LoginUserRequest,
   RegisterUserRequest,
-  UpdateUserRequest,
   ResetPasswordResponse,
   UserResponse,
 } from 'src/model/user.model';
 import { WebResponse } from 'src/model/web.model';
-import { Auth, Roles } from 'src/common/auth.decorator';
-import { User } from '@prisma/client';
-import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RolesGuard } from '../auth/roles.guard';
-import { ParseIntPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import {
   ForgotPasswordRequest,
   ResetPasswordRequest,

@@ -57,6 +57,9 @@ model Project {
 
   // Relasi ke Project_Checkpoint
   checkpoints     Project_Checkpoint[]  @relation("ProjectCheckpoints")
+
+   // Relasi ke Invoice
+  invoices          Invoice[]  @relation("ProjectInvoices")
 }
 
 model Project_Talent {
@@ -100,4 +103,38 @@ model Project_Checkpoint_Attachment {
 
   // Relasi ke Project_Checkpoint
   checkpoint              Project_Checkpoint                @relation(fields: [ID_checkpoint], references: [ID_checkpoint], name: "CheckpointAttachments")
+}
+
+model Invoice {
+  ID_Invoice              String                            @id 
+  ID_project              Int
+  Payment_Due             DateTime
+  Payment_Type            String
+  Total_Termin            Int?
+  Termin_Number           Int?
+  Notes                   String?
+  Created_at              DateTime                          @default(now())
+  Updated_at              DateTime                          @updatedAt
+  Deleted_at              DateTime?
+
+  // Relasi ke Project
+  project                 Project  @relation(fields: [ID_project], references: [ID_project], name: "ProjectInvoices")
+
+  // Relasi ke Invoice_ItemList
+  items                   Invoice_ItemList[]  @relation("InvoiceItemLists")
+}
+
+model Invoice_ItemList {
+  ID_ItemList             Int                               @id @default(autoincrement())
+  ID_Invoice              String
+  Tittle                  String
+  Description             String
+  Quantity                Int
+  Price                   Decimal                           @db.Decimal(10, 2)
+  Created_at              DateTime                          @default(now())
+  Updated_at              DateTime                          @updatedAt
+  Deleted_at              DateTime?
+
+  // Relasi ke Invoice
+  invoice                 Invoice  @relation(fields: [ID_Invoice], references: [ID_Invoice], name: "InvoiceItemLists")
 }

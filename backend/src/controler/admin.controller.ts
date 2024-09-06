@@ -22,8 +22,10 @@ import {
   CreateCheckpoint,
   UpdateCheckpoint,
   CreateCheckpointAttachment,
+  CreateInvoice,
+  Items_Invoice
 } from 'src/model/user.model';
-import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from 'src/common/auth.decorator';
@@ -525,6 +527,49 @@ export class AdminController {
       console.error(`Error soft deleting checkpoint attachment with ID ${id}:`, error);
       throw new HttpException(
         'Failed to soft delete checkpoint attachment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Post('/invoice')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Create a new invoice',
+    description: 'Adds a new invoice with the provided details.',
+  })
+  @ApiResponse({ status: 201, description: 'The invoice has been successfully created.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  async createInvoice(@Body() createInvoice: CreateInvoice) {
+    try {
+      return await this.adminService.createInvoice(createInvoice);
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+      throw new HttpException(
+        'Failed to create invoice',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+  @Post('/invoice/items')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Create a new invoice',
+    description: 'Adds a new invoice with the provided details.',
+  })
+  @ApiResponse({ status: 201, description: 'The invoice has been successfully created.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  async createInvoiceItems(@Body() Items_Invoice: Items_Invoice) {
+    try {
+      return await this.adminService.createItemsInvoice(Items_Invoice);
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+      throw new HttpException(
+        'Failed to create invoice',
         HttpStatus.BAD_REQUEST,
       );
     }
