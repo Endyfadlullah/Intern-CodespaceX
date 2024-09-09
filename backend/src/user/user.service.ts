@@ -14,7 +14,9 @@ import {
   CreateCheckpoint,
   UpdateCheckpoint,
   CreateInvoice,
-  Items_Invoice
+  Items_Invoice,
+  UpdateCheckpointAttachment,
+  UpdateInvoice
 } from 'src/model/user.model';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
@@ -23,7 +25,7 @@ import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { CustomMailerService } from '../mailer/mailer.service';
-import { ZodError } from 'zod';
+import { string, ZodError } from 'zod';
 import { User, Project, Project_Talent, Project_Checkpoint, Project_Checkpoint_Attachment, Invoice, Invoice_ItemList } from '@prisma/client';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -761,6 +763,33 @@ async softDeleteCheckpointById(id: number) {
     });
   }
 
+  async updateCheckpointAttachmentById(
+    id: number,
+    updateCheckpointAttachment: UpdateCheckpointAttachment,
+  ): Promise<Project_Checkpoint_Attachment> {
+    const { ID_checkpoint, url } = updateCheckpointAttachment;
+  
+    // Prepare the updated data object
+    const updatedData: Partial<Project_Checkpoint_Attachment> = {};
+  
+    if (ID_checkpoint !== undefined) {
+      updatedData.ID_checkpoint = ID_checkpoint;
+    }
+  
+    if (url !== undefined) {
+      updatedData.Url = url;
+    }
+  
+    updatedData.Updated_at = new Date(); // Set updated timestamp
+  
+    // Update the checkpoint attachment in the database
+    return this.prisma.project_Checkpoint_Attachment.update({
+      where: { ID_attachment: id },
+      data: updatedData,
+    });
+  }
+  
+
   async findCheckpointAttachmentsById(checkpointId: number) {
     // Fetch Project_Checkpoint_Attachment records where the ID_checkpoint matches
     const checkpointAttachments = await this.prisma.project_Checkpoint_Attachment.findMany({
@@ -904,7 +933,61 @@ async softDeleteCheckpointById(id: number) {
     }
   }
   
+  async updateInvoiceById(id: string, updateInvoiceDto: UpdateInvoice): Promise<Invoice> {
+    const updatedData: Partial<Invoice> = {};
   
+    // Hanya memperbarui field yang disediakan
+    if (updateInvoiceDto.Payment_Due) {
+      updatedData.Payment_Due = updateInvoiceDto.Payment_Due;
+    }
+  
+    if (updateInvoiceDto.Payment_Type) {
+      updatedData.Payment_Type = updateInvoiceDto.Payment_Type;
+    }
+  
+    if (updateInvoiceDto.Total_Termin !== undefined) {
+      updatedData.Total_Termin = updateInvoiceDto.Total_Termin;
+    }
+  
+    if (updateInvoiceDto.Termin_Number !== undefined) {
+      updatedData.Termin_Number = updateInvoiceDto.Termin_Number;
+    }
+  
+    if (updateInvoiceDto.Notes) {
+      updatedData.Notes = updateInvoiceDto.Notes;
+    }
+  
+    if (updateInvoiceDto.Status) {
+      updatedData.Status = updateInvoiceDto.Status;
+    }
+  
+    updatedData.Updated_at = new Date(); // Menyesuaikan waktu diperbarui
+  
+    // Melakukan update di database
+    return this.prisma.invoice.update({
+      where: { ID_Invoice: id },
+      data: updatedData,
+    });
+  }
+  
+  async softDeleteInvoiceById(id: string): Promise<Invoice> {
+    // Cek apakah invoice ada
+    const invoice = await this.prisma.invoice.findUnique({
+      where: { ID_Invoice: id },
+    });
+  
+    if (!invoice) {
+      throw new HttpException('Invoice not found', HttpStatus.NOT_FOUND);
+    }
+  
+    // Melakukan soft delete dengan memperbarui field Deleted_at
+    return this.prisma.invoice.update({
+      where: { ID_Invoice: id },
+      data: {
+        Deleted_at: new Date(), // Set Deleted_at ke waktu saat ini
+      },
+    });
+  }  
 
 async createItemsInvoice(createItemsInvoice: Items_Invoice): Promise<Invoice_ItemList> {
     const { ID_Invoice, Tittle, Description, Quantity, Price } = createItemsInvoice;
@@ -956,6 +1039,33 @@ async getInvoicesSummary(status: 'All' | 'Draft' | 'Paid' | 'Sent' | 'OnHold') {
   `;
 
   return this.prisma.$queryRaw(query);
+}
+
+
+
+async findInvoiceById(id: string) {
+  return this.prisma.invoice.findUnique({
+    where: { ID_Invoice: id },
+    select: {
+      Status: true,
+      ID_Invoice: true,
+      Payment_Due: true,
+      Payment_Type: true,
+      Total_Termin: true,
+      Termin_Number: true,
+      ID_project: true,
+      Notes: true,
+      items: {  // Mengambil invoice_itemlist yang terkait
+        select: {
+          ID_ItemList :true,
+          Tittle : true,
+          Description: true,
+          Quantity: true,
+          Price: true,
+        },
+      },
+    },
+  });
 }
 
   

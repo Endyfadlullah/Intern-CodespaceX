@@ -23,7 +23,9 @@ import {
   UpdateCheckpoint,
   CreateCheckpointAttachment,
   CreateInvoice,
-  Items_Invoice
+  Items_Invoice,
+  UpdateCheckpointAttachment,
+  UpdateInvoice
 } from 'src/model/user.model';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -512,6 +514,32 @@ export class AdminController {
     }
   }
 
+  @Put('/project/checkpoint/attachment/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Update checkpoint attachment by ID',
+    description: 'Updates an attachment related to a specific checkpoint by its ID.',
+  })
+  async updateCheckpointAttachment(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCheckpointAttachment: UpdateCheckpointAttachment,
+  ) {
+    try {
+      return await this.adminService.updateCheckpointAttachmentById(
+        id,
+        updateCheckpointAttachment,
+      );
+    } catch (error) {
+      console.error(`Error updating checkpoint attachment with ID ${id}:`, error);
+      throw new HttpException(
+        'Failed to update checkpoint attachment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   @Delete('/project/checkpoint/attachment/:id/soft-delete')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
@@ -553,6 +581,48 @@ export class AdminController {
       );
     }
   }
+
+  @Put('/invoice/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Update an invoice',
+    description: 'Updates an invoice based on the provided ID and new details.',
+  })
+  @ApiResponse({ status: 200, description: 'The invoice has been successfully updated.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  async updateInvoice(
+    @Param('id') id: string,  // Mengubah tipe menjadi string
+    @Body() updateInvoiceDto: UpdateInvoice,
+  ) {
+    try {
+      return await this.adminService.updateInvoiceById(id, updateInvoiceDto);
+    } catch (error) {
+      console.error(`Error updating invoice with ID ${id}:`, error);
+      throw new HttpException('Failed to update invoice', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Delete('/invoice/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Soft delete an invoice',
+    description: 'Marks an invoice as deleted without removing it from the database.',
+  })
+  @ApiResponse({ status: 200, description: 'The invoice has been successfully soft deleted.' })
+  @ApiResponse({ status: 404, description: 'Invoice not found.' })
+  async softDeleteInvoice(@Param('id') id: string) {
+    try {
+      return await this.adminService.softDeleteInvoiceById(id);
+    } catch (error) {
+      console.error(`Error soft deleting invoice with ID ${id}:`, error);
+      throw new HttpException('Failed to soft delete invoice', HttpStatus.NOT_FOUND);
+    }
+  }
+
   @Post('/invoice/items')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
@@ -586,4 +656,30 @@ export class AdminController {
   async getInvoicesSummary(@Query('status') status: 'All' | 'Draft' | 'Paid' | 'Sent' | 'OnHold') {
     return this.adminService.getInvoicesSummary(status);
   }
+
+
+  @Get('/invoice/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Read Invoice by id',
+    description: '',
+  })
+  async readinvocebyid(@Param('id') id: string) {
+    try {
+      const invoice = await this.adminService.findInvoiceById(id);
+      if (!invoice) {
+        throw new HttpException('Invoice not found', HttpStatus.NOT_FOUND);
+      }
+      return invoice;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to retrieve invoice',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
 }
+

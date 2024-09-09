@@ -432,6 +432,21 @@ export class CreateCheckpointAttachment {
   url: string;
 }
 
+export class UpdateCheckpointAttachment {
+  @ApiProperty({
+    description: 'ID dari Checkpoint',
+    example: 1,
+    required: false, // Optional untuk update
+  })
+  ID_checkpoint?: number;
+
+  @ApiProperty({
+    description: 'URL dari file attachment di drive',
+    example: 'https://drive.example.com/attachment.png',
+    required: false, // Optional untuk update
+  })
+  url?: string;
+}
 
 export class CreateInvoice{
 
@@ -479,6 +494,51 @@ export class CreateInvoice{
     example: 'Draft',
     required: false,
     enum: Status, 
+  })
+  Status?: Status;
+}
+
+export class UpdateInvoice {
+  @ApiProperty({
+    description: 'Tanggal jatuh tempo pembayaran',
+    example: '2024-09-06T00:00:00.000Z',
+    required: false,
+  })
+  Payment_Due?: Date;
+
+  @ApiProperty({
+    description: 'Jenis pembayaran',
+    example: 'Transfer Bank',
+    required: false,
+  })
+  Payment_Type?: string;
+
+  @ApiProperty({
+    description: 'Jumlah total termin pembayaran',
+    example: 3,
+    required: false,
+  })
+  Total_Termin?: number;
+
+  @ApiProperty({
+    description: 'Nomor termin saat ini',
+    example: 1,
+    required: false,
+  })
+  Termin_Number?: number;
+
+  @ApiProperty({
+    description: 'Catatan tambahan untuk invoice',
+    example: 'Pembayaran untuk termin pertama',
+    required: false,
+  })
+  Notes?: string;
+
+  @ApiProperty({
+    description: 'Status invoice',
+    example: 'Draft',
+    enum: Status,
+    required: false,
   })
   Status?: Status;
 }
