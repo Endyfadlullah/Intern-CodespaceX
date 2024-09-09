@@ -176,7 +176,7 @@ export class AdminController {
     }
   }
 
-  @Put('/users/:id/soft-delete')
+  @Delete('/users/:id/soft-delete')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiBearerAuth()
@@ -284,7 +284,7 @@ export class AdminController {
     }
   }
 
-  @Put('/project/:id/soft-delete')
+  @Delete('/project/:id/soft-delete')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiBearerAuth()
@@ -366,7 +366,7 @@ export class AdminController {
     }
   }
 
-  @Put('/project/talent/:id/soft-delete')
+  @Delete('/project/talent/:id/soft-delete')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiBearerAuth()
@@ -451,7 +451,7 @@ export class AdminController {
     }
   }
 
-  @Put('/project/checkpoint/:id/soft-delete')
+  @Delete('/project/checkpoint/:id/soft-delete')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiBearerAuth()
@@ -512,7 +512,7 @@ export class AdminController {
     }
   }
 
-  @Put('/project/checkpoint/attachment/:id/soft-delete')
+  @Delete('/project/checkpoint/attachment/:id/soft-delete')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiBearerAuth()
@@ -581,7 +581,7 @@ export class AdminController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Read Invoice',
-    description: 'Adds a new invoice with the provided details.',
+    description: 'Retrieves a summary of invoices filtered by the specified status. Status options are All, Draft, Paid, Sent, and OnHold.',
   })
   async getInvoicesSummary(@Query('status') status: 'All' | 'Draft' | 'Paid' | 'Sent' | 'OnHold') {
     return this.adminService.getInvoicesSummary(status);
