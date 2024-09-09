@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Status } from '@prisma/client';
 
 export class RegisterUserRequest {
     @ApiProperty({
@@ -472,6 +473,14 @@ export class CreateInvoice{
     required: false,
   })
   Notes?: string;
+
+  @ApiProperty({
+    description: 'tambahkan status untuk invoice',
+    example: 'Draft',
+    required: false,
+    enum: Status, 
+  })
+  Status?: Status;
 }
 
 export class Items_Invoice {

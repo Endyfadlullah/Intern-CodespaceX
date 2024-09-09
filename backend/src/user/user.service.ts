@@ -28,6 +28,7 @@ import { User, Project, Project_Talent, Project_Checkpoint, Project_Checkpoint_A
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { Prisma } from '@prisma/client';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -870,7 +871,7 @@ async softDeleteCheckpointById(id: number) {
   }
 
   async createInvoice(createInvoice: CreateInvoice): Promise<Invoice> {
-    const { ID_project, Payment_Due, Payment_Type, Total_Termin, Termin_Number, Notes } = createInvoice;
+    const { ID_project, Payment_Due, Payment_Type, Total_Termin, Termin_Number, Notes, Status } = createInvoice;
   
     try {
       // Menghitung jumlah invoice yang sudah ada
@@ -889,6 +890,7 @@ async softDeleteCheckpointById(id: number) {
           Notes,
           Created_at: new Date(),  // Menggunakan waktu saat ini
           Updated_at: new Date(),  // Menggunakan waktu saat ini
+          Status,
         },
       });
   
@@ -918,6 +920,42 @@ async createItemsInvoice(createItemsInvoice: Items_Invoice): Promise<Invoice_Ite
         Updated_at: getAdjustedDate(),  // Set updated date
       },
     });
+}
+
+
+async getInvoicesSummary(status: 'All' | 'Draft' | 'Paid' | 'Sent' | 'OnHold') {
+  // Kondisi untuk filter status
+  const statusQuery = status === 'All' ? Prisma.sql`` : Prisma.sql`AND invoice.Status = ${status}`;
+  
+  // Membuat query SQL dinamis
+  const query = Prisma.sql`
+    SELECT 
+      invoice.ID_Invoice, 
+      invoice.Status, 
+      user.Username,
+      SUM(invoice_itemlist.Price * invoice_itemlist.Quantity) AS Amount,
+      DATE(invoice.Created_at) AS Created_at, 
+      DATE(invoice.Payment_Due) AS Payment_Due 
+    FROM 
+      Invoice invoice
+    JOIN 
+      Project project ON invoice.ID_project = project.ID_project
+    JOIN 
+      User user ON project.ID_user = user.ID_user
+    JOIN 
+      Invoice_ItemList invoice_itemlist ON invoice.ID_Invoice = invoice_itemlist.ID_Invoice
+    WHERE
+      1=1
+      ${statusQuery}
+    GROUP BY 
+      invoice.ID_Invoice, 
+      invoice.Status, 
+      user.Username,
+      DATE(invoice.Created_at),
+      DATE(invoice.Payment_Due);
+  `;
+
+  return this.prisma.$queryRaw(query);
 }
 
   

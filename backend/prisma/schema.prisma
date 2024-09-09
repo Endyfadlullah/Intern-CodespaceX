@@ -105,6 +105,13 @@ model Project_Checkpoint_Attachment {
   checkpoint              Project_Checkpoint                @relation(fields: [ID_checkpoint], references: [ID_checkpoint], name: "CheckpointAttachments")
 }
 
+enum Status {
+  Draft
+  Paid
+  Sent
+  OnHold
+}
+
 model Invoice {
   ID_Invoice              String                            @id 
   ID_project              Int
@@ -113,6 +120,7 @@ model Invoice {
   Total_Termin            Int?
   Termin_Number           Int?
   Notes                   String?
+  Status                  Status                            @default(Draft)
   Created_at              DateTime                          @default(now())
   Updated_at              DateTime                          @updatedAt
   Deleted_at              DateTime?

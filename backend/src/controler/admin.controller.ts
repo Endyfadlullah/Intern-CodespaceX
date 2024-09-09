@@ -574,4 +574,16 @@ export class AdminController {
       );
     }
   }
+
+  @Get('/invoice')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Read Invoice',
+    description: 'Adds a new invoice with the provided details.',
+  })
+  async getInvoicesSummary(@Query('status') status: 'All' | 'Draft' | 'Paid' | 'Sent' | 'OnHold') {
+    return this.adminService.getInvoicesSummary(status);
+  }
 }
