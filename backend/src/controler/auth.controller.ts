@@ -6,27 +6,26 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
-import { UserService, AdminService } from '../user/user.service';
+import { AuthService } from 'src/service/auth.service';
 import {
   ForgotPasswordResponse,
   LoginUserRequest,
   RegisterUserRequest,
   ResetPasswordResponse,
   UserResponse,
-} from 'src/model/user.model';
+} from 'src/model/app.model';
 import { WebResponse } from 'src/model/web.model';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import {
   ForgotPasswordRequest,
   ResetPasswordRequest,
-} from '../model/user.model';
+} from '../model/app.model';
 
 @ApiTags('AUTH') // Tag for user-related routes
 @Controller('/api')
 export class UserController {
   constructor(
-    private userService: UserService,
-    private adminService: AdminService, // Inject AdminService
+    private userService: AuthService,
   ) {}
 
   // User routes

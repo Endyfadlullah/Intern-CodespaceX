@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
-import { UserService, AdminService } from './user.service'; // Import AdminService
+import { AuthService } from 'src/service/auth.service';
+import { DashboardService } from 'src/service/dashboard.service';
+import { ProjectService } from 'src/service/project.service';
+import { InvoiceService } from 'src/service/invoice.service';
+import { UserService } from 'src/service/user.service';
 import { UserController } from '../controler/auth.controller';
 import { AdminController } from '../controler/admin.controller';
 import { PrismaService } from 'src/common/prisma.service';
@@ -10,8 +14,11 @@ import { CustomMailerService } from '../mailer/mailer.service';
 @Module({
   imports: [AuthModule],
   providers: [
+    AuthService,
+    DashboardService,
+    ProjectService,
+    InvoiceService,
     UserService,
-    AdminService,
     PrismaService,
     ValidationService,
     CustomMailerService,

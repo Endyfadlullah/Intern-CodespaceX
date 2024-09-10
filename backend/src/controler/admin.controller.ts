@@ -12,7 +12,10 @@ import {
   UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
-import { AdminService } from '../user/user.service';
+import { DashboardService } from 'src/service/dashboard.service';
+import { ProjectService } from 'src/service/project.service';
+import { InvoiceService } from 'src/service/invoice.service';
+import { UserService } from 'src/service/user.service';
 import {
   UpdateUser,
   CreateUser,
@@ -26,7 +29,7 @@ import {
   Items_Invoice,
   UpdateCheckpointAttachment,
   UpdateInvoice
-} from 'src/model/user.model';
+} from 'src/model/app.model';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -35,7 +38,12 @@ import { Roles } from 'src/common/auth.decorator';
 @ApiTags('Admin')
 @Controller('/api/admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly dashboardService: DashboardService,
+    private readonly projectService: ProjectService,
+    private readonly invoiceService: InvoiceService,
+    private readonly userService: UserService,
+  ) {}
 
   @Get('/dashboard/statuses')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -48,7 +56,7 @@ export class AdminController {
   })
   async getProjectStatusCounts() {
     try {
-      return await this.adminService.countProjectStatuses();
+      return await this.dashboardService.countProjectStatuses();
     } catch (error) {
       console.error('Error fetching project status counts:', error);
       throw new HttpException(
@@ -68,7 +76,7 @@ export class AdminController {
   })
   async getProject(@Query('status') status?: string) {
     try {
-      return await this.adminService.readProjectDashboard(status);
+      return await this.dashboardService.readProjectDashboard(status);
     } catch (error) {
       console.error('Error fetching project status counts:', error);
       throw new HttpException(
@@ -89,7 +97,7 @@ export class AdminController {
   })
   async getProjectbyid(@Query('ID Project') id?: number) {
     try {
-      return await this.adminService.readProjectDashboardDropdown(id);
+      return await this.dashboardService.readProjectDashboardDropdown(id);
     } catch (error) {
       console.error('Error fetching project status counts:', error);
       throw new HttpException(
@@ -109,7 +117,7 @@ export class AdminController {
   })
   async createUser(@Body() createUserRequest: CreateUser) {
     try {
-      return await this.adminService.createUser(createUserRequest);
+      return await this.userService.createUser(createUserRequest);
     } catch (error) {
       console.error('Error creating user:', error);
       throw new HttpException('Failed to create user', HttpStatus.BAD_REQUEST);
@@ -127,7 +135,7 @@ export class AdminController {
   })
   async findAll(@Query('role') role?: string) {
     try {
-      return await this.adminService.findAllUsersByRole(role);
+      return await this.userService.findAllUsersByRole(role);
     } catch (error) {
       console.error('Error fetching users:', error);
       throw new HttpException(
@@ -147,7 +155,7 @@ export class AdminController {
   })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.adminService.findUserById(id);
+      return await this.userService.findUserById(id);
     } catch (error) {
       console.error(`Error fetching user with ID ${id}:`, error);
       throw new HttpException(
@@ -171,7 +179,7 @@ export class AdminController {
     @Body() updateUserRequest: UpdateUser,
   ) {
     try {
-      return await this.adminService.updateUserById(id, updateUserRequest);
+      return await this.userService.updateUserById(id, updateUserRequest);
     } catch (error) {
       console.error(`Error updating user with ID ${id}:`, error);
       throw new HttpException('Failed to update user', HttpStatus.BAD_REQUEST);
@@ -189,7 +197,7 @@ export class AdminController {
   })
   async softDeleteUser(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.adminService.softDeleteUserById(id);
+      return await this.userService.softDeleteUserById(id);
     } catch (error) {
       console.error(`Error soft deleting user with ID ${id}:`, error);
       throw new HttpException(
@@ -209,7 +217,7 @@ export class AdminController {
   })
   async createProject(@Body() createProjectRequest: CreateProject) {
     try {
-      return await this.adminService.createProject(createProjectRequest);
+      return await this.projectService.createProject(createProjectRequest);
     } catch (error) {
       console.error('Error creating project:', error);
       throw new HttpException(
@@ -229,7 +237,7 @@ export class AdminController {
   })
   async findAllProjects() {
     try {
-      return await this.adminService.findAllProjects();
+      return await this.projectService.findAllProjects();
     } catch (error) {
       console.error('Error fetching projects:', error);
       throw new HttpException(
@@ -249,7 +257,7 @@ export class AdminController {
   })
   async findProject(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.adminService.findProjectById(id);
+      return await this.projectService.findProjectById(id);
     } catch (error) {
       console.error(`Error fetching project with ID ${id}:`, error);
       throw new HttpException(
@@ -273,7 +281,7 @@ export class AdminController {
     @Body() updateProjectRequest: UpdateProject,
   ) {
     try {
-      return await this.adminService.updateProjectById(
+      return await this.projectService.updateProjectById(
         id,
         updateProjectRequest,
       );
@@ -297,7 +305,7 @@ export class AdminController {
   })
   async softDeleteProject(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.adminService.softDeleteProjectById(id);
+      return await this.projectService.softDeleteProjectById(id);
     } catch (error) {
       console.error(`Error soft deleting project with ID ${id}:`, error);
       throw new HttpException(
@@ -317,7 +325,7 @@ export class AdminController {
   })
   async findAlluser() {
     try {
-      return await this.adminService.ReadAllTalent();
+      return await this.projectService.ReadAllTalent();
     } catch (error) {
       console.error('Error fetching project talents:', error);
       throw new HttpException(
@@ -337,7 +345,7 @@ export class AdminController {
   })
   async createProjectTalent(@Body() createProjectTalent: CreateProjectTalent) {
     try {
-      return await this.adminService.createProjectTalent(createProjectTalent);
+      return await this.projectService.createProjectTalent(createProjectTalent);
     } catch (error) {
       console.error('Error creating project talent:', error);
       throw new HttpException(
@@ -358,7 +366,7 @@ export class AdminController {
   })
   async findProjectTalent(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.adminService.findProjectTalentByProjectId(id);
+      return await this.projectService.findProjectTalentByProjectId(id);
     } catch (error) {
       console.error(`Error fetching project talent with ID ${id}:`, error);
       throw new HttpException(
@@ -379,7 +387,7 @@ export class AdminController {
   })
   async softDeleteProjectTalent(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.adminService.softDeleteProjectTalentById(id);
+      return await this.projectService.softDeleteProjectTalentById(id);
     } catch (error) {
       console.error(`Error soft deleting project talent with ID ${id}:`, error);
       throw new HttpException(
@@ -399,7 +407,7 @@ export class AdminController {
   })
   async createCheckpoint(@Body() createChekpointRequest: CreateCheckpoint) {
     try {
-      return await this.adminService.createCheckpoint(createChekpointRequest);
+      return await this.projectService.createCheckpoint(createChekpointRequest);
     } catch (error) {
       console.error('Error creating chekcpoint:', error);
       throw new HttpException('Failed to create checkpoint', HttpStatus.BAD_REQUEST);
@@ -416,7 +424,7 @@ export class AdminController {
   })
   async findCheckpoint(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.adminService.findCheckpointById(id);
+      return await this.projectService.findCheckpointById(id);
     } catch (error) {
       console.error(`Error fetching project checkpoint with ID ${id}:`, error);
       throw new HttpException(
@@ -440,7 +448,7 @@ export class AdminController {
     @Body() updateCheckpointRequest: UpdateCheckpoint,
   ) {
     try {
-      return await this.adminService.updateCheckpointById(
+      return await this.projectService.updateCheckpointById(
         id,
         updateCheckpointRequest,
       );
@@ -464,7 +472,7 @@ export class AdminController {
   })
   async softDeleteCheckpoint(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.adminService.softDeleteCheckpointById(id);
+      return await this.projectService.softDeleteCheckpointById(id);
     } catch (error) {
       console.error(`Error soft deleting checkpoint with ID ${id}:`, error);
       throw new HttpException(
@@ -484,7 +492,7 @@ export class AdminController {
   })
   async createCheckpointAttachment(@Body() createCheckpointAttachment: CreateCheckpointAttachment) {
     try {
-      return await this.adminService.createCheckpointAttachment(createCheckpointAttachment);
+      return await this.projectService.createCheckpointAttachment(createCheckpointAttachment);
     } catch (error) {
       console.error('Error creating checkpoint attachment:', error);
       throw new HttpException(
@@ -504,7 +512,7 @@ export class AdminController {
   })
   async findCheckpointAttachments(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.adminService.findCheckpointAttachmentsById(id);
+      return await this.projectService.findCheckpointAttachmentsById(id);
     } catch (error) {
       console.error(`Error fetching attachments for checkpoint with ID ${id}:`, error);
       throw new HttpException(
@@ -527,7 +535,7 @@ export class AdminController {
     @Body() updateCheckpointAttachment: UpdateCheckpointAttachment,
   ) {
     try {
-      return await this.adminService.updateCheckpointAttachmentById(
+      return await this.projectService.updateCheckpointAttachmentById(
         id,
         updateCheckpointAttachment,
       );
@@ -550,7 +558,7 @@ export class AdminController {
   })
   async softDeleteCheckpointAttachment(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.adminService.softDeleteCheckpointAttachmentById(id);
+      return await this.projectService.softDeleteCheckpointAttachmentById(id);
     } catch (error) {
       console.error(`Error soft deleting checkpoint attachment with ID ${id}:`, error);
       throw new HttpException(
@@ -572,7 +580,7 @@ export class AdminController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async createInvoice(@Body() createInvoice: CreateInvoice) {
     try {
-      return await this.adminService.createInvoice(createInvoice);
+      return await this.invoiceService.createInvoice(createInvoice);
     } catch (error) {
       console.error('Error creating invoice:', error);
       throw new HttpException(
@@ -597,7 +605,7 @@ export class AdminController {
     @Body() updateInvoiceDto: UpdateInvoice,
   ) {
     try {
-      return await this.adminService.updateInvoiceById(id, updateInvoiceDto);
+      return await this.invoiceService.updateInvoiceById(id, updateInvoiceDto);
     } catch (error) {
       console.error(`Error updating invoice with ID ${id}:`, error);
       throw new HttpException('Failed to update invoice', HttpStatus.BAD_REQUEST);
@@ -616,7 +624,7 @@ export class AdminController {
   @ApiResponse({ status: 404, description: 'Invoice not found.' })
   async softDeleteInvoice(@Param('id') id: string) {
     try {
-      return await this.adminService.softDeleteInvoiceById(id);
+      return await this.invoiceService.softDeleteInvoiceById(id);
     } catch (error) {
       console.error(`Error soft deleting invoice with ID ${id}:`, error);
       throw new HttpException('Failed to soft delete invoice', HttpStatus.NOT_FOUND);
@@ -635,7 +643,7 @@ export class AdminController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async createInvoiceItems(@Body() Items_Invoice: Items_Invoice) {
     try {
-      return await this.adminService.createItemsInvoice(Items_Invoice);
+      return await this.invoiceService.createItemsInvoice(Items_Invoice);
     } catch (error) {
       console.error('Error creating invoice:', error);
       throw new HttpException(
@@ -654,7 +662,7 @@ export class AdminController {
     description: 'Retrieves a summary of invoices filtered by the specified status. Status options are All, Draft, Paid, Sent, and OnHold.',
   })
   async getInvoicesSummary(@Query('status') status: 'All' | 'Draft' | 'Paid' | 'Sent' | 'OnHold') {
-    return this.adminService.getInvoicesSummary(status);
+    return this.invoiceService.getInvoicesSummary(status);
   }
 
 
@@ -668,7 +676,7 @@ export class AdminController {
   })
   async readinvocebyid(@Param('id') id: string) {
     try {
-      const invoice = await this.adminService.findInvoiceById(id);
+      const invoice = await this.invoiceService.findInvoiceById(id);
       if (!invoice) {
         throw new HttpException('Invoice not found', HttpStatus.NOT_FOUND);
       }
