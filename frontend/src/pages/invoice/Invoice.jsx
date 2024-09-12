@@ -17,9 +17,6 @@ import ViewInvoice from './ViewInvoice';
 
 const Invoice = () => {
   const navigate = useNavigate();
-  const handleItemClick = (path) => {
-    navigate(path);
-  };
 
   const ITEMS = [
     { label: "Draft" },
@@ -108,6 +105,11 @@ const Invoice = () => {
     }
   };
 
+  const handleItemClick = (path, mode = 'create') => {
+    navigate(path, { state: { mode } }); // Pass mode as 'create' or 'edit'
+  };
+  
+
   return (
     <div style={{ padding: '30px' }}>
       <h1 style={{ marginBottom: '40px', fontSize: '28px' }}>Invoice</h1>
@@ -146,7 +148,7 @@ const Invoice = () => {
           </StatefulPopover>
         </div>
 
-        <Button startEnhancer={() => <FiPlus size={24} title="" />} onClick={() => handleItemClick( "/admin/addInvoice")}>
+        <Button startEnhancer={() => <FiPlus size={24} title="" />} onClick={() => handleItemClick('/admin/addInvoice', 'Create')}>
           Add New
         </Button>
 
@@ -390,7 +392,7 @@ const Invoice = () => {
           {(row) => (
             <>
               <Button
-                onClick={() => alert("Clicked edit for row: " + JSON.stringify(row))}
+                onClick={() => handleItemClick('/admin/addInvoice', 'Edit')}
                 kind={KIND.tertiary}
                 size={SIZE.mini}
                 overrides={{

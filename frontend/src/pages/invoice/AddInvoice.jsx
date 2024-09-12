@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, KIND, SIZE } from "baseui/button";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Button, KIND, SIZE, SHAPE } from "baseui/button";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { Select } from "baseui/select";
 import { DatePicker } from "baseui/datepicker";
@@ -9,9 +9,15 @@ import AddTerm from './AddTerm';
 import { Checkbox } from "baseui/checkbox";
 import { Edit2, Trash } from 'iconsax-react';
 import { FiPlus } from "react-icons/fi";
+import AddItem from './AddItem';
+import { Textarea } from "baseui/textarea";
+import PreviewInvoice from './PreviewInvoice';
 
 const AddInvoice = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const mode = location.state?.mode || 'Create';
+
     const handleItemClick = (path) => {
         navigate(path);
     };
@@ -31,7 +37,6 @@ const AddInvoice = () => {
     const [valuedate, setValuedate] = useState([new Date("2024-10-31T17:00:00.000Z")]);
     const [valuetermin, setValuetermin] = useState("");
     const [isTermModalOpen, setIsTermModalOpen] = useState(false);
-    // const [isItemModalOpen, setIsItemModalOpen] = useState(false);
     const [isTermSelected, setIsTermSelected] = useState(false);
 
     const openTermModal = () => {
@@ -51,9 +56,26 @@ const AddInvoice = () => {
 
     const [checked, setChecked] = React.useState(false);
 
+
+    const [isOpenitem, setIsOpenitem] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
+
+    function openModalitem(isEdit = false) {
+        setIsEditMode(isEdit);
+        setIsOpenitem(true);
+    }
+
+    function closeModalitem() {
+        setIsOpenitem(false);
+    }
+
+    const [showPreview, setShowPreview] = useState(false);
+
+    const [StatusType, setStatusType] = useState([]);
+
     return (
-        <div style={{ display: 'flex', padding: '30px' }}>
-            <div style={{ width: '41%', height: '100%' }}>
+        <div style={{ display: 'flex', }}>
+            <div style={{ width: '42%', height: '100%', marginTop: '30px', marginLeft: '30px', paddingRight: '30px' }}>
                 <div style={{ display: 'flex', marginBottom: '32px' }}>
                     <Button
                         onClick={() => handleItemClick("/admin/invoice")}
@@ -69,7 +91,45 @@ const AddInvoice = () => {
                     >
                         <IoIosArrowRoundBack size={35} />
                     </Button>
-                    <h1 style={{ fontSize: '28px', marginLeft: '10px' }}>Create Invoice</h1>
+                    <h1 style={{ fontSize: '28px', marginLeft: '10px' }}>{mode === 'Edit' ? 'Edit Invoice' : 'Create Invoice'}</h1>
+                </div>
+
+
+
+
+
+
+                <div style={{ padding: '10px' }}>
+                    <h2 style={{ paddingBottom: '16px' }}>Status</h2>
+                    <Select
+                        backspaceRemoves={false}
+                        clearable={false}
+                        closeOnSelect={true}
+                        deleteRemoves={false}
+                        escapeClearsValue={false}
+                        options={[
+                            {
+                                label: "Draft",
+                                id: "#F0F8FF",
+                            },
+                            {
+                                label: "Sent",
+                                id: "#F0F8FF",
+                            },
+                            {
+                                label: "Paid",
+                                id: "#FAEBD7",
+                            },
+                            {
+                                label: "On hold",
+                                id: "#FAEBD7",
+                            },
+                        ]}
+                        value={StatusType}
+                        searchable={false}
+                        placeholder="status"
+                        onChange={(params) => setStatusType(params.value)}
+                    />
                 </div>
                 <div style={{ padding: '10px' }}>
                     <h2 style={{ paddingBottom: '16px' }}>Invoice Details</h2>
@@ -185,6 +245,12 @@ const AddInvoice = () => {
                             onChange={params => setValueproject(params.value)}
                         />
                     </div>
+
+
+
+
+
+
                     <h2 style={{ paddingBottom: '16px' }}>Item List</h2>
                     <div style={{ paddingBottom: '16px' }}>
                         <div style={{ marginBottom: '16px' }}>
@@ -221,6 +287,7 @@ const AddInvoice = () => {
                                 />
                                 <h2 style={{ paddingLeft: '15px' }}>Development</h2>
                                 <Button
+                                    onClick={() => openModalitem(true)}
                                     kind={KIND.tertiary}
                                     size={SIZE.mini}
                                     overrides={{
@@ -235,7 +302,7 @@ const AddInvoice = () => {
                                     <Edit2 variant="Bold" color='#979899' />
                                 </Button>
                             </div>
-                            <div style={{ display: 'flex', paddingLeft: '40px', paddingRight: '40px', paddingTop: '12px' }}>
+                            <div style={{ display: 'flex', paddingLeft: '40px', paddingTop: '12px' }}>
                                 <div style={{ marginRight: '8px' }}>
                                     <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Description</p>
                                     <Input
@@ -322,24 +389,99 @@ const AddInvoice = () => {
                                 </div>
                             )}
                         </div>
-                        <Button 
-                        overrides={{
-                            Root: {
-                                style: {
-                                    height: '40px',
-                                    gap: '5px'
+                        <Button
+                            onClick={() => openModalitem(false)}
+                            overrides={{
+                                Root: {
+                                    style: {
+                                        height: '40px',
+                                        gap: '5px'
+                                    },
                                 },
-                            },
-                        }}
+                            }}
                         >
                             <FiPlus />
                             Add Item
                         </Button>
+                        <AddItem isOpen={isOpenitem} onClose={closeModalitem} isEditMode={isEditMode} />
                     </div>
                 </div>
+
+
+
+
+
+                <div style={{ padding: '10px' }}>
+                    <h2 style={{ paddingBottom: '16px' }}>Notes</h2>
+                    <Textarea
+                        placeholder="Notes"
+                        clearOnEscape
+                        overrides={{
+                            Root: {
+                                style: {
+                                    height: '170px',
+                                },
+                            },
+                        }}
+                    />
+                </div>
+
+                <div style={{ padding: '10px', display: 'flex', gap: '10px' }}>
+
+                    <Button
+                        onClick={() => setShowPreview(true)}
+                        kind={KIND.secondary}
+                        shape={SHAPE.pill}
+                        overrides={{
+                            Root: {
+                                style: {
+                                    height: '40px',
+                                    gap: '5px',
+                                    color: '#FFFFFF',
+                                    background: '#979899',
+                                    ':hover': {
+                                        backgroundColor: '#EEEEEE',
+                                        color: 'black',
+                                    },
+                                },
+                            },
+                        }}
+                    >
+                        Send Invoice
+                    </Button>
+                    <Button
+                        onClick={() => setShowPreview(false)}
+                        kind={KIND.secondary}
+                        shape={SHAPE.pill}
+                        overrides={{
+                            Root: {
+                                style: {
+                                    height: '40px',
+                                },
+                            },
+                        }}
+                    >
+                        Save as Draft
+                    </Button>
+                </div>
             </div>
-            <div style={{ width: '59%', height: '100%', background: '#EEEEEE' }}>
-                <h1>Invoice Preview</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+            <div style={{ width: '58%', height: 'auto', background: '#EEEEEE', padding: '65px' }}>
+                {/* <Skeleton width="600px" height="800px" animation /> */}
+                <div style={{ margin: '30px', background: '#FFFFFF', height: '100vh', width: '552px', borderRadius: '8px', padding: '20px' }}>
+                    {showPreview && <PreviewInvoice />}
+                </div>
             </div>
         </div>
     );

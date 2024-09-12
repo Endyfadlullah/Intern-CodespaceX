@@ -32,7 +32,7 @@ const AdminPanel = () => {
                 </div>
                 <div className='submain'>
                     <Routes>
-                        <Route path="*" element={<Invoice />}/>
+                        {/* <Route path="*" element={<Invoice />}/> */}
                         <Route path="invoice" element={<Invoice />}/>
                         <Route path="addInvoice" element={<AddInvoice />}/>
                     </Routes>
