@@ -7,7 +7,8 @@ import { Notification  } from 'iconsax-react';
 import { Routes, Route } from 'react-router-dom';
 import Invoice from './invoice/Invoice';
 import AddInvoice from './invoice/AddInvoice';
-import user from '../image/Filled.jpg'
+import profil from '../image/Filled.jpg'
+import User from './user/User';
 
 
 const AdminPanel = () => {
@@ -27,7 +28,7 @@ const AdminPanel = () => {
                     <Avatar
                         name="Jane Doe"
                         style={{ width: '36px', height: '36px' }}
-                        src={user}
+                        src={profil}
                     />
                 </div>
                 <div className='submain'>
@@ -35,6 +36,7 @@ const AdminPanel = () => {
                         {/* <Route path="*" element={<Invoice />}/> */}
                         <Route path="invoice" element={<Invoice />}/>
                         <Route path="addInvoice" element={<AddInvoice />}/>
+                        <Route path="user" element={<User />}/>
                     </Routes>
                 </div>
             </div>

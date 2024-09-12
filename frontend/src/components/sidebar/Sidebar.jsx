@@ -89,7 +89,7 @@ function Sidebar() {
           <span>Invoice</span>
         </SidebarItem>
         <SectionTitle>Settings</SectionTitle>
-        <SidebarItem $active={activeItem === "User"} onClick={() => handleItemClick("User", "/admin/User")}>
+        <SidebarItem $active={activeItem === "User"} onClick={() => handleItemClick("User", "/admin/user")}>
           <IconWrapper><IoPeopleSharp /></IconWrapper>
           <span>User</span>
         </SidebarItem>
