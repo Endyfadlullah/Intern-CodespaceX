@@ -1,35 +1,38 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, KIND } from "baseui/button";
+import { Button, KIND, SIZE } from "baseui/button";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { Select } from "baseui/select";
 import { DatePicker } from "baseui/datepicker";
 import { Input } from "baseui/input";
 import AddTerm from './AddTerm';
-
+import { Checkbox } from "baseui/checkbox";
+import { Edit2, Trash } from 'iconsax-react';
+import { FiPlus } from "react-icons/fi";
 
 const AddInvoice = () => {
-
-    
     const navigate = useNavigate();
     const handleItemClick = (path) => {
         navigate(path);
     };
-    const [value, setValue] = React.useState([
+
+    const [value, setValue] = useState([
         {
             label: "|",
             id: "#F0F8FF"
         }
     ]);
-
-    const [valuedate, setValuedate] = React.useState([
-        new Date("2024-10-31T17:00:00.000Z")
+    const [valueproject, setValueproject] = useState([
+        {
+            label: "|",
+            id: "#F0F8FF"
+        }
     ]);
-
-    const [valuetermin, setValuetermin] = React.useState("");
-
-
+    const [valuedate, setValuedate] = useState([new Date("2024-10-31T17:00:00.000Z")]);
+    const [valuetermin, setValuetermin] = useState("");
     const [isTermModalOpen, setIsTermModalOpen] = useState(false);
+    // const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+    const [isTermSelected, setIsTermSelected] = useState(false);
 
     const openTermModal = () => {
         setIsTermModalOpen(true);
@@ -38,6 +41,16 @@ const AddInvoice = () => {
     const closeTermModal = () => {
         setIsTermModalOpen(false);
     };
+
+    const handleTermSelect = (selectedTerm) => {
+        setValuetermin(selectedTerm);
+        setIsTermSelected(true);
+        setIsTermModalOpen(false);
+    };
+
+
+    const [checked, setChecked] = React.useState(false);
+
     return (
         <div style={{ display: 'flex', padding: '30px' }}>
             <div style={{ width: '41%', height: '100%' }}>
@@ -65,7 +78,7 @@ const AddInvoice = () => {
                         <Select
                             backspaceRemoves={false}
                             clearable={false}
-                            closeOnSelect={false}
+                            closeOnSelect={true}
                             deleteRemoves={false}
                             escapeClearsValue={false}
                             options={[
@@ -102,40 +115,234 @@ const AddInvoice = () => {
                             displayValueAtRangeIndex={0}
                         />
                     </div>
-                    <div style={{ paddingBottom: '16px' }}>
+                    <div style={{ paddingBottom: '16px', marginBottom: '32px' }}>
                         <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Payment Terms</p>
-                        <Input
-                            value={valuetermin}
-                            onChange={e => setValuetermin(e.target.value)}
-                            readOnly
-                            clearOnEscape
+
+                        {isTermSelected && (
+                            <Input
+                                value={valuetermin}
+                                onChange={(e) => setValuetermin(e.target.value)}
+                                readOnly
+                                clearOnEscape
+                                overrides={{
+                                    Root: {
+                                        style: {
+                                            marginBottom: "10px",
+                                        },
+                                    },
+                                }}
+                            />
+                        )}
+                        <Button
+                            onClick={openTermModal}
                             overrides={{
                                 Root: {
-                                  style: {
-                                    marginBottom: '10px'
-                                  },
+                                    style: {
+                                        fontSize: '14px',
+                                        fontWeight: '600',
+                                        height: '40px'
+                                    },
                                 },
-                              }}
+                            }}
+                        >
+                            Choose Payment Term
+                        </Button>
+                        <AddTerm
+                            isOpen={isTermModalOpen}
+                            onClose={closeTermModal}
+                            onSaveTerm={handleTermSelect}
                         />
-                        <Button onClick={openTermModal}
+                    </div>
+                    <h2 style={{ paddingBottom: '16px' }}>Project</h2>
+                    <div style={{ paddingBottom: '16px', marginBottom: '32px' }}>
+                        <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Project Name</p>
+                        <Select
+                            backspaceRemoves={false}
+                            clearable={false}
+                            closeOnSelect={true}
+                            deleteRemoves={false}
+                            escapeClearsValue={false}
+                            options={[
+                                {
+                                    label: "",
+                                    id: "#F0F8FF"
+                                },
+                                {
+                                    label: "AliceBlue",
+                                    id: "#F0F8FF"
+                                },
+                                {
+                                    label: "AntiqueWhite",
+                                    id: "#FAEBD7"
+                                },
+                            ]}
+                            value={valueproject}
+                            onBlurResetsInput={false}
+                            onCloseResetsInput={false}
+                            onSelectResetsInput={false}
+                            openOnClick={false}
+                            placeholder="Select color"
+                            onChange={params => setValueproject(params.value)}
+                        />
+                    </div>
+                    <h2 style={{ paddingBottom: '16px' }}>Item List</h2>
+                    <div style={{ paddingBottom: '16px' }}>
+                        <div style={{ marginBottom: '16px' }}>
+                            <div style={{ display: 'flex' }}>
+                                <Checkbox
+                                    checked={checked}
+                                    onChange={e => setChecked(e.target.checked)}
+                                    overrides={{
+                                        Root: {
+                                            style: {
+                                                borderRadius: '4px',
+                                                borderWidth: '1px',
+                                                borderColor: '#D1D5DB',
+                                                backgroundColor: checked ? '#E0E0E0' : 'transparent',  // Background color when checked
+                                            },
+                                        },
+                                        Checkmark: {
+                                            style: {
+                                                borderRadius: '4px',
+                                                borderWidth: '1px',
+                                                borderColor: checked ? '#4CAF50' : '#D1D5DB',  // Border color when checked
+                                                backgroundColor: checked ? '#4CAF50' : 'transparent', // Background color when checked
+                                            },
+                                        },
+                                        Toggle: {
+                                            style: {
+                                                borderRadius: '4px',
+                                                borderWidth: '1px',
+                                                borderColor: checked ? '#4CAF50' : '#D1D5DB', // Border color when checked
+                                                backgroundColor: checked ? '#4CAF50' : 'transparent', // Background color when checked
+                                            },
+                                        },
+                                    }}
+                                />
+                                <h2 style={{ paddingLeft: '15px' }}>Development</h2>
+                                <Button
+                                    kind={KIND.tertiary}
+                                    size={SIZE.mini}
+                                    overrides={{
+                                        Root: {
+                                            style: {
+                                                padding: '0',
+                                                marginLeft: '15px'
+                                            },
+                                        },
+                                    }}
+                                >
+                                    <Edit2 variant="Bold" color='#979899' />
+                                </Button>
+                            </div>
+                            <div style={{ display: 'flex', paddingLeft: '40px', paddingRight: '40px', paddingTop: '12px' }}>
+                                <div style={{ marginRight: '8px' }}>
+                                    <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Description</p>
+                                    <Input
+                                        value={"Hosting"}
+                                        onChange={(e) => setValuetermin(e.target.value)}
+                                        readOnly
+                                        clearOnEscape
+                                        overrides={{
+                                            Root: {
+                                                style: {
+                                                    width: '216px'
+                                                },
+                                            },
+                                        }}
+                                    />
+                                </div>
+                                <div style={{ marginRight: '8px' }}>
+                                    <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Quantity</p>
+                                    <Input
+                                        value={"1"}
+                                        onChange={(e) => setValuetermin(e.target.value)}
+                                        readOnly
+                                        clearOnEscape
+                                        overrides={{
+                                            Root: {
+                                                style: {
+                                                    width: '68px'
+                                                },
+                                            },
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Price</p>
+                                    <Input
+                                        value={"Rp. 1000000.00"}
+                                        onChange={(e) => setValuetermin(e.target.value)}
+                                        readOnly
+                                        clearOnEscape
+                                        overrides={{
+                                            Root: {
+                                                style: {
+                                                    heigth: '40px'
+                                                },
+                                            },
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            {checked && (
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
+                                    <Button
+                                        kind={KIND.secondary}
+                                        overrides={{
+                                            Root: {
+                                                style: {
+                                                    height: '40px',
+                                                },
+                                            },
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        kind={KIND.secondary}
+                                        overrides={{
+                                            Root: {
+                                                style: {
+                                                    height: '40px',
+                                                    gap: '5px',
+                                                    color: '#CC4100',
+                                                    background: '#FFEEEB',
+                                                    ':hover': {
+                                                        backgroundColor: '#CC4100',
+                                                        color: '#FFFFFF',
+                                                    },
+                                                },
+                                            },
+                                        }}
+                                    >
+                                        <Trash size="16" />
+                                        Delete
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                        <Button 
                         overrides={{
                             Root: {
-                              style: {
-                                fontSize:'14px',
-                                fontWeight:'600'
-                              },
+                                style: {
+                                    height: '40px',
+                                    gap: '5px'
+                                },
                             },
-                          }}
-                        >Choose Payment Term</Button>
-                        <AddTerm isOpen={isTermModalOpen} onClose={closeTermModal} />
+                        }}
+                        >
+                            <FiPlus />
+                            Add Item
+                        </Button>
                     </div>
                 </div>
             </div>
             <div style={{ width: '59%', height: '100%', background: '#EEEEEE' }}>
-                <h1>jhsafh</h1>
+                <h1>Invoice Preview</h1>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default AddInvoice
+export default AddInvoice;

@@ -1,0 +1,40 @@
+.counter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 140px;
+    height: 48px;
+    padding: 10px;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .number {
+    font-size: 16px;
+    font-weight: 500;
+    margin-right: 10px;
+  }
+  
+  .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .arrow {
+    background: none;
+    border: none;
+    font-size: 10px;
+    color: #5E5E5E;
+    cursor: pointer;
+  }
+  
+  .arrow.up {
+    margin-bottom: 5px;
+  }
+  
+  .arrow:hover {
+    color: #000;
+  }
+  
