@@ -12,7 +12,7 @@ import { FiPlus } from "react-icons/fi";
 import { Tag, SIZE } from 'baseui/tag';
 import { Edit2, CloseSquare } from 'iconsax-react';
 import ViewInvoice from './ViewInvoice';
-
+import NoDataInvoice from './NoDataInvoice';
 
 
 const Invoice = () => {
@@ -54,10 +54,10 @@ const Invoice = () => {
   };
 
   const data = [
-    ["INV-23923", "Darft", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-    ["INV-23923", "Paid", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-    ["INV-23923", "Sent", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-    ["INV-23923", "On Hold", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+    // ["INV-23923", "Darft", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+    // ["INV-23923", "Paid", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+    // ["INV-23923", "Sent", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+    // ["INV-23923", "On Hold", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
   ];
 
   const getStatusTag = (status) => {
@@ -154,6 +154,11 @@ const Invoice = () => {
 
       </div>
 
+
+
+      {data.length === 0 ? (
+        <NoDataInvoice />
+      ) : (
 
       <TableBuilder data={data}>
         <TableBuilderColumn header={
@@ -425,6 +430,7 @@ const Invoice = () => {
           )}
         </TableBuilderColumn>
       </TableBuilder>
+      )}
 
       {isModalOpen && (
         <ViewInvoice
