@@ -6,7 +6,7 @@ import { Input } from "baseui/input";
 import { Button, KIND, SHAPE } from "baseui/button";
 import { FiPlus } from "react-icons/fi";
 import { CloseCircle } from 'iconsax-react';
-import Counter from './Counter/Counter';
+import Counter from '../../components/Counter/Counter';
 
 
 const AddItem = ({ isOpen, onClose, isEditMode, onSave }) => {

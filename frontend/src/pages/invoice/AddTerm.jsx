@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter, ModalButton } from "baseui/modal";
 import { Select } from "baseui/select";
-import Counter from "./Counter/Counter";
+import Counter from "../../components/Counter/Counter";
 import { KIND } from "baseui/button";
 
 const AddTerm = ({ isOpen, onClose, onSaveTerm }) => {
@@ -13,6 +13,10 @@ const AddTerm = ({ isOpen, onClose, onSaveTerm }) => {
     }
     onClose();
   };
+
+  const [totalTermin, setTotalTermin] = useState(0);
+const [terminNumber, setTerminNumber] = useState(0);
+
 
   return (
     <Modal 
@@ -61,11 +65,11 @@ const AddTerm = ({ isOpen, onClose, onSaveTerm }) => {
           <div style={{ display: "flex", gap: "10px", marginTop: "24px" }}>
             <div>
               <p style={{ fontSize: "14px", fontWeight: "600", marginBottom: "10px" }}>Total Termin</p>
-              <Counter />
+              <Counter value={totalTermin} onChange={(newValue) => setTotalTermin(newValue)} />
             </div>
             <div>
               <p style={{ fontSize: "14px", fontWeight: "600", marginBottom: "10px" }}>Termin Number</p>
-              <Counter />
+              <Counter value={terminNumber} onChange={(newValue) => setTerminNumber(newValue)} />
             </div>
           </div>
         )}
