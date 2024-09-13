@@ -1,25 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
+import { FaChevronUp, FaChevronDown } from "react-icons/fa6";
 import "./Counter.css";
-import { FaChevronUp } from "react-icons/fa6";
-import { FaChevronDown } from "react-icons/fa6";
 
-const Counter = () => {
-  const [count, setCount] = useState(0);
-
+const Counter = ({ value, onChange }) => {
   const increment = () => {
-    setCount(count + 1);
+    onChange(value + 1);
   };
 
   const decrement = () => {
-    setCount(count - 1);
+    if (value > 0) {
+      onChange(value - 1);
+    }
   };
 
   return (
     <div className="counter">
-      <span className="number">{count}</span>
+      <span className="number">{value}</span>
       <div className="controls">
-        <button className="arrow up" onClick={increment}><FaChevronUp/></button>
-        <button className="arrow down" onClick={decrement}><FaChevronDown/></button>
+        <button className="arrow up" onClick={increment}><FaChevronUp /></button>
+        <button className="arrow down" onClick={decrement}><FaChevronDown /></button>
       </div>
     </div>
   );

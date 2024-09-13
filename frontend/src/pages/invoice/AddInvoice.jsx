@@ -34,7 +34,7 @@ const AddInvoice = () => {
             id: "#F0F8FF"
         }
     ]);
-    const [valuedate, setValuedate] = useState([new Date("2024-10-31T17:00:00.000Z")]);
+    const [valuedate, setValuedate] = useState([new Date()]);
     const [valuetermin, setValuetermin] = useState("");
     const [isTermModalOpen, setIsTermModalOpen] = useState(false);
     const [isTermSelected, setIsTermSelected] = useState(false);
@@ -54,9 +54,6 @@ const AddInvoice = () => {
     };
 
 
-    const [checked, setChecked] = React.useState(false);
-
-
     const [isOpenitem, setIsOpenitem] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
 
@@ -72,6 +69,30 @@ const AddInvoice = () => {
     const [showPreview, setShowPreview] = useState(false);
 
     const [StatusType, setStatusType] = useState([]);
+
+
+    const [items, setItems] = useState([]);
+    const [checkedItems, setCheckedItems] = useState([]);
+
+    // Function to handle saving item from modal
+    const saveItemData = (newTitle, newDescriptions) => {
+        // Add new item to the list of items
+        setItems([...items, { title: newTitle, descriptions: newDescriptions }]);
+      };
+
+
+      const handleDelete = () => {
+        setItems(items.filter((_, index) => !checkedItems.includes(index)));
+        setCheckedItems([]); // Clear checked items after delete
+      };
+    
+      const handleCheckboxChange = (itemIndex, isChecked) => {
+        if (isChecked) {
+            setCheckedItems([...checkedItems, itemIndex]); // Tambahkan index item
+          } else {
+            setCheckedItems(checkedItems.filter(index => index !== itemIndex)); // Hapus index item
+          }
+      };
 
     return (
         <div style={{ display: 'flex', }}>
@@ -254,107 +275,117 @@ const AddInvoice = () => {
                     <h2 style={{ paddingBottom: '16px' }}>Item List</h2>
                     <div style={{ paddingBottom: '16px' }}>
                         <div style={{ marginBottom: '16px' }}>
-                            <div style={{ display: 'flex' }}>
-                                <Checkbox
-                                    checked={checked}
-                                    onChange={e => setChecked(e.target.checked)}
-                                    overrides={{
-                                        Root: {
-                                            style: {
-                                                borderRadius: '4px',
-                                                borderWidth: '1px',
-                                                borderColor: '#D1D5DB',
-                                                backgroundColor: checked ? '#E0E0E0' : 'transparent',  // Background color when checked
-                                            },
-                                        },
-                                        Checkmark: {
-                                            style: {
-                                                borderRadius: '4px',
-                                                borderWidth: '1px',
-                                                borderColor: checked ? '#4CAF50' : '#D1D5DB',  // Border color when checked
-                                                backgroundColor: checked ? '#4CAF50' : 'transparent', // Background color when checked
-                                            },
-                                        },
-                                        Toggle: {
-                                            style: {
-                                                borderRadius: '4px',
-                                                borderWidth: '1px',
-                                                borderColor: checked ? '#4CAF50' : '#D1D5DB', // Border color when checked
-                                                backgroundColor: checked ? '#4CAF50' : 'transparent', // Background color when checked
-                                            },
-                                        },
-                                    }}
-                                />
-                                <h2 style={{ paddingLeft: '15px' }}>Development</h2>
-                                <Button
-                                    onClick={() => openModalitem(true)}
-                                    kind={KIND.tertiary}
-                                    size={SIZE.mini}
-                                    overrides={{
-                                        Root: {
-                                            style: {
-                                                padding: '0',
-                                                marginLeft: '15px'
-                                            },
-                                        },
-                                    }}
-                                >
-                                    <Edit2 variant="Bold" color='#979899' />
-                                </Button>
-                            </div>
-                            <div style={{ display: 'flex', paddingLeft: '40px', paddingTop: '12px' }}>
-                                <div style={{ marginRight: '8px' }}>
-                                    <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Description</p>
-                                    <Input
-                                        value={"Hosting"}
-                                        onChange={(e) => setValuetermin(e.target.value)}
-                                        readOnly
-                                        clearOnEscape
-                                        overrides={{
-                                            Root: {
-                                                style: {
-                                                    width: '216px'
+                            {items.map((itemData, itemIndex) => (
+                                <div key={itemIndex} style={{marginBottom:'16px'}}>
+                                    <div style={{ display: 'flex' }}>
+                                        <Checkbox
+                                            checked={checkedItems.includes(itemIndex)}
+                                            onChange={e => handleCheckboxChange(itemIndex, e.target.checked)}
+                                            overrides={{
+                                                Root: {
+                                                  style: {
+                                                    borderRadius: '4px',
+                                                    borderWidth: '1px',
+                                                    borderColor: checkedItems.includes(itemIndex) ? '#4CAF50' : '#D1D5DB', // Border color when checked
+                                                    backgroundColor: checkedItems.includes(itemIndex) ? '#E0E0E0' : 'transparent', // Background color when checked
+                                                  },
                                                 },
-                                            },
-                                        }}
-                                    />
-                                </div>
-                                <div style={{ marginRight: '8px' }}>
-                                    <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Quantity</p>
-                                    <Input
-                                        value={"1"}
-                                        onChange={(e) => setValuetermin(e.target.value)}
-                                        readOnly
-                                        clearOnEscape
-                                        overrides={{
-                                            Root: {
-                                                style: {
-                                                    width: '68px'
+                                                Checkmark: {
+                                                  style: {
+                                                    borderRadius: '4px',
+                                                    borderWidth: '1px',
+                                                    borderColor: checkedItems.includes(itemIndex) ? '#4CAF50' : '#D1D5DB',  // Border color when checked
+                                                    backgroundColor: checkedItems.includes(itemIndex) ? '#4CAF50' : 'transparent', // Background color when checked
+                                                  },
                                                 },
-                                            },
-                                        }}
-                                    />
-                                </div>
-                                <div>
-                                    <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Price</p>
-                                    <Input
-                                        value={"Rp. 1000000.00"}
-                                        onChange={(e) => setValuetermin(e.target.value)}
-                                        readOnly
-                                        clearOnEscape
-                                        overrides={{
-                                            Root: {
-                                                style: {
-                                                    heigth: '40px'
+                                                Toggle: {
+                                                  style: {
+                                                    borderRadius: '4px',
+                                                    borderWidth: '1px',
+                                                    borderColor: checkedItems.includes(itemIndex) ? '#4CAF50' : '#D1D5DB', // Border color when checked
+                                                    backgroundColor: checkedItems.includes(itemIndex) ? '#4CAF50' : 'transparent', // Background color when checked
+                                                  },
                                                 },
-                                            },
-                                        }}
-                                    />
+                                              }}
+                                        />
+                                        <h2 style={{ paddingLeft: '15px' }}>{itemData.title}</h2>
+                                        <Button
+                                            onClick={() => openModalitem(true)}
+                                            kind={KIND.tertiary}
+                                            size={SIZE.mini}
+                                            overrides={{
+                                                Root: {
+                                                    style: {
+                                                        padding: '0',
+                                                        marginLeft: '15px'
+                                                    },
+                                                },
+                                            }}
+                                        >
+                                            <Edit2 variant="Bold" color='#979899' />
+                                        </Button>
+                                    </div>
+                                    {itemData.descriptions.map((desc, index) => (
+                                        <div key={index} style={{ display: 'flex', paddingLeft: '40px', paddingTop: '12px' }}>
+                                            <div  style={{ marginRight: '8px' }}>
+                                                <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Description</p>
+                                                <Input
+                                                    value={desc.description}
+                                                    onChange={(e) => setValuetermin(e.target.value)}
+                                                    readOnly
+                                                    clearOnEscape
+                                                    overrides={{
+                                                        Root: {
+                                                            style: {
+                                                                width: '216px'
+                                                            },
+                                                        },
+                                                    }}
+                                                />
+                                            </div>
+                                            <div style={{ marginRight: '8px' }}>
+                                                <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Quantity</p>
+                                                <Input
+                                                    value={desc.quantity}
+                                                    onChange={(e) => setValuetermin(e.target.value)}
+                                                    readOnly
+                                                    clearOnEscape
+                                                    overrides={{
+                                                        Root: {
+                                                            style: {
+                                                                width: '68px'
+                                                            },
+                                                        },
+                                                    }}
+                                                />
+                                            </div>
+                                            <div>
+                                                <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Price</p>
+                                                <Input
+                                                    value={desc.price}
+                                                    onChange={(e) => setValuetermin(e.target.value)}
+                                                    readOnly
+                                                    clearOnEscape
+                                                    overrides={{
+                                                        Root: {
+                                                            style: {
+                                                                heigth: '40px'
+                                                            },
+                                                        },
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                            </div>
-                            {checked && (
+                            ))}
+
+
+
+                            {checkedItems.length > 0 &&(
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
                                     <Button
+                                    onClick={() => setCheckedItems([])}
                                         kind={KIND.secondary}
                                         overrides={{
                                             Root: {
@@ -367,6 +398,7 @@ const AddInvoice = () => {
                                         Cancel
                                     </Button>
                                     <Button
+                                    onClick={handleDelete}
                                         kind={KIND.secondary}
                                         overrides={{
                                             Root: {
@@ -403,7 +435,7 @@ const AddInvoice = () => {
                             <FiPlus />
                             Add Item
                         </Button>
-                        <AddItem isOpen={isOpenitem} onClose={closeModalitem} isEditMode={isEditMode} />
+                        <AddItem isOpen={isOpenitem} onClose={closeModalitem} isEditMode={isEditMode} onSave={saveItemData} />
                     </div>
                 </div>
 
@@ -479,9 +511,11 @@ const AddInvoice = () => {
 
             <div style={{ width: '58%', height: 'auto', background: '#EEEEEE', padding: '65px' }}>
                 {/* <Skeleton width="600px" height="800px" animation /> */}
-                <div style={{ margin: '30px', background: '#FFFFFF', height: '100vh', width: '552px', borderRadius: '8px', padding: '20px' }}>
-                    {showPreview && <PreviewInvoice />}
-                </div>
+                {showPreview &&
+                    <div style={{ margin: '30px', background: '#FFFFFF', height: 'auto', width: '552px', borderRadius: '8px', padding: '20px' }}>
+                        <PreviewInvoice />
+                    </div>
+                }
             </div>
         </div>
     );
