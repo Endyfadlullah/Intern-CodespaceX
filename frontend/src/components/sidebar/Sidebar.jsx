@@ -80,7 +80,7 @@ function Sidebar() {
           <IconWrapper><Category variant="Bold"/></IconWrapper>
           <span>Dashboard</span>
         </SidebarItem>
-        <SidebarItem $active={activeItem === "Project"} onClick={() => handleItemClick("Project", "/admin/Project")}>
+        <SidebarItem $active={activeItem === "Project"} onClick={() => handleItemClick("Project", "/admin/project")}>
           <IconWrapper><AiFillProject /></IconWrapper>
           <span>Project</span>
         </SidebarItem>

@@ -74,7 +74,7 @@ const AddItem = ({ isOpen, onClose, isEditMode, onSave }) => {
               <Counter value={desc.quantity} placeholder="quantity"  onChange={(newQuantity) => handleDescriptionChange(index, 'quantity', newQuantity)}/>
             </div>
             <div>
-              <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Price</p>
+              <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Price (IDR)</p>
               <Input
                 value={desc.price}
                 onChange={e => handleDescriptionChange(index, 'price', e.target.value)}

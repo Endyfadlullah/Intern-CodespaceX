@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button, KIND, SIZE, SHAPE } from "baseui/button";
 import { IoIosArrowRoundBack } from "react-icons/io";
@@ -12,6 +12,8 @@ import { FiPlus } from "react-icons/fi";
 import AddItem from './AddItem';
 import { Textarea } from "baseui/textarea";
 import PreviewInvoice from './PreviewInvoice';
+import { StyledLink } from "baseui/link";
+
 
 const AddInvoice = () => {
     const navigate = useNavigate();
@@ -22,12 +24,6 @@ const AddInvoice = () => {
         navigate(path);
     };
 
-    const [value, setValue] = useState([
-        {
-            label: "|",
-            id: "#F0F8FF"
-        }
-    ]);
     const [valueproject, setValueproject] = useState([
         {
             label: "|",
@@ -36,8 +32,11 @@ const AddInvoice = () => {
     ]);
     const [valuedate, setValuedate] = useState([new Date()]);
     const [valuetermin, setValuetermin] = useState("");
+    const [terminNumber, setTerminNumber] = useState(0);
+    const [totalTermin, setTotalTermin] = useState(0);
     const [isTermModalOpen, setIsTermModalOpen] = useState(false);
     const [isTermSelected, setIsTermSelected] = useState(false);
+    const [paymentType, setPaymentType] = useState("");
 
     const openTermModal = () => {
         setIsTermModalOpen(true);
@@ -47,9 +46,12 @@ const AddInvoice = () => {
         setIsTermModalOpen(false);
     };
 
-    const handleTermSelect = (selectedTerm) => {
-        setValuetermin(selectedTerm);
-        setIsTermSelected(true);
+    const handleTermSelect = (selectedTerm, selectedTerminNumber, selectedTotalTermin) => {
+        setPaymentType(selectedTerm);
+        setValuetermin(selectedTerm === "Termin Payment" ? `Termin Payment` : "Single Payment");
+        setTerminNumber(selectedTerminNumber);
+        setTotalTermin(selectedTotalTermin);
+        setIsTermSelected(true); // Ensure term is selected
         setIsTermModalOpen(false);
     };
 
@@ -78,21 +80,54 @@ const AddInvoice = () => {
     const saveItemData = (newTitle, newDescriptions) => {
         // Add new item to the list of items
         setItems([...items, { title: newTitle, descriptions: newDescriptions }]);
-      };
+    };
 
 
-      const handleDelete = () => {
+    const handleDelete = () => {
         setItems(items.filter((_, index) => !checkedItems.includes(index)));
         setCheckedItems([]); // Clear checked items after delete
-      };
-    
-      const handleCheckboxChange = (itemIndex, isChecked) => {
+    };
+
+    const handleCheckboxChange = (itemIndex, isChecked) => {
         if (isChecked) {
             setCheckedItems([...checkedItems, itemIndex]); // Tambahkan index item
-          } else {
+        } else {
             setCheckedItems(checkedItems.filter(index => index !== itemIndex)); // Hapus index item
-          }
-      };
+        }
+    };
+
+
+
+    const [id, setId] = useState('');
+    const [isManual, setIsManual] = useState(false);
+    const [linkText, setLinkText] = useState('Set Manual ID');
+
+    // Function to generate auto-increment ID
+    const generateAutoID = () => {
+        // Example: Starting with INV-000000, you can implement more logic as needed
+        const currentID = 1; // Example starting point, you may want to retrieve or calculate the next ID
+        const formattedID = `INV-${String(currentID).padStart(6, '0')}`;
+        return formattedID;
+    };
+
+    // Set the initial auto-generated ID when the component mounts
+    useEffect(() => {
+        if (!isManual) {
+            const autoID = generateAutoID();
+            setId(autoID);
+        }
+    }, [isManual]);
+
+    // Toggle between manual and auto ID mode
+    const handleToggleManual = () => {
+        if (isManual) {
+            setId(generateAutoID()); // Switch back to auto ID
+            setLinkText('Set Manual ID');
+        } else {
+            setLinkText('Set Auto ID'); // Allow manual input
+        }
+        setIsManual(!isManual);
+    };
 
     return (
         <div style={{ display: 'flex', }}>
@@ -155,40 +190,27 @@ const AddInvoice = () => {
                 <div style={{ padding: '10px' }}>
                     <h2 style={{ paddingBottom: '16px' }}>Invoice Details</h2>
                     <div style={{ paddingBottom: '16px' }}>
-                        <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>ID Invoice</p>
-                        <Select
-                            backspaceRemoves={false}
-                            clearable={false}
-                            closeOnSelect={true}
-                            deleteRemoves={false}
-                            escapeClearsValue={false}
-                            options={[
-                                {
-                                    label: "",
-                                    id: "#F0F8FF"
-                                },
-                                {
-                                    label: "AliceBlue",
-                                    id: "#F0F8FF"
-                                },
-                                {
-                                    label: "AntiqueWhite",
-                                    id: "#FAEBD7"
-                                },
-                            ]}
-                            value={value}
-                            onBlurResetsInput={false}
-                            onCloseResetsInput={false}
-                            onSelectResetsInput={false}
-                            openOnClick={false}
-                            placeholder="Select color"
-                            onChange={params => setValue(params.value)}
-                        />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', }}>
+                            <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>ID Invoice</p>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <StyledLink
+                                    onClick={handleToggleManual}
+                                    style={{ cursor: 'pointer', fontSize: '14px' }}
+                                >
+                                    {linkText}
+                                </StyledLink>
+                            </div>
+                        </div>
+                        <Input value={id}
+                            onChange={(e) => setId(e.target.value)}
+                            clearOnEscape
+                            disabled={!isManual}
+                            placeholder="ID will appear here" />
                     </div>
                     <div style={{ paddingBottom: '16px' }}>
                         <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Payment Due</p>
                         <DatePicker
-                        
+
                             value={valuedate}
                             onChange={({ date }) =>
                                 setValuedate(Array.isArray(date) ? date : [date])
@@ -197,12 +219,12 @@ const AddInvoice = () => {
                             displayValueAtRangeIndex={0}
                             overrides={{
                                 Input: {
-                                  component: Input,
-                                  props: {
-                                    endEnhancer: () => <Calendar1 size="32" variant="Outline" />,
-                                  },
+                                    component: Input,
+                                    props: {
+                                        endEnhancer: () => <Calendar1 size="32" variant="Outline" />,
+                                    },
                                 },
-                              }}
+                            }}
                         />
                     </div>
                     <div style={{ paddingBottom: '16px', marginBottom: '32px' }}>
@@ -218,11 +240,19 @@ const AddInvoice = () => {
                                     Root: {
                                         style: {
                                             marginBottom: "10px",
+                                            display: paymentType === "Single Payment" || paymentType === "Termin Payment" ? 'block' : 'none',
                                         },
                                     },
                                 }}
                             />
                         )}
+
+                        {isTermSelected && paymentType === "Termin Payment" && (
+                            <p style={{ marginBottom: '16px' }}>
+                                Termin {terminNumber} dari total termin {totalTermin}
+                            </p>
+                        )}
+
                         <Button
                             onClick={openTermModal}
                             overrides={{
@@ -240,7 +270,7 @@ const AddInvoice = () => {
                         <AddTerm
                             isOpen={isTermModalOpen}
                             onClose={closeTermModal}
-                            onSaveTerm={handleTermSelect}
+                            onSaveTerm={(term, number, total) => handleTermSelect(term, number, total)}
                         />
                     </div>
                     <h2 style={{ paddingBottom: '16px' }}>Project</h2>
@@ -285,37 +315,37 @@ const AddInvoice = () => {
                     <div style={{ paddingBottom: '16px' }}>
                         <div style={{ marginBottom: '16px' }}>
                             {items.map((itemData, itemIndex) => (
-                                <div key={itemIndex} style={{marginBottom:'16px'}}>
+                                <div key={itemIndex} style={{ marginBottom: '16px' }}>
                                     <div style={{ display: 'flex' }}>
                                         <Checkbox
                                             checked={checkedItems.includes(itemIndex)}
                                             onChange={e => handleCheckboxChange(itemIndex, e.target.checked)}
                                             overrides={{
                                                 Root: {
-                                                  style: {
-                                                    borderRadius: '4px',
-                                                    borderWidth: '1px',
-                                                    borderColor: checkedItems.includes(itemIndex) ? '#4CAF50' : '#D1D5DB', // Border color when checked
-                                                    backgroundColor: checkedItems.includes(itemIndex) ? '#E0E0E0' : 'transparent', // Background color when checked
-                                                  },
+                                                    style: {
+                                                        borderRadius: '4px',
+                                                        borderWidth: '1px',
+                                                        borderColor: checkedItems.includes(itemIndex) ? '#4CAF50' : '#D1D5DB', // Border color when checked
+                                                        backgroundColor: checkedItems.includes(itemIndex) ? '#E0E0E0' : 'transparent', // Background color when checked
+                                                    },
                                                 },
                                                 Checkmark: {
-                                                  style: {
-                                                    borderRadius: '4px',
-                                                    borderWidth: '1px',
-                                                    borderColor: checkedItems.includes(itemIndex) ? '#4CAF50' : '#D1D5DB',  // Border color when checked
-                                                    backgroundColor: checkedItems.includes(itemIndex) ? '#4CAF50' : 'transparent', // Background color when checked
-                                                  },
+                                                    style: {
+                                                        borderRadius: '4px',
+                                                        borderWidth: '1px',
+                                                        borderColor: checkedItems.includes(itemIndex) ? '#4CAF50' : '#D1D5DB',  // Border color when checked
+                                                        backgroundColor: checkedItems.includes(itemIndex) ? '#4CAF50' : 'transparent', // Background color when checked
+                                                    },
                                                 },
                                                 Toggle: {
-                                                  style: {
-                                                    borderRadius: '4px',
-                                                    borderWidth: '1px',
-                                                    borderColor: checkedItems.includes(itemIndex) ? '#4CAF50' : '#D1D5DB', // Border color when checked
-                                                    backgroundColor: checkedItems.includes(itemIndex) ? '#4CAF50' : 'transparent', // Background color when checked
-                                                  },
+                                                    style: {
+                                                        borderRadius: '4px',
+                                                        borderWidth: '1px',
+                                                        borderColor: checkedItems.includes(itemIndex) ? '#4CAF50' : '#D1D5DB', // Border color when checked
+                                                        backgroundColor: checkedItems.includes(itemIndex) ? '#4CAF50' : 'transparent', // Background color when checked
+                                                    },
                                                 },
-                                              }}
+                                            }}
                                         />
                                         <h2 style={{ paddingLeft: '15px' }}>{itemData.title}</h2>
                                         <Button
@@ -336,7 +366,7 @@ const AddInvoice = () => {
                                     </div>
                                     {itemData.descriptions.map((desc, index) => (
                                         <div key={index} style={{ display: 'flex', paddingLeft: '40px', paddingTop: '12px' }}>
-                                            <div  style={{ marginRight: '8px' }}>
+                                            <div style={{ marginRight: '8px' }}>
                                                 <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Description</p>
                                                 <Input
                                                     value={desc.description}
@@ -371,7 +401,7 @@ const AddInvoice = () => {
                                             <div>
                                                 <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Price</p>
                                                 <Input
-                                                    value={desc.price}
+                                                    value={`Rp ${desc.price}`}
                                                     onChange={(e) => setValuetermin(e.target.value)}
                                                     readOnly
                                                     clearOnEscape
@@ -391,10 +421,10 @@ const AddInvoice = () => {
 
 
 
-                            {checkedItems.length > 0 &&(
+                            {checkedItems.length > 0 && (
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
                                     <Button
-                                    onClick={() => setCheckedItems([])}
+                                        onClick={() => setCheckedItems([])}
                                         kind={KIND.secondary}
                                         overrides={{
                                             Root: {
@@ -407,7 +437,7 @@ const AddInvoice = () => {
                                         Cancel
                                     </Button>
                                     <Button
-                                    onClick={handleDelete}
+                                        onClick={handleDelete}
                                         kind={KIND.secondary}
                                         overrides={{
                                             Root: {
