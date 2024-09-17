@@ -76,7 +76,7 @@ function Sidebar() {
       <SidebarTitle>CodespaceX</SidebarTitle>
       <SectionTitle>Management</SectionTitle>
       <SidebarMenu>
-        <SidebarItem $active={activeItem === "Dashboard"} onClick={() => handleItemClick("Dashboard", "/admin/Dashboard")}>
+        <SidebarItem $active={activeItem === "Dashboard"} onClick={() => handleItemClick("Dashboard", "/admin/dashboard")}>
           <IconWrapper><Category variant="Bold"/></IconWrapper>
           <span>Dashboard</span>
         </SidebarItem>

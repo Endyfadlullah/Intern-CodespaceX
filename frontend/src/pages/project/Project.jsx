@@ -1,27 +1,13 @@
 import React from 'react';
-import { Tabs, Tab } from "baseui/tabs";
-import ListProject from './ListProject';
-import GalleryProject from './GalleryProject';
-
-
-
-
+import Tabs from '../../components/Tabs/Tabs';
 
 const Project = () => {
-    const [activeKey, setActiveKey] = React.useState("0");
+    
 
     return (
         <div style={{ padding: '30px' }}>
-            <h1 style={{ marginBottom: '40px', fontSize: '28px' }}>All Project</h1>
-            <Tabs
-                onChange={({ activeKey }) => {
-                    setActiveKey(activeKey);
-                }}
-                activeKey={activeKey}
-            >
-                <Tab title="List"><ListProject /></Tab>
-                <Tab title="Gallery"><GalleryProject/></Tab>
-            </Tabs>
+            <h1 style={{ marginBottom: '24px', fontSize: '28px' }}>All Project</h1>
+            <Tabs/>
         </div>
     );
 };

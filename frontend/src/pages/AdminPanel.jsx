@@ -10,6 +10,7 @@ import AddInvoice from './invoice/AddInvoice';
 import profil from '../image/Filled.jpg'
 import User from './user/User';
 import Project from './project/Project';
+import Dashboard from './dashboard/Dashboard';
 
 
 const AdminPanel = () => {
@@ -34,7 +35,8 @@ const AdminPanel = () => {
                 </div>
                 <div className='submain'>
                     <Routes>
-                        {/* <Route path="*" element={<Invoice />}/> */}
+                        <Route path="*" element={<Dashboard />}/>
+                        <Route path="dashboard" element={<Dashboard />}/>
                         <Route path="project" element={<Project />}/>
                         <Route path="invoice" element={<Invoice />}/>
                         <Route path="addInvoice" element={<AddInvoice />}/>

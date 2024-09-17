@@ -3,17 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { PiFileDuotone } from "react-icons/pi";
 import { Button, KIND, SHAPE } from "baseui/button";
 
-const NoDataUser = () => {
+const NoDataProject = () => {
     const navigate = useNavigate();
     const handleItemClick = (path, mode = 'create') => {
         navigate(path, { state: { mode } });
     };
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%', padding: '120px', }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%', padding: '105px', }}>
             <div style={{ textAlign: 'center' }}>
                 <PiFileDuotone size={80} />
-                <h1 style={{ marginTop: '20px', }}>No User Files</h1>
-                <p style={{ marginBottom: '20px' }}>Create a new user file from your project</p>
+                <h1 style={{ marginTop: '20px', }}>No Project Files</h1>
+                <p style={{ marginBottom: '20px' }}>Create a new project file from your project</p>
                 <Button
                     onClick={() => handleItemClick('/admin/addInvoice', 'Create')}
                     kind={KIND.secondary}
@@ -28,7 +28,7 @@ const NoDataUser = () => {
                         },
                     }}
                 >
-                    Create New User
+                    Create New Project
                 </Button>
 
             </div>
@@ -37,4 +37,4 @@ const NoDataUser = () => {
     )
 }
 
-export default NoDataUser
+export default NoDataProject
