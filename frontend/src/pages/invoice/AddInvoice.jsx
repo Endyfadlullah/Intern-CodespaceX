@@ -20,8 +20,8 @@ const AddInvoice = () => {
     const location = useLocation();
     const mode = location.state?.mode || 'Create';
 
-    const handleItemClick = (path) => {
-        navigate(path);
+    const handleItemClick = (path, mode = 'create') => {
+        navigate(path, { state: { mode } }); // Pass mode as 'create' or 'edit'
     };
 
     const [valueproject, setValueproject] = useState([
@@ -154,7 +154,7 @@ const AddInvoice = () => {
 
 
 
-
+                {mode === 'Edit' && (
                 <div style={{ padding: '10px' }}>
                     <h2 style={{ paddingBottom: '16px' }}>Status</h2>
                     <Select
@@ -187,6 +187,8 @@ const AddInvoice = () => {
                         onChange={(params) => setStatusType(params.value)}
                     />
                 </div>
+                )}
+
                 <div style={{ padding: '10px' }}>
                     <h2 style={{ paddingBottom: '16px' }}>Invoice Details</h2>
                     <div style={{ paddingBottom: '16px' }}>
