@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { TableBuilder, TableBuilderColumn } from "baseui/table-semantic";
 import { Checkbox } from "baseui/checkbox";
 import { Search } from "baseui/icon";
@@ -11,13 +11,13 @@ import { StatefulMenu } from "baseui/menu";
 import { FiPlus } from "react-icons/fi";
 import { Tag, SIZE } from 'baseui/tag';
 import { Edit2, CloseSquare } from 'iconsax-react';
-// import ViewInvoice from './ViewInvoice';
+import AddUser from './AddUser';
 import NoDataUser from './NoDataUser';
-// import NoDataInvoice from './NoDataInvoice';
+
 
 
 const User = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const ITEMS = [
     { label: "Admin" },
@@ -70,11 +70,19 @@ const User = () => {
         return null;
     }
   };
+ 
 
-  const handleItemClick = (path, mode = 'create') => {
-    navigate(path, { state: { mode } }); // Pass mode as 'create' or 'edit'
-  };
-  
+  const [isOpenitem, setIsOpenitem] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  function openModalitem(isEdit = false) {
+    setIsEditMode(isEdit);
+    setIsOpenitem(true);
+  }
+
+  function closeModalitem() {
+    setIsOpenitem(false);
+  }
 
   return (
     <div style={{ padding: '30px' }}>
@@ -114,9 +122,11 @@ const User = () => {
           </StatefulPopover>
         </div>
 
-        <Button startEnhancer={() => <FiPlus size={24} title="" />} >
+        <Button startEnhancer={() => <FiPlus size={24}/>}  onClick={() => openModalitem(false)} >
           Add New
         </Button>
+
+        <AddUser isOpen={isOpenitem} onClose={closeModalitem} isEditMode={isEditMode}/>
 
       </div>
 
@@ -342,7 +352,7 @@ const User = () => {
           {(row) => (
             <>
               <Button
-                onClick={() => handleItemClick('/admin/addInvoice', 'Edit')}
+               onClick={() => openModalitem(true)}
                 kind={KIND.tertiary}
                 size={SIZE.mini}
                 overrides={{

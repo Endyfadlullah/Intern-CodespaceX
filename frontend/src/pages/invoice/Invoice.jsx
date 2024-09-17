@@ -54,10 +54,10 @@ const Invoice = () => {
   };
 
   const data = [
-    // ["INV-23923", "Darft", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-    // ["INV-23923", "Paid", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-    // ["INV-23923", "Sent", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-    // ["INV-23923", "On Hold", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+    ["INV-23923", "Darft", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+    ["INV-23923", "Paid", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+    ["INV-23923", "Sent", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+    ["INV-23923", "On Hold", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
   ];
 
   const getStatusTag = (status) => {

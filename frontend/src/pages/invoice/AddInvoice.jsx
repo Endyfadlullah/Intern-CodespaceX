@@ -7,7 +7,7 @@ import { DatePicker } from "baseui/datepicker";
 import { Input } from "baseui/input";
 import AddTerm from './AddTerm';
 import { Checkbox } from "baseui/checkbox";
-import { Edit2, Trash } from 'iconsax-react';
+import { Edit2, Trash, Calendar1 } from 'iconsax-react';
 import { FiPlus } from "react-icons/fi";
 import AddItem from './AddItem';
 import { Textarea } from "baseui/textarea";
@@ -188,12 +188,21 @@ const AddInvoice = () => {
                     <div style={{ paddingBottom: '16px' }}>
                         <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>Payment Due</p>
                         <DatePicker
+                        
                             value={valuedate}
                             onChange={({ date }) =>
                                 setValuedate(Array.isArray(date) ? date : [date])
                             }
                             timeSelectEnd
                             displayValueAtRangeIndex={0}
+                            overrides={{
+                                Input: {
+                                  component: Input,
+                                  props: {
+                                    endEnhancer: () => <Calendar1 size="32" variant="Outline" />,
+                                  },
+                                },
+                              }}
                         />
                     </div>
                     <div style={{ paddingBottom: '16px', marginBottom: '32px' }}>
