@@ -1,20 +1,29 @@
-import React, { useState } from 'react'
-import { TableBuilder, TableBuilderColumn } from "baseui/table-semantic";
+import React, { useState } from 'react';
+import {
+    StyledTable,
+    StyledTableHeadRow,
+    StyledTableHeadCell,
+    StyledTableBodyRow,
+    StyledTableBodyCell
+} from "baseui/table-semantic";
 import { Checkbox } from "baseui/checkbox";
 import { Search } from "baseui/icon";
 import { Input } from "baseui/input";
-import { Button, KIND, } from "baseui/button";
+import { Button, KIND, SHAPE } from "baseui/button";
 import { ChevronDown } from "baseui/icon";
 import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
 import { FiPlus } from "react-icons/fi";
 import { Tag, SIZE } from 'baseui/tag';
-import { Edit2, CloseSquare, } from 'iconsax-react';
+import { Edit2, CloseSquare, Figma, Link1 } from 'iconsax-react';
 import NoDataProject from './NoDataProject';
-import { MdKeyboardArrowDown } from "react-icons/md";
 import { Avatar } from "baseui/avatar";
-
-
+import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
+import { StyledThumbnail } from "baseui/card";
+import {
+    ProgressSteps,
+    Step
+} from "baseui/progress-steps";
 
 const ListProject = () => {
     const ITEMS = [
@@ -25,9 +34,7 @@ const ListProject = () => {
 
     const [checkedItems, setCheckedItems] = useState([false, false]);
     const [selectAll, setSelectAll] = useState(false);
-
-
-
+    const [expandedRow, setExpandedRow] = useState(null);
 
     const handleCheckboxChange = (rowIndex, checked) => {
         setCheckedItems(prev => {
@@ -42,6 +49,10 @@ const ListProject = () => {
         setCheckedItems(new Array(checkedItems.length).fill(checked));
     };
 
+    const handleRowClick = (index) => {
+        setExpandedRow(expandedRow === index ? null : index);
+    };
+
     const data = [
         ["Manhattan Project", "On Going", "Mobile apps, Website, Wo..", "Filled.jpg,Filled.jpg,Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
         ["Manhattan Project", "In Review", "Mobile apps, Website", "Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
@@ -49,32 +60,33 @@ const ListProject = () => {
     ];
 
 
+
     const getStatusTag = (status) => {
         switch (status) {
             case "On Going":
-                return <Tag closeable={false} kind="accent" size={SIZE.medium}
-                   >
+                return <Tag closeable={false} kind="accent" size={SIZE.medium}>
                     <b>On Going</b>
                 </Tag>;
             case "In Review":
-                return <Tag closeable={false} kind="warning" size={SIZE.medium}
-                ><b>In Review</b></Tag>;
+                return <Tag closeable={false} kind="warning" size={SIZE.medium}>
+                    <b>In Review</b>
+                </Tag>;
             case "Done":
                 return <Tag closeable={false} kind="positive" size={SIZE.medium}
-                overrides={{
-                    Root: {
-                        style: {
-                            paddingLeft: '28px !important',
-                            paddingRight: '28px !important',
+                    overrides={{
+                        Root: {
+                            style: {
+                                paddingLeft: '28px !important',
+                                paddingRight: '28px !important',
+                            },
                         },
-                    },
-                }}
-                ><b>Done</b></Tag>;
+                    }}>
+                    <b>Done</b>
+                </Tag>;
             default:
                 return null;
         }
     };
-
 
     return (
         <div>
@@ -113,313 +125,338 @@ const ListProject = () => {
                     </StatefulPopover>
                 </div>
 
-                <Button startEnhancer={() => <FiPlus size={24} />}  >
-                Create new project
+                <Button startEnhancer={() => <FiPlus size={24} />} >
+                    Create new project
                 </Button>
             </div>
-
-
 
             {data.length === 0 ? (
                 <NoDataProject />
             ) : (
-
-                <TableBuilder data={data}>
-                    <TableBuilderColumn header={
-                        <Checkbox
-                            checked={selectAll}
-                            onChange={(e) => handleSelectAll(e.target.checked)}
-                            overrides={{
-                                Root: {
-                                    style: {
-                                        borderRadius: '4px',
-                                        borderWidth: '1px',
-                                        borderColor: '#D1D5DB',
-                                    },
-                                },
-                                Checkmark: {
-                                    style: {
-                                        borderRadius: '4px',
-                                        borderWidth: '1px',
-                                        borderColor: '#D1D5DB',
-                                    },
-                                },
-                                Toggle: {
-                                    style: {
-                                        borderRadius: '4px',
-                                        borderWidth: '1px',
-                                        borderColor: '#D1D5DB',
-                                    },
-                                },
-                            }}
-
-                        />
-                    }
-
-                        overrides={{
-                            TableBodyCell: {
-                                style: {
-                                    verticalAlign: 'middle'
-                                },
-                            },
-                        }}
-
-                    >
-                        {(row, rowIndex) => (
-                            <Checkbox
-                                checked={checkedItems[rowIndex]}
-                                onChange={(e) => handleCheckboxChange(rowIndex, e.target.checked)}
-                                overrides={{
-                                    Root: {
-                                        style: {
-                                            borderRadius: '4px',
-                                            borderWidth: '1px',
-                                            borderColor: '#D1D5DB',
-                                        },
-                                    },
-                                    Checkmark: {
-                                        style: {
-                                            borderRadius: '4px',
-                                            borderWidth: '1px',
-                                            borderColor: '#D1D5DB',
-                                        },
-                                    },
-                                    Toggle: {
-                                        style: {
-                                            borderRadius: '4px',
-                                            borderWidth: '1px',
-                                            borderColor: '#D1D5DB',
-                                        },
-                                    },
-                                }}
-                            />
-                        )}
-                    </TableBuilderColumn>
-                    <TableBuilderColumn header="Project Title"
-                        overrides={{
-                            TableHeadCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: '800',
-                                },
-                            },
-                            TableBodyCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: '600',
-                                    verticalAlign: 'middle',
-                                    cursor: 'pointer',
-                                },
-                            },
-                        }}
-                    >
-                        {(row) => (row[0])}
-                    </TableBuilderColumn>
-                    <TableBuilderColumn header=""
-                        overrides={{
-                            TableHeadCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: '800',
-                                },
-                            },
-                            TableBodyCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: '600',
-                                    verticalAlign: 'middle',
-                                    cursor: 'pointer',
-                                },
-                            },
-                        }}
-                    >
-                        {(row) => (
-                            <MdKeyboardArrowDown size="32" variant="Outline" />
-                        )}
-                    </TableBuilderColumn>
-                    <TableBuilderColumn header="Status"
-                        overrides={{
-                            TableHeadCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: 'bold',
-                                    verticalAlign: 'middle',
-                                    cursor: 'pointer',
-                                },
-                            },
-                            TableBodyCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: '600',
-                                    verticalAlign: 'middle',
-                                },
-                            },
-                        }}
-                    >
-                        {(row) => getStatusTag(row[1])}
-                    </TableBuilderColumn>
-                    <TableBuilderColumn header="Platform"
-                        overrides={{
-                            TableHeadCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: 'bold',
-                                },
-                            },
-                            TableBodyCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: '600',
-                                    verticalAlign: 'middle',
-                                    cursor: 'pointer',
-                                },
-                            },
-                        }}
-                    >
-                        {(row) => (row[2])}
-                    </TableBuilderColumn>
-                    <TableBuilderColumn header="Talent"
-                        overrides={{
-                            TableHeadCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: 'bold',
-                                },
-                            },
-                            TableBodyCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: '600',
-                                    verticalAlign: 'middle',
-                                    cursor: 'pointer',
-                                },
-                            },
-                        }}
-                    >
-                        {(row) => (
-                               <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                               {row[3].split(',').map((image, index) => (
-                                 <Avatar
-                                   key={index}
-                                   name="Talent"
-                                   overrides={{
-                                     Root: {
-                                       style: {
-                                         width: '36px',
-                                         height: '36px',
-                                         marginLeft: index > 0 ? '-10px' : '0', 
-                                         zIndex: index, 
-                                       },
-                                     },
-                                   }}
-                                   src={require(`../../image/${image.trim()}`)}  
-                                 />
-                               ))}
-                             </div>
-                        )}
-                    </TableBuilderColumn>
-                    <TableBuilderColumn header="Last Update"
-                        overrides={{
-                            TableHeadCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: 'bold',
-                                },
-                            },
-                            TableBodyCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: '600',
-                                    verticalAlign: 'middle',
-                                    cursor: 'pointer',
-                                },
-                            },
-                        }}
-                    >
-                        {(row) => (row[4])}
-                    </TableBuilderColumn>
-                    <TableBuilderColumn header="Deadline"
-                        overrides={{
-                            TableHeadCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: 'bold',
-                                },
-                            },
-                            TableBodyCell: {
-                                style: {
-                                    fontSize: '16px',
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontWeight: '600',
-                                    verticalAlign: 'middle',
-                                    cursor: 'pointer',
-                                },
-                            },
-                        }}
-                    >
-                        {(row) => (row[5])}
-                    </TableBuilderColumn>
-                    <TableBuilderColumn header=""
-                        overrides={{
-                            TableBodyCell: {
-                                style: {
-                                    verticalAlign: 'middle',
-                                },
-                            },
-                        }}
-                    >
-                        {(row) => (
-                            <>
-                                <Button
-                                    //    onClick={() => openModalitem(true)}
-                                    kind={KIND.tertiary}
-                                    size={SIZE.mini}
+                <StyledTable>
+                    <thead>
+                        <StyledTableHeadRow>
+                            <StyledTableHeadCell>
+                                <Checkbox
+                                    checked={selectAll}
+                                    onChange={(e) => handleSelectAll(e.target.checked)}
                                     overrides={{
                                         Root: {
                                             style: {
-                                                padding: '0',
+                                                borderRadius: '4px',
+                                                borderWidth: '1px',
+                                                borderColor: '#D1D5DB',
                                             },
                                         },
-                                    }}
-                                >
-                                    <Edit2 variant="Bold" />
-                                </Button>
-
-                                <Button
-                                    onClick={() => alert("Clicked another action for row: " + JSON.stringify(row))}
-                                    kind={KIND.tertiary}
-                                    size={SIZE.mini}
-                                    overrides={{
-                                        Root: {
+                                        Checkmark: {
                                             style: {
-                                                padding: '0',
-                                                marginLeft: '10px'
+                                                borderRadius: '4px',
+                                                borderWidth: '1px',
+                                                borderColor: '#D1D5DB',
+                                            },
+                                        },
+                                        Toggle: {
+                                            style: {
+                                                borderRadius: '4px',
+                                                borderWidth: '1px',
+                                                borderColor: '#D1D5DB',
                                             },
                                         },
                                     }}
-                                >
-                                    <CloseSquare color="#E11C48" variant="Bold" />
-                                </Button>
-                            </>
-                        )}
-                    </TableBuilderColumn>
-                </TableBuilder>
+                                />
+                            </StyledTableHeadCell>
+                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', }}>Project Title</StyledTableHeadCell>
+                            <StyledTableHeadCell></StyledTableHeadCell>
+                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', }}>Status</StyledTableHeadCell>
+                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', }}>Platform</StyledTableHeadCell>
+                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', }}>Talent</StyledTableHeadCell>
+                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', }}>Last Update</StyledTableHeadCell>
+                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', }}>Deadline</StyledTableHeadCell>
+                            <StyledTableHeadCell></StyledTableHeadCell>
+                        </StyledTableHeadRow>
+                    </thead>
+                    <tbody>
+                        {data.map((row, rowIndex) => (
+                            <React.Fragment key={rowIndex}>
+                                <StyledTableBodyRow onClick={() => handleRowClick(rowIndex)} style={{ cursor: 'pointer' }} >
+                                    <StyledTableBodyCell
+                                        style={{ verticalAlign: 'middle', }}
+                                    >
+                                        <Checkbox
+                                            checked={checkedItems[rowIndex]}
+                                            onChange={(e) => handleCheckboxChange(rowIndex, e.target.checked)}
+                                            overrides={{
+                                                Root: {
+                                                    style: {
+                                                        borderRadius: '4px',
+                                                        borderWidth: '1px',
+                                                        borderColor: '#D1D5DB',
+                                                    },
+                                                },
+                                                Checkmark: {
+                                                    style: {
+                                                        borderRadius: '4px',
+                                                        borderWidth: '1px',
+                                                        borderColor: '#D1D5DB',
+                                                    },
+                                                },
+                                                Toggle: {
+                                                    style: {
+                                                        borderRadius: '4px',
+                                                        borderWidth: '1px',
+                                                        borderColor: '#D1D5DB',
+                                                    },
+                                                },
+                                            }}
+
+                                        />
+                                    </StyledTableBodyCell>
+                                    <StyledTableBodyCell
+                                        style={{
+                                            fontSize: '16px',
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            fontWeight: '600',
+                                            verticalAlign: 'middle',
+                                            cursor: 'pointer',
+                                            paddingLeft:'0',paddingRight:'0'
+                                        }}
+                                    >
+                                        {row[0]}
+                                    </StyledTableBodyCell>
+                                    <StyledTableBodyCell style={{ verticalAlign: 'middle',paddingLeft:'0',paddingRight:'0' }}>
+                                        <Button size="compact" kind="tertiary" shape="square" onClick={() => handleRowClick(rowIndex)}>
+                                            {expandedRow === rowIndex ? <MdKeyboardArrowUp size="32" /> : <MdKeyboardArrowDown size="32" />}
+                                        </Button>
+                                        {/* <MdKeyboardArrowDown size="32" variant="Outline" /> */}
+                                    </StyledTableBodyCell>
+                                    <StyledTableBodyCell style={{paddingLeft:'0',paddingRight:'0'}}>{getStatusTag(row[1])}</StyledTableBodyCell>
+                                    <StyledTableBodyCell
+                                        style={{
+                                            fontSize: '16px',
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            fontWeight: '600',
+                                            verticalAlign: 'middle',
+                                            cursor: 'pointer',
+                                            paddingLeft:'0',paddingRight:'0'
+                                        }}
+                                    >{row[2]}
+                                    </StyledTableBodyCell>
+                                    <StyledTableBodyCell style={{ verticalAlign: 'middle', paddingLeft:'0',paddingRight:'0'}}>
+                                        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                            {row[3].split(',').map((image, index) => (
+                                                <Avatar
+                                                    key={index}
+                                                    name="Talent"
+                                                    overrides={{
+                                                        Root: {
+                                                            style: {
+                                                                width: '36px',
+                                                                height: '36px',
+                                                                marginLeft: index > 0 ? '-10px' : '0',
+                                                                zIndex: index,
+                                                            },
+                                                        },
+                                                    }}
+                                                    src={require(`../../image/${image.trim()}`)}
+                                                />
+                                            ))}
+                                        </div>
+                                    </StyledTableBodyCell>
+                                    <StyledTableBodyCell
+                                        style={{
+                                            fontSize: '16px',
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            fontWeight: '600',
+                                            verticalAlign: 'middle',
+                                            cursor: 'pointer',
+                                            paddingLeft:'0',paddingRight:'0'
+                                        }}
+                                    >{row[4]}</StyledTableBodyCell>
+                                    <StyledTableBodyCell
+                                        style={{
+                                            fontSize: '16px',
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            fontWeight: '600',
+                                            verticalAlign: 'middle',
+                                            cursor: 'pointer',
+                                            paddingLeft:'0',paddingRight:'0'
+                                        }}
+                                    >{row[5]}</StyledTableBodyCell>
+                                    <StyledTableBodyCell style={{ verticalAlign: 'middle',paddingLeft:'0',paddingRight:'0' }}>
+                                        <>
+                                            <Button
+                                                // onClick={() => openModalitem(true)}
+                                                kind={KIND.tertiary}
+                                                size={SIZE.mini}
+                                                overrides={{
+                                                    Root: {
+                                                        style: {
+                                                            padding: '0',
+                                                        },
+                                                    },
+                                                }}
+                                            >
+                                                <Edit2 variant="Bold" />
+                                            </Button>
+
+                                            <Button
+                                                onClick={() => alert("Clicked another action for row: " + JSON.stringify(row))}
+                                                kind={KIND.tertiary}
+                                                size={SIZE.mini}
+                                                overrides={{
+                                                    Root: {
+                                                        style: {
+                                                            padding: '0',
+                                                            marginLeft: '10px'
+                                                        },
+                                                    },
+                                                }}
+                                            >
+                                                <CloseSquare color="#E11C48" variant="Bold" />
+                                            </Button>
+                                        </>
+                                    </StyledTableBodyCell>
+                                </StyledTableBodyRow>
+
+                                {/* Tampilkan baris baru jika baris diklik */}
+                                {expandedRow === rowIndex && (
+                                    <tr>
+                                        <td colSpan={10}  style={{ padding: '10px', background: '#FFFFF' }}>
+                                            <div style={{ display: 'flex', backgroundColor: '#f5f5f5', borderRadius: '8px', height: '100%', padding: '20px' }}>
+                                                <div style={{ display: 'flex', alignContent: 'center', alignItems: 'center', width: '30%', paddingRight: '5px' }}>
+                                                    <StyledThumbnail
+                                                        style={{ width: '100%', height: '215px', borderRadius: '8px', }}
+                                                        src={require("../../image/project.jpg")}
+                                                    />
+                                                </div>
+                                                <div style={{ width: '70%', }}>
+                                                    <ProgressSteps
+                                                        overrides={{
+                                                            Root: {
+                                                                style: {
+                                                                    padding: '0',
+
+                                                                },
+                                                            },
+                                                            Title: {
+                                                                style: {
+                                                                    fontWeight: '500',
+                                                                    paddingTop: '0',
+                                                                    paddingBottom: '14px',
+                                                                },
+                                                            },
+                                                            IconContainer: {
+                                                                style: {
+                                                                    padding: '0',
+                                                                    marginTop: '0',
+                                                                    backgroundColor: 'transparant'
+                                                                },
+                                                            },
+                                                            Tail: {
+                                                                style: {
+                                                                    marginTop: 'calc(3px + (20px + 20px) / 2)',
+                                                                    backgroundColor: 'transparent',
+                                                                    height: 'calc(100% + 12px)',
+                                                                    width: '2px',
+                                                                    borderLeft: '3px dashed #000000',
+                                                                }
+                                                            },
+                                                            Icon: {
+                                                                style: {
+                                                                    backgroundColor: 'none'
+                                                                }
+                                                            },
+                                                            InnerIcon: {
+                                                                style: {
+                                                                    height: '16px',
+                                                                    width: '18px',
+                                                                    backgroundColor: 'none',
+                                                                    border: '3px solid #000000',
+                                                                    borderRadius: '50%',
+                                                                }
+                                                            }
+                                                        }}
+                                                    >
+                                                        <Step title="Checkpoint 2">
+                                                            <h3>Kickoff meeting</h3>
+                                                            <p style={{ marginTop: '14px', fontSize:'16px' }}>
+                                                                we successfuly held kick off meeting , setting
+                                                                clear goals and expectations to start the
+                                                                project on the right track kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+                                                            </p>
+                                                            <div style={{ display: 'flex', gap: '12px', marginTop: '32px' }}>
+                                                                <Button
+                                                                    kind={KIND.secondary}
+                                                                    startEnhancer={<Figma size="16" />}
+                                                                    overrides={{
+                                                                        Root: {
+                                                                            style: {
+                                                                                height: '32px',
+                                                                                fontSize: '12px',
+                                                                                color: 'black',
+                                                                                backgroundColor: '#FFFFFF',
+                                                                                ':hover': {
+                                                                                    backgroundColor: '#EEEEEE',
+                                                                                    color: 'black',
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    }}
+                                                                >
+                                                                    Manhattan project (figma)
+                                                                </Button>
+                                                                <Button
+                                                                    kind={KIND.secondary}
+                                                                    startEnhancer={<Link1 size="16" />}
+                                                                    overrides={{
+                                                                        Root: {
+                                                                            style: {
+                                                                                height: '32px',
+                                                                                fontSize: '12px',
+                                                                                color: 'black',
+                                                                                backgroundColor: '#FFFFFF',
+                                                                                ':hover': {
+                                                                                    backgroundColor: '#EEEEEE',
+                                                                                    color: 'black',
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    }}
+                                                                >
+                                                                    Meeting video
+                                                                </Button>
+                                                            </div>
+                                                            <div style={{ display: 'flex', gap: '12px', marginTop: '32px', justifyContent: 'flex-end' }}>
+                                                                <Button kind={KIND.tertiary} shape={SHAPE.pill}>
+                                                                    Project details
+                                                                </Button>
+                                                                <Button 
+                                                                shape={SHAPE.pill}
+                                                                overrides={{
+                                                                    Root: {
+                                                                        style: {
+                                                                            height: '40px',
+                                                                            fontSize: '12px',  
+                                                                        },
+                                                                    },
+                                                                }}
+                                                                >Add New Checpoint</Button>
+                                                            </div>
+                                                        </Step>
+                                                        <Step title=""></Step>
+                                                    </ProgressSteps>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )}
+                            </React.Fragment>
+                        ))}
+                    </tbody>
+                </StyledTable>
             )}
         </div>
-    )
-}
+    );
+};
 
-export default ListProject
+export default ListProject;
