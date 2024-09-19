@@ -143,7 +143,7 @@ function closeModalitem() {
                         width: '36px',
                         height: '36px',
                         marginLeft: index > 0 ? '-10px' : '0',
-                        zIndex: index,
+                       
                       },
                     },
                   }}

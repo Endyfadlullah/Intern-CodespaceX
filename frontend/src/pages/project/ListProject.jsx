@@ -25,6 +25,7 @@ import {
     Step
 } from "baseui/progress-steps";
 import AddProject from './AddProject';
+import EditProject from './EditProject';
 
 const ListProject = () => {
     const ITEMS = [
@@ -57,6 +58,28 @@ const ListProject = () => {
     const data = [
         ["Manhattan Project", "On Going", "Mobile apps, Website, Wo..", "Filled.jpg,Filled.jpg,Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
         ["Manhattan Project", "In Review", "Mobile apps, Website", "Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
+        ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
         ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "3 Juni 2024"],
     ];
 
@@ -98,6 +121,16 @@ const ListProject = () => {
     function closeModalitem() {
       setIsOpenitem(false);
     }
+
+    const [isOpenedit, setIsOpenedit] = useState(false);
+
+    const openModaledit = () => {
+        setIsOpenedit(true);
+    };
+
+    const closeModaledit = () => {
+        setIsOpenedit(false);
+    };
 
     return (
         <div>
@@ -147,8 +180,8 @@ const ListProject = () => {
             ) : (
                 <StyledTable>
                     <thead>
-                        <StyledTableHeadRow>
-                            <StyledTableHeadCell>
+                        <StyledTableHeadRow style={{ position: 'sticky', top: 0, background: 'black', zIndex: 'auto' }}>
+                            <StyledTableHeadCell style={{  zIndex: 'auto',}}>
                                 <Checkbox
                                     checked={selectAll}
                                     onChange={(e) => handleSelectAll(e.target.checked)}
@@ -177,20 +210,20 @@ const ListProject = () => {
                                     }}
                                 />
                             </StyledTableHeadCell>
-                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', }}>Project Title</StyledTableHeadCell>
-                            <StyledTableHeadCell></StyledTableHeadCell>
-                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', }}>Status</StyledTableHeadCell>
-                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', }}>Platform</StyledTableHeadCell>
-                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', }}>Talent</StyledTableHeadCell>
-                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', }}>Last Update</StyledTableHeadCell>
-                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', }}>Deadline</StyledTableHeadCell>
-                            <StyledTableHeadCell></StyledTableHeadCell>
+                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800',   zIndex: 'auto',}}>Project Title</StyledTableHeadCell>
+                            <StyledTableHeadCell style={{  zIndex: 'auto',}}></StyledTableHeadCell>
+                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800',  zIndex: 'auto', }}>Status</StyledTableHeadCell>
+                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800',   zIndex: 'auto',}}>Platform</StyledTableHeadCell>
+                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800',   zIndex: 'auto',}}>Talent</StyledTableHeadCell>
+                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800',   zIndex: 'auto',}}>Last Update</StyledTableHeadCell>
+                            <StyledTableHeadCell style={{ fontSize: '16px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800',   zIndex: 'auto',}}>Deadline</StyledTableHeadCell>
+                            <StyledTableHeadCell style={{  zIndex: 'auto',}}></StyledTableHeadCell>
                         </StyledTableHeadRow>
                     </thead>
                     <tbody>
                         {data.map((row, rowIndex) => (
                             <React.Fragment key={rowIndex}>
-                                <StyledTableBodyRow onClick={() => handleRowClick(rowIndex)} style={{ cursor: 'pointer' }} >
+                                <StyledTableBodyRow  style={{ cursor: 'pointer', backgroundColor: 'transparent'  }} >
                                     <StyledTableBodyCell
                                         style={{ verticalAlign: 'middle', }}
                                     >
@@ -224,6 +257,7 @@ const ListProject = () => {
                                         />
                                     </StyledTableBodyCell>
                                     <StyledTableBodyCell
+                                    onClick={() => handleRowClick(rowIndex)}
                                         style={{
                                             fontSize: '16px',
                                             fontFamily: 'Plus Jakarta Sans',
@@ -241,8 +275,9 @@ const ListProject = () => {
                                         </Button>
                                         {/* <MdKeyboardArrowDown size="32" variant="Outline" /> */}
                                     </StyledTableBodyCell>
-                                    <StyledTableBodyCell style={{paddingLeft:'0',paddingRight:'0'}}>{getStatusTag(row[1])}</StyledTableBodyCell>
+                                    <StyledTableBodyCell onClick={() => handleRowClick(rowIndex)} style={{paddingLeft:'0',paddingRight:'0'}}>{getStatusTag(row[1])}</StyledTableBodyCell>
                                     <StyledTableBodyCell
+                                    onClick={() => handleRowClick(rowIndex)}
                                         style={{
                                             fontSize: '16px',
                                             fontFamily: 'Plus Jakarta Sans',
@@ -253,8 +288,8 @@ const ListProject = () => {
                                         }}
                                     >{row[2]}
                                     </StyledTableBodyCell>
-                                    <StyledTableBodyCell style={{ verticalAlign: 'middle', paddingLeft:'0',paddingRight:'0'}}>
-                                        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                    <StyledTableBodyCell onClick={() => handleRowClick(rowIndex)} style={{ verticalAlign: 'middle', paddingLeft:'0',paddingRight:'0'}}>
+                                        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', }}>
                                             {row[3].split(',').map((image, index) => (
                                                 <Avatar
                                                     key={index}
@@ -265,7 +300,7 @@ const ListProject = () => {
                                                                 width: '36px',
                                                                 height: '36px',
                                                                 marginLeft: index > 0 ? '-10px' : '0',
-                                                                zIndex: index,
+                                                                zIndex: -1,
                                                             },
                                                         },
                                                     }}
@@ -275,6 +310,7 @@ const ListProject = () => {
                                         </div>
                                     </StyledTableBodyCell>
                                     <StyledTableBodyCell
+                                    onClick={() => handleRowClick(rowIndex)}
                                         style={{
                                             fontSize: '16px',
                                             fontFamily: 'Plus Jakarta Sans',
@@ -285,6 +321,7 @@ const ListProject = () => {
                                         }}
                                     >{row[4]}</StyledTableBodyCell>
                                     <StyledTableBodyCell
+                                    onClick={() => handleRowClick(rowIndex)}
                                         style={{
                                             fontSize: '16px',
                                             fontFamily: 'Plus Jakarta Sans',
@@ -297,7 +334,7 @@ const ListProject = () => {
                                     <StyledTableBodyCell style={{ verticalAlign: 'middle',paddingLeft:'0',paddingRight:'0' }}>
                                         <>
                                             <Button
-                                                // onClick={() => openModalitem(true)}
+                                                onClick={openModaledit}
                                                 kind={KIND.tertiary}
                                                 size={SIZE.mini}
                                                 overrides={{
@@ -310,6 +347,8 @@ const ListProject = () => {
                                             >
                                                 <Edit2 variant="Bold" />
                                             </Button>
+
+                                            
 
                                             <Button
                                                 onClick={() => alert("Clicked another action for row: " + JSON.stringify(row))}
@@ -467,6 +506,7 @@ const ListProject = () => {
                     </tbody>
                 </StyledTable>
             )}
+           <EditProject isOpenedit={isOpenedit} onCloseedit={closeModaledit} />
         </div>
     );
 };

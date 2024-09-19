@@ -17,8 +17,9 @@ const AddProject = ({ isOpen, onClose }) => {
     return (
         <Modal onClose={onClose} isOpen={isOpen}
             overrides={{
-                Dialog: { style: { width: '795px', height: 'auto', padding: '0' } },
+                Dialog: { style: { width: '795px', height: 'auto', padding: '0' ,zIndex: '9999',} },
             }}>
+                
             <ModalHeader style={{ padding: '0', margin: '0' }}>
                 <FileUploadproject />
             </ModalHeader>
