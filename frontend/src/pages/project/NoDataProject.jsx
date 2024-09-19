@@ -1,13 +1,20 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, {useState} from 'react'
 import { PiFileDuotone } from "react-icons/pi";
 import { Button, KIND, SHAPE } from "baseui/button";
+import AddProject from './AddProject';
 
 const NoDataProject = () => {
-    const navigate = useNavigate();
-    const handleItemClick = (path, mode = 'create') => {
-        navigate(path, { state: { mode } });
-    };
+   
+    const [isOpenitem, setIsOpenitem] = useState(false);
+  
+    function openModalitem() {
+      setIsOpenitem(true);
+    }
+  
+    function closeModalitem() {
+      setIsOpenitem(false);
+    }
+
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%', padding: '105px', }}>
             <div style={{ textAlign: 'center' }}>
@@ -15,7 +22,7 @@ const NoDataProject = () => {
                 <h1 style={{ marginTop: '20px', }}>No Project Files</h1>
                 <p style={{ marginBottom: '20px' }}>Create a new project file from your project</p>
                 <Button
-                    onClick={() => handleItemClick('/admin/addInvoice', 'Create')}
+                    onClick={() => openModalitem()}
                     kind={KIND.secondary}
                     shape={SHAPE.pill}
                     overrides={{
@@ -30,7 +37,7 @@ const NoDataProject = () => {
                 >
                     Create New Project
                 </Button>
-
+                <AddProject isOpen={isOpenitem} onClose={closeModalitem} />
             </div>
         </div>
 

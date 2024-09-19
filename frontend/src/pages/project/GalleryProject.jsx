@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Search } from "baseui/icon";
 import { Input } from "baseui/input";
 import { Button, KIND } from "baseui/button";
@@ -10,6 +10,8 @@ import { Card, StyledBody, StyledAction } from "baseui/card";
 import { Avatar } from "baseui/avatar";
 import { Tag, SIZE } from "baseui/tag";
 import '../../components/Card/cardProject.css';
+import NoDataProject from './NoDataProject';
+import AddProject from './AddProject';
 
 const GalleryProject = () => {
 
@@ -21,9 +23,9 @@ const GalleryProject = () => {
   ];
 
   const data = [
-    ["Manhattan Project", "On Going", "Mobile apps, Website, Wo..", "Filled.jpg,Filled.jpg,Filled.jpg,Filled.jpg", "3 Juni 2024", "project.jpg"],
-    ["Manhattan Project", "In Review", "Mobile apps, Website", "Filled.jpg", "3 Juni 2024", "project.jpg"],
-    ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "project.jpg"],
+    // ["Manhattan Project", "On Going", "Mobile apps, Website, Wo..", "Filled.jpg,Filled.jpg,Filled.jpg,Filled.jpg", "3 Juni 2024", "project.jpg"],
+    // ["Manhattan Project", "In Review", "Mobile apps, Website", "Filled.jpg", "3 Juni 2024", "project.jpg"],
+    // ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "project.jpg"],
 ];
 
 const getStatusTag = (status) => {
@@ -52,6 +54,16 @@ const getStatusTag = (status) => {
           return null;
   }
 };
+
+const [isOpenitem, setIsOpenitem] = useState(false);
+  
+function openModalitem() {
+  setIsOpenitem(true);
+}
+
+function closeModalitem() {
+  setIsOpenitem(false);
+}
 
   return (
     <div>
@@ -90,10 +102,15 @@ const getStatusTag = (status) => {
           </StatefulPopover>
         </div>
 
-        <Button startEnhancer={() => <FiPlus size={24} />}  >
+        <Button startEnhancer={() => <FiPlus size={24} />}  onClick={() => openModalitem()}>
           Create new project
         </Button>
+        <AddProject isOpen={isOpenitem} onClose={closeModalitem} />
       </div>
+
+      {data.length === 0 ? (
+                <NoDataProject />
+            ) : (
       <div style={{ display: 'flex', gap:'40px' , flexWrap: 'wrap', marginTop:'24px'}}>
       {data.map((row, rowIndex) => (
         <Card
@@ -143,6 +160,7 @@ const getStatusTag = (status) => {
       ))}
 
       </div>
+      )}
     </div>
   )
 }

@@ -24,6 +24,7 @@ import {
     ProgressSteps,
     Step
 } from "baseui/progress-steps";
+import AddProject from './AddProject';
 
 const ListProject = () => {
     const ITEMS = [
@@ -88,6 +89,16 @@ const ListProject = () => {
         }
     };
 
+    const [isOpenitem, setIsOpenitem] = useState(false);
+  
+    function openModalitem() {
+      setIsOpenitem(true);
+    }
+  
+    function closeModalitem() {
+      setIsOpenitem(false);
+    }
+
     return (
         <div>
             <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between', height: '40px' }}>
@@ -125,9 +136,10 @@ const ListProject = () => {
                     </StatefulPopover>
                 </div>
 
-                <Button startEnhancer={() => <FiPlus size={24} />} >
+                <Button startEnhancer={() => <FiPlus size={24} />} onClick={() => openModalitem()}>
                     Create new project
                 </Button>
+                <AddProject isOpen={isOpenitem} onClose={closeModalitem} />
             </div>
 
             {data.length === 0 ? (
