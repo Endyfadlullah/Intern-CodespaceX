@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import './Tabs.css';
 import ListProject from '../../pages/project/ListProject';
+import GalleryProject from '../../pages/project/GalleryProject';
 
 const Tabs = () => {
   const [activeTab, setActiveTab] = useState('list');
@@ -30,8 +31,7 @@ const Tabs = () => {
         )}
         {activeTab === 'gallery' && (
           <div className="content">
-            <h2>Konten Gallery</h2>
-            <p>Ini adalah konten untuk tab Gallery.</p>
+           <GalleryProject/>
           </div>
         )}
       </div>

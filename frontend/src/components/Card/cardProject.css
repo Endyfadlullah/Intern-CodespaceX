@@ -1,0 +1,26 @@
+/* cardProject.css */
+.cardProject {
+    width: 100%;
+    max-width: 585px; 
+    box-sizing: border-box;
+  }
+  
+  /* @media (min-width: 992px) {
+    .cardProject {
+        max-width: 585px;
+      
+    }
+  }
+  
+  @media (min-width: 991px) {
+    .cardProject {
+      max-width: 495px;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .cardProject {
+      max-width: 450px;
+    }
+  } */
+  
