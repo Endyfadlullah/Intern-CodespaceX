@@ -20,10 +20,7 @@ import NoDataProject from './NoDataProject';
 import { Avatar } from "baseui/avatar";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
 import { StyledThumbnail } from "baseui/card";
-import {
-    ProgressSteps,
-    Step
-} from "baseui/progress-steps";
+import { ProgressSteps, Step} from "baseui/progress-steps";
 import AddProject from './AddProject';
 import EditProject from './EditProject';
 

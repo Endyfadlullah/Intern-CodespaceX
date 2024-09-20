@@ -6,6 +6,8 @@ import { Whatsapp } from 'iconsax-react';
 import { ListItem, ListItemLabel, ARTWORK_SIZES } from "baseui/list";
 import { Avatar } from "baseui/avatar";
 import { Accordion, Panel } from 'baseui/accordion';
+import TalentProject from './TalentProject';
+import CheckpointProject from './CheckpointProject';
 
 
 
@@ -62,7 +64,10 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
                             },
                             Content: {
                                 style: {
-                                    padding: '0',
+                                    paddingTop: '0',
+                                    paddingLeft: '0',
+                                    paddingRight: '0',
+                                    paddingBottom:'10px'
                                 },
                             },
                         }}
@@ -92,16 +97,20 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
                                     fontWeight: '600',
                                     paddingLeft: '0',
                                     paddingRight: '0',
+                                    paddingBottom: '0'
                                 },
                             },
                             Content: {
                                 style: {
-                                    padding: '0',
+                                    paddingTop: '0',
+                                    paddingLeft: '0',
+                                    paddingRight: '0',
+                                    paddingBottom:'10px'
                                 },
                             },
                         }}
                     >
-                        isi
+                        <TalentProject/>
                     </Panel>
                 </Accordion>
 
@@ -119,12 +128,15 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
                             },
                             Content: {
                                 style: {
-                                    padding: '0',
+                                    paddingTop: '0',
+                                    paddingLeft: '0',
+                                    paddingRight: '0',
+                                    paddingBottom:'10px'
                                 },
                             },
                         }}
                     >
-                        isi
+                        <CheckpointProject/>
                     </Panel>
                 </Accordion>
 
@@ -142,7 +154,10 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
                             },
                             Content: {
                                 style: {
-                                    padding: '0',
+                                    paddingTop: '0',
+                                    paddingLeft: '0',
+                                    paddingRight: '0',
+                                    paddingBottom:'10px'
                                 },
                             },
                         }}
