@@ -136,7 +136,7 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
                             },
                         }}
                     >
-                        <CheckpointProject/>
+                        <CheckpointProject onCloseedit={onCloseedit}/>
                     </Panel>
                 </Accordion>
 

@@ -31,16 +31,16 @@ const TalentProject = () => {
             image: user.image,
         };
 
-       
+
         const userExists = dataTalentProjectdelete.some(talent => talent.id === newUser.id);
-        
+
         if (!userExists) {
             setDataTalentProject(prevData => [...prevData, newUser]);
         } else {
             alert(`${user.name} sudah ada dalam daftar.`);
         }
     };
-    
+
     const handleDelete = (id) => {
         const updatedData = dataTalentProjectdelete.filter(talent => talent.id !== id);
         setDataTalentProject(updatedData);
@@ -100,38 +100,38 @@ const TalentProject = () => {
                 placement={PLACEMENT.bottomLeft}
                 content={({ close }) => (
                     <div style={{ width: "350px" }}>
-            {users.map((user) => (
-                <ListItem 
-                    key={user.id} 
-                    onClick={() => {
-                        handleSelectUser({
-                            id: user.id,
-                            name: user.name,
-                            role: user.role,
-                            image: user.image
-                        });
-                        close();
-                    }}
-                    overrides={{
-                        Content: {
-                            style: {
-                                justifyContent: 'none',
-                                gap: '8px'
-                            },
-                        },
-                    }}
-                >
-                    <Avatar 
-                        name={user.name} 
-                        src={require(`../../image/${user.image}`)} 
-                    />
-                    <ListItemLabel>
-                        <strong>{user.name}</strong>
-                        <div>{user.role}</div>
-                    </ListItemLabel>
-                </ListItem>
-            ))}
-        </div>
+                        {users.map((user) => (
+                            <ListItem
+                                key={user.id}
+                                onClick={() => {
+                                    handleSelectUser({
+                                        id: user.id,
+                                        name: user.name,
+                                        role: user.role,
+                                        image: user.image
+                                    });
+                                    close();
+                                }}
+                                overrides={{
+                                    Content: {
+                                        style: {
+                                            justifyContent: 'none',
+                                            gap: '8px'
+                                        },
+                                    },
+                                }}
+                            >
+                                <Avatar
+                                    name={user.name}
+                                    src={require(`../../image/${user.image}`)}
+                                />
+                                <ListItemLabel>
+                                    <strong>{user.name}</strong>
+                                    <div>{user.role}</div>
+                                </ListItemLabel>
+                            </ListItem>
+                        ))}
+                    </div>
                 )}
             >
                 <ListItem

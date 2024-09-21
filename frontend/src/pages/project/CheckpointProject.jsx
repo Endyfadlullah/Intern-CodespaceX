@@ -6,8 +6,10 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { Trash } from 'iconsax-react';
 import { Input } from "baseui/input";
+import { FiPlus } from "react-icons/fi";
+import AddFileAttachment from './AddFileAttachment';
 
-const CheckpointProject = () => {
+const CheckpointProject = ({ onCloseedit }) => {
     const [dataCheckpoint, setDataCheckpoint] = useState([
         { id: 4, title: "Kickoff meeting", description: "we successfully held kick off meeting, setting clear goals and expectations to start the project on the right track", figma: "https", meet: "https" },
         { id: 2, title: "Kickoff meeting", description: "we successfully held kick off meeting, setting clear goals and expectations to start the project on the right track", figma: "", meet: "https" },
@@ -30,6 +32,20 @@ const CheckpointProject = () => {
     };
 
 
+    const [isOpenFile, setIsOpenFile] = useState(false);
+
+    const openModalfile = () => {
+        setIsOpenFile(true);
+    };
+
+    const closeModalfile = () => {
+        setIsOpenFile(false);
+    };
+
+
+    // const handleComplete = () => {onCloseedit();};
+
+
     return (
         <div>
             <Button
@@ -40,90 +56,115 @@ const CheckpointProject = () => {
                 Add Checkpoint
             </Button>
             {showSteps && (
-            <div >
-                <ProgressSteps
-                    alwaysShowDescription
-                    overrides={{
-                        Root: {
-                            style: {
-                                padding: '0',
-                                marginTop: '26px',
-                                width: '100%',
+                <div >
+                    <ProgressSteps
+                        alwaysShowDescription
+                        overrides={{
+                            Root: {
+                                style: {
+                                    padding: '0',
+                                    marginTop: '26px',
+                                    width: '100%',
+                                },
                             },
-                        },
-                        Title: {
-                            style: {
-                                fontWeight: '500',
-                                paddingTop: '0',
-                                paddingBottom: '14px',
+                            Title: {
+                                style: {
+                                    fontWeight: '500',
+                                    paddingTop: '0',
+                                    paddingBottom: '14px',
+                                },
                             },
-                        },
-                        IconContainer: {
-                            style: {
-                                padding: '0',
-                                marginTop: '0',
-                                backgroundColor: 'transparent',
+                            IconContainer: {
+                                style: {
+                                    padding: '0',
+                                    marginTop: '0',
+                                    backgroundColor: 'transparent',
+                                },
                             },
-                        },
-                        Tail: {
-                            style: {
-                                marginTop: 'calc(3px + (20px + 20px) / 2)',
-                                backgroundColor: 'transparent',
-                                height: 'calc(100% + 12px)',
-                                width: '2px',
-                                borderLeft: '3px dashed #000000',
-                            }
-                        },
-                    }}
-                >
-
-                    <Step
-                        title={"Checkpoint " + latestCheckpointNumber}
-                        isActive={true}
+                            Tail: {
+                                style: {
+                                    marginTop: 'calc(3px + (20px + 20px) / 2)',
+                                    backgroundColor: 'transparent',
+                                    height: 'calc(100% + 12px)',
+                                    width: '2px',
+                                    borderLeft: '3px dashed #000000',
+                                }
+                            },
+                        }}
                     >
-                        <h3 style={{ marginBottom: '10px' }}>Title</h3>
-                        <Input
-                            placeholder="Title"
-                            clearOnEscape
-                        />
-                        <h3 style={{ marginBottom: '10px', marginTop: '26px' }}>Description</h3>
-                        <Input
-                            placeholder="Description"
-                            clearOnEscape
-                        />
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '28px' }}>
-                            <Button 
-                            onClick={handleCancel}
-                            kind={KIND.secondary} 
-                            shape={SHAPE.pill}
-                            overrides={{
-                                Root: {
-                                    style: {
-                                        padding: '10px 35px 10px 35px',
+
+                        <Step
+                            title={"Checkpoint " + latestCheckpointNumber}
+                            isActive={true}
+                        >
+                            <h3 style={{ marginBottom: '10px' }}>Title</h3>
+                            <Input
+                                placeholder="Title"
+                                clearOnEscape
+                            />
+                            <h3 style={{ marginBottom: '10px', marginTop: '26px' }}>Description</h3>
+                            <Input
+                                placeholder="Description"
+                                clearOnEscape
+                            />
+                            <div>
+                                <Button 
+                                onClick={() => { 
+                                    // handleComplete(); 
+                                    openModalfile(); 
+                                }}
+                                startEnhancer={() => <FiPlus size={24} />} 
+                                kind={KIND.tertiary} 
+                                overrides={{
+                                    Root: {
+                                        style: {
+                                            ':hover': {
+                                                backgroundColor: 'none',
+                                            },
+                                            ':active':{
+                                                backgroundColor: 'none',
+                                            }
+                                        },
                                     },
-                                },
-                            }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button 
-                            onClick={handleCancel}
-                            shape={SHAPE.pill}
-                            overrides={{
-                                Root: {
-                                    style: {
-                                        padding: '10px 35px 10px 35px',
-                                    },
-                                },
-                            }}
-                            >Save</Button>
-                        </div>
-                    </Step>
+                                }}
+                                >
+                                    Add File Attachment
+                                </Button>
+                                <AddFileAttachment isOpen={isOpenFile} onClose={closeModalfile}/>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '28px' }}>
+                                <Button
+                                    onClick={handleCancel}
+                                    kind={KIND.secondary}
+                                    shape={SHAPE.pill}
+                                    overrides={{
+                                        Root: {
+                                            style: {
+                                                padding: '10px 35px 10px 35px',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    onClick={handleCancel}
+                                    shape={SHAPE.pill}
+                                    overrides={{
+                                        Root: {
+                                            style: {
+                                                padding: '10px 35px 10px 35px',
+                                            },
+                                        },
+                                    }}
+                                >Save</Button>
+                            </div>
+                        </Step>
 
 
-                </ProgressSteps>
+                    </ProgressSteps>
 
-            </div>
+                </div>
             )}
             <div
                 style={{
@@ -131,7 +172,7 @@ const CheckpointProject = () => {
                     overflow: 'auto',
                     scrollbarWidth: 'thin',
                     scrollbarColor: '#888 #f1f1f1',
-                    marginTop:'10px'
+                    marginTop: '10px'
                 }}>
                 <ProgressSteps
                     alwaysShowDescription

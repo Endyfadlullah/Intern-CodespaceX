@@ -4,19 +4,18 @@ import { TableBuilder, TableBuilderColumn } from "baseui/table-semantic";
 import { Checkbox } from "baseui/checkbox";
 import { Search } from "baseui/icon";
 import { Input } from "baseui/input";
-import { Button, KIND, } from "baseui/button";
+import { Button, KIND, SIZE } from "baseui/button";
 import { ChevronDown } from "baseui/icon";
 import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
 import { FiPlus } from "react-icons/fi";
-import { Tag, SIZE } from 'baseui/tag';
 import { Edit2, CloseSquare } from 'iconsax-react';
-import AddUser from './AddUser';
-import NoDataUser from './NoDataUser';
+
+import NoDataUser from './NoDataAnnouncement';
 
 
 
-const User = () => {
+const Announcement = () => {
   // const navigate = useNavigate();
 
   const ITEMS = [
@@ -45,48 +44,17 @@ const User = () => {
   };
 
   const data = [
-    ["Faizul Akbar", "Active", "Admin", "Email@gmail.com", "+49-1726-436", "3 Juni 2024"],
-    ["Faizul Akbar", "Inactive", "Customer", "Email@gmail.com", "+49-1726-436", "3 Juni 2024"],
+    // ["System Maintenance", "Heads up! We'll be performing scheduled main...", "Global", "www. google.com", "3 Juni 2024"],
+    // ["System Maintenance", "Heads up! We'll be performing scheduled main...", "Fajar, Indra ", "www. google.com", "3 Juni 2024"],
   ];
 
-  const getStatusTag = (status) => {
-    switch (status) {
-      case "Active":
-        return <Tag closeable={false} kind="positive" size={SIZE.medium}
-          overrides={{
-            Root: {
-              style: {
-                paddingLeft: '18px !important',
-                paddingRight: '18px !important',
-              },
-            },
-          }}>
-          <b>Active</b>
-        </Tag>;
-      case "Inactive":
-        return <Tag closeable={false} kind="negative" size={SIZE.medium}
-        ><b>Inactive</b></Tag>;
-      default:
-        return null;
-    }
-  };
+ 
  
 
-  const [isOpenitem, setIsOpenitem] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-
-  function openModalitem(isEdit = false) {
-    setIsEditMode(isEdit);
-    setIsOpenitem(true);
-  }
-
-  function closeModalitem() {
-    setIsOpenitem(false);
-  }
-
+  
   return (
     <div style={{ padding: '30px' }}>
-      <h1 style={{ marginBottom: '40px', fontSize: '28px' }}>User Management</h1>
+      <h1 style={{ marginBottom: '40px', fontSize: '28px' }}>Announcement</h1>
       <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between', height: '40px' }}>
         <div style={{ display: 'flex', gap: '10px' }}>
           <Input
@@ -122,11 +90,11 @@ const User = () => {
           </StatefulPopover>
         </div>
 
-        <Button startEnhancer={() => <FiPlus size={24}/>}  onClick={() => openModalitem(false)} >
+        <Button startEnhancer={() => <FiPlus size={24}/>}   >
           Add New
         </Button>
 
-        <AddUser isOpen={isOpenitem} onClose={closeModalitem} isEditMode={isEditMode}/>
+        
 
       </div>
 
@@ -207,7 +175,7 @@ const User = () => {
             />
           )}
         </TableBuilderColumn>
-        <TableBuilderColumn header="Full Name"
+        <TableBuilderColumn header="Title"
           overrides={{
             TableHeadCell: {
               style: {
@@ -229,15 +197,13 @@ const User = () => {
         >
           {(row) => (row[0])}
         </TableBuilderColumn>
-        <TableBuilderColumn header="Status"
+        <TableBuilderColumn header="Description"
           overrides={{
             TableHeadCell: {
               style: {
                 fontSize: '16px',
                 fontFamily: 'Plus Jakarta Sans',
                 fontWeight: 'bold',
-                verticalAlign: 'middle',
-                cursor: 'pointer',
               },
             },
             TableBodyCell: {
@@ -246,13 +212,14 @@ const User = () => {
                 fontFamily: 'Plus Jakarta Sans',
                 fontWeight: '600',
                 verticalAlign: 'middle',
+                cursor: 'pointer',
               },
             },
           }}
         >
-          {(row) => getStatusTag(row[1])}
+          {(row) => (row[1])}
         </TableBuilderColumn>
-        <TableBuilderColumn header="Roles"
+        <TableBuilderColumn header="Send to"
           overrides={{
             TableHeadCell: {
               style: {
@@ -274,7 +241,7 @@ const User = () => {
         >
           {(row) => (row[2])}
         </TableBuilderColumn>
-        <TableBuilderColumn header="Email"
+        <TableBuilderColumn header="Linked link"
           overrides={{
             TableHeadCell: {
               style: {
@@ -290,33 +257,12 @@ const User = () => {
                 fontWeight: '600',
                 verticalAlign: 'middle',
                 cursor: 'pointer',
+                color:'#00000080'
               },
             },
           }}
         >
           {(row) => (row[3])}
-        </TableBuilderColumn>
-        <TableBuilderColumn header="Mobile Number"
-          overrides={{
-            TableHeadCell: {
-              style: {
-                fontSize: '16px',
-                fontFamily: 'Plus Jakarta Sans',
-                fontWeight: 'bold',
-              },
-            },
-            TableBodyCell: {
-              style: {
-                fontSize: '16px',
-                fontFamily: 'Plus Jakarta Sans',
-                fontWeight: '600',
-                verticalAlign: 'middle',
-                cursor: 'pointer',
-              },
-            },
-          }}
-        >
-          {(row) => (row[4])}
         </TableBuilderColumn>
         <TableBuilderColumn header="Created at"
           overrides={{
@@ -338,7 +284,7 @@ const User = () => {
             },
           }}
         >
-          {(row) => (row[5])}
+          {(row) => (row[4])}
         </TableBuilderColumn>
         <TableBuilderColumn header=""
           overrides={{
@@ -352,7 +298,7 @@ const User = () => {
           {(row) => (
             <>
               <Button
-               onClick={() => openModalitem(true)}
+              
                 kind={KIND.tertiary}
                 size={SIZE.mini}
                 overrides={{
@@ -390,4 +336,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default Announcement;

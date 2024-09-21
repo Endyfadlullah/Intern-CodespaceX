@@ -2,21 +2,29 @@ import React, { useState } from 'react';
 import { Accordion, Panel } from 'baseui/accordion';
 import ListProject from '../project/ListProject';
 import InfoCard from '../../components/InfoCard/InfoCard';
+import Notification from '../../components/notification/Notification';
 
 const Dashboard = () => {
-  // Initialize state with the index of the panel you want to be open by default (e.g., 0 for the first panel)
-  const [expanded, setExpanded] = useState([0]); // Use an array here
+  
+  const [expanded, setExpanded] = useState([0]); 
 
   const handleChange = ({ expanded }) => {
-    // Update state with the index of the expanded panel, or set to an empty array if no panel is expanded
+    
     setExpanded(expanded.length ? [expanded[0]] : []);
   };
 
+  const notif = [
+    // { id: 1, title: "New project inquiry request", desc: "Notification details go here", time: "22.00" },
+    // { id: 1, title: "New project inquiry request", desc: "Notification details go here", time: "22.00" },
+    // { id: 1, title: "New project inquiry request", desc: "Notification details go here", time: "22.00" },
+];
+
   return (
     <div style={{ padding: '30px' }}>
+       {notif.length > 0 && <Notification />}
       <Accordion
         onChange={handleChange}
-        expanded={expanded} // Ensure this receives an array of indices
+        expanded={expanded} 
       >
         <Panel
           title="Project Overview"
