@@ -10,7 +10,7 @@ import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
 import { FiPlus } from "react-icons/fi";
 import { Edit2, CloseSquare } from 'iconsax-react';
-
+import AddAnnouncement from './AddAnnouncement';
 import NoDataUser from './NoDataAnnouncement';
 
 
@@ -44,12 +44,22 @@ const Announcement = () => {
   };
 
   const data = [
-    // ["System Maintenance", "Heads up! We'll be performing scheduled main...", "Global", "www. google.com", "3 Juni 2024"],
-    // ["System Maintenance", "Heads up! We'll be performing scheduled main...", "Fajar, Indra ", "www. google.com", "3 Juni 2024"],
+    ["System Maintenance", "Heads up! We'll be performing scheduled main...", "Global", "www. google.com", "3 Juni 2024"],
+    ["System Maintenance", "Heads up! We'll be performing scheduled main...", "Fajar, Indra ", "www. google.com", "3 Juni 2024"],
   ];
 
- 
- 
+
+  const [isOpenitem, setIsOpenitem] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  function openModalitem(isEdit = false) {
+    setIsEditMode(isEdit);
+    setIsOpenitem(true);
+  }
+
+  function closeModalitem() {
+    setIsOpenitem(false);
+  }
 
   
   return (
@@ -90,14 +100,12 @@ const Announcement = () => {
           </StatefulPopover>
         </div>
 
-        <Button startEnhancer={() => <FiPlus size={24}/>}   >
+        <Button startEnhancer={() => <FiPlus size={24}/>}   onClick={() => openModalitem(false)}>
           Add New
         </Button>
-
-        
-
       </div>
 
+      <AddAnnouncement isOpen={isOpenitem} onClose={closeModalitem} isEditMode={isEditMode}/>
 
 
       {data.length === 0 ? (
@@ -298,7 +306,7 @@ const Announcement = () => {
           {(row) => (
             <>
               <Button
-              
+              onClick={() => openModalitem(true)}
                 kind={KIND.tertiary}
                 size={SIZE.mini}
                 overrides={{

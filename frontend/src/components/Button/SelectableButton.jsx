@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { TickCircle } from 'iconsax-react';
 
-const SelectableButton = ({ label }) => {
-  const [isSelected, setIsSelected] = useState(false);
+const SelectableButton = ({ label, isSelected, onSelect }) => {
+  const [selected, setSelected] = useState(isSelected);
 
   const handleClick = () => {
-    setIsSelected(!isSelected);
+    setSelected(!selected);
+    onSelect(label, !selected); // Kirim label dan status terpilih ke parent
   };
 
   return (
@@ -15,8 +16,8 @@ const SelectableButton = ({ label }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: isSelected ? 'black' : '#f0f0f0',
-        color: isSelected ? 'white' : 'black',
+        backgroundColor: selected ? 'black' : '#f0f0f0',
+        color: selected ? 'white' : 'black',
         border: 'none',
         borderRadius: '20px',
         padding: '8px 16px',
@@ -26,12 +27,12 @@ const SelectableButton = ({ label }) => {
       }}
     >
       {label}
-      {isSelected && <TickCircle size="18" style={{ marginLeft: '8px' }} />}
+      {selected && <TickCircle size="18" style={{ marginLeft: '8px' }} />}
     </button>
   );
 };
 
-const PlatformSelector = () => {
+const PlatformSelector = ({ selectedPlatforms, setSelectedText }) => {
   const platforms = [
     'Mobile App',
     'Website Development',
@@ -39,10 +40,28 @@ const PlatformSelector = () => {
     'Wordpress'
   ];
 
+  const handlePlatformSelect = (label, isSelected) => {
+    if (isSelected) {
+      // Tambah platform yang dipilih
+      setSelectedText(prev => prev ? `${prev}, ${label}` : label);
+    } else {
+      // Hapus platform yang tidak dipilih
+      setSelectedText(prev => {
+        const newText = prev.split(', ').filter(platform => platform !== label).join(', ');
+        return newText;
+      });
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
       {platforms.map((platform, index) => (
-        <SelectableButton key={index} label={platform} />
+        <SelectableButton
+          key={index}
+          label={platform}
+          isSelected={selectedPlatforms.includes(platform)}
+          onSelect={handlePlatformSelect} // Kirim fungsi ke SelectableButton
+        />
       ))}
     </div>
   );

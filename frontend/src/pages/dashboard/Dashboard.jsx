@@ -14,9 +14,9 @@ const Dashboard = () => {
   };
 
   const notif = [
-    // { id: 1, title: "New project inquiry request", desc: "Notification details go here", time: "22.00" },
-    // { id: 1, title: "New project inquiry request", desc: "Notification details go here", time: "22.00" },
-    // { id: 1, title: "New project inquiry request", desc: "Notification details go here", time: "22.00" },
+    { id: 1, title: "New project inquiry request", desc: "Notification details go here", time: "22.00" },
+    { id: 1, title: "New project inquiry request", desc: "Notification details go here", time: "22.00" },
+    { id: 1, title: "New project inquiry request", desc: "Notification details go here", time: "22.00" },
 ];
 
   return (

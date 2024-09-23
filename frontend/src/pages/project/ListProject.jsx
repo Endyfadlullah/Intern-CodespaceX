@@ -149,7 +149,7 @@ const ListProject = () => {
                                         style: {
                                             height: "120px",
                                             width: "138px",
-                                            overflow: "hidden", // Menyembunyikan scroll
+                                            overflow: "hidden", 
                                         },
                                     },
                                 }}

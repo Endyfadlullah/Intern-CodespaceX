@@ -22,7 +22,7 @@ const Login = () => {
                     type="password"
                 />
             </div>
-            <StyledLink style={{ cursor: 'pointer' , }}>Forgot password?</StyledLink>;
+            <StyledLink style={{ cursor: 'pointer' , }} onClick={() => handleItemClick("/forgot")}>Forgot password?</StyledLink>;
             <div>
             <Button
             onClick={() => handleItemClick("/admin/dashboard")}

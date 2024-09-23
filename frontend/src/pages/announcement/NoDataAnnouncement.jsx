@@ -1,13 +1,15 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import React ,{useState}from 'react'
 import { PiFileDuotone } from "react-icons/pi";
 import { Button, KIND, SHAPE } from "baseui/button";
+import AddAnnouncement from './AddAnnouncement';
 
 const NoDataUser = () => {
-    const navigate = useNavigate();
-    const handleItemClick = (path, mode = 'create') => {
-        navigate(path, { state: { mode } });
-    };
+    const [isOpen, setIsOpen] = useState(false);
+
+    function close() {
+      setIsOpen(false);
+    }
+   
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%', padding: '120px', }}>
             <div style={{ textAlign: 'center' }}>
@@ -15,7 +17,7 @@ const NoDataUser = () => {
                 <h1 style={{ marginTop: '20px', }}>No Announcement Files</h1>
                 <p style={{ marginBottom: '20px' }}>Create a new Announcement file from your project</p>
                 <Button
-                    onClick={() => handleItemClick('/admin/addInvoice', 'Create')}
+                    onClick={() => setIsOpen(true)}
                     kind={KIND.secondary}
                     shape={SHAPE.pill}
                     overrides={{
@@ -30,8 +32,8 @@ const NoDataUser = () => {
                 >
                     Create New Announcement
                 </Button>
-
             </div>
+            <AddAnnouncement onClose={close} isOpen={isOpen} />
         </div>
 
     )

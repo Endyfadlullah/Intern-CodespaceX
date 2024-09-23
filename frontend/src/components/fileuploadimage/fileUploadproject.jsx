@@ -25,16 +25,14 @@ const FileUploadproject = () => {
   return (
     <div style={{ 
       width: '100%', 
-      height: '234px', 
+      height: '100%', 
       display: 'flex', 
       alignItems: 'center', 
       justifyContent: 'center', 
       overflow: 'hidden', 
       position: 'relative',
-      borderTopRightRadius:'16px',
-      borderTopLeftRadius:'16px',
       background:'#EEEEEE',
-      
+      borderRadius:'16px',
       
     }}>
       {!image ? (

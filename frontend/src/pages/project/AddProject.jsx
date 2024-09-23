@@ -20,7 +20,7 @@ const AddProject = ({ isOpen, onClose }) => {
                 Dialog: { style: { width: '795px', height: 'auto', padding: '0' ,zIndex: '9999',} },
             }}>
                 
-            <ModalHeader style={{ padding: '0', margin: '0' }}>
+            <ModalHeader style={{ padding: '0', margin: '0' , height:'234px',  }}>
                 <FileUploadproject />
             </ModalHeader>
             <ModalBody style={{ padding: '15px', color: 'black' }}>
