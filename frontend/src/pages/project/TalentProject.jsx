@@ -25,7 +25,7 @@ const users = [
 
 const TalentProject = () => {
 
-    const showToast = (title, description, icon) => {
+    const showToast = (title, description,) => {
         toaster.info(
             <div style={{ display: 'flex' , gap:'8px'}}>
                 <InfoCircle size={30} variant="Bold"/>
