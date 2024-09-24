@@ -1,47 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "baseui/input";
 import { ListItem, ListItemLabel } from "baseui/list";
 import { Avatar } from "baseui/avatar";
 import { SearchNormal1 } from 'iconsax-react';
+import { StatefulPopover, PLACEMENT } from 'baseui/popover';
 
+// Simpan daftar pengguna di luar komponen agar bisa digunakan di berbagai komponen
 const users = [
-    {
-        id: 1,
-        name: "Daffa Fairuz",
-        role: "UI Designer",
-        image: "Filled.jpg",
-    },
-    {
-        id: 2,
-        name: "Daffa Abdullah",
-        role: "UI Designer",
-        image: "Filled.jpg",
-    },
     {
         id: 3,
         name: "Daffa Abdullah",
-        role: "UI Designer",
+        role: "PT.Harpan",
         image: "Filled.jpg",
     },
     {
         id: 4,
-        name: "Daffa Abdullah",
-        role: "UI Designer",
+        name: "Pak Mamat",
+        role: "Jaya Abadi Group",
         image: "Filled.jpg",
     },
     {
         id: 5,
         name: "Rahmat",
-        role: "Frontend Developer",
+        role: "CV. Kuda Bersinar",
         image: "Filled.jpg",
     },
 ];
 
-
-
-const SelectableUserComponent = () => {
+const SelectableUserComponent = ({ selectedUserId }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedUser, setSelectedUser] = useState(null);
+
+    // Mengisi input otomatis dengan user yang sesuai berdasarkan selectedUserId
+    useEffect(() => {
+        if (selectedUserId) {
+            const user = users.find((user) => user.id === selectedUserId);
+            if (user) {
+                setSelectedUser(`${user.name} - ${user.role}`);
+            }
+        }
+    }, [selectedUserId]);
 
     const handleSelectUser = (user) => {
         setSelectedUser(`${user.name} - ${user.role}`);
@@ -64,58 +62,63 @@ const SelectableUserComponent = () => {
 
     return (
         <div>
-            {/* Display selected user name and role in the input field */}
-            <div style={{ position: 'relative' }}>
-                <Input
-                    value={selectedUser || searchTerm} // Display selected user or search term
-                    onChange={handleInputChange}
-                    placeholder="Search name..."
-                    startEnhancer={
-                        !selectedUser && 
-                        <span role="img" aria-label="Search"><SearchNormal1 size="16" /></span>
-                    }
-                />
-
-                {searchTerm && (
+            <StatefulPopover
+                content={() => (
                     <div
                         style={{
-                            width: '336px',
-                            position: 'absolute',
-                            bottom: '100%',
-                            left: 0,
-                            zIndex: 1000,
+                            width: '100%',
                             backgroundColor: 'white',
                             boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                            marginTop: '8px',
                             height: '200px',
                             overflowY: 'auto',
-                            scrollbarWidth: 'none',
-                            borderRadius: '16px'
+                            borderRadius: '16px',
+                            padding: '8px',
+                            scrollbarWidth: 'none',  
+                            msOverflowStyle: 'none',
                         }}
                     >
-                        {filteredUsers.map((user) => (
-                            <ListItem
-                                key={user.id}
-                                onClick={() => handleSelectUser(user)}
-                                overrides={{
-                                    Content: {
-                                        style: {
-                                            justifyContent: 'flex-start',
-                                            gap: '8px',
+                        {filteredUsers.length > 0 ? (
+                            filteredUsers.map((user) => (
+                                <ListItem
+                                    key={user.id}
+                                    onClick={() => handleSelectUser(user)}
+                                    overrides={{
+                                        Content: {
+                                            style: {
+                                                justifyContent: 'flex-start',
+                                                gap: '8px',
+                                            },
                                         },
-                                    },
-                                }}
-                            >
-                                <Avatar name={user.name} src={require(`../../image/${user.image}`)} />
-                                <ListItemLabel>
-                                    <strong>{user.name}</strong>
-                                    <div>{user.role}</div>
-                                </ListItemLabel>
-                            </ListItem>
-                        ))}
+                                    }}
+                                >
+                                    <Avatar name={user.name} src={require(`../../image/${user.image}`)} />
+                                    <ListItemLabel>
+                                        <strong>{user.name}</strong>
+                                        <div>{user.role}</div>
+                                    </ListItemLabel>
+                                </ListItem>
+                            ))
+                        ) : (
+                            <div style={{ padding: '8px' }}>No users found</div>
+                        )}
                     </div>
                 )}
-            </div>
+                placement={PLACEMENT.bottomLeft}
+                isOpen={Boolean(searchTerm)} // Popover visible only when searchTerm exists
+                onClickOutside={() => setSearchTerm('')} // Close popover if clicked outside
+            >
+                <div style={{ position: 'relative' }}>
+                    <Input
+                        value={selectedUser || searchTerm} // Display selected user or search term
+                        onChange={handleInputChange}
+                        placeholder="Search name..."
+                        startEnhancer={
+                            !selectedUser && 
+                            <span role="img" aria-label="Search"><SearchNormal1 size="16" /></span>
+                        }
+                    />
+                </div>
+            </StatefulPopover>
         </div>
     );
 };

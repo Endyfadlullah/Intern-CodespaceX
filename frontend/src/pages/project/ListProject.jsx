@@ -120,9 +120,18 @@ const ListProject = () => {
     }
 
     const [isOpenedit, setIsOpenedit] = useState(false);
+    const [expandedPanels, setExpandedPanels] = useState([]);
+    const [triggerCheckpoint, setTriggerCheckpoint] = useState(false);
 
     const openModaledit = () => {
         setIsOpenedit(true);
+        setExpandedPanels(["P1","P2","P3"]);
+        setTriggerCheckpoint(false);
+    };
+    const openModaleditopenCheckpoint = () => {
+        setIsOpenedit(true);
+        setExpandedPanels(["P1","P2","P3"]);
+        setTriggerCheckpoint(true);
     };
 
     const closeModaledit = () => {
@@ -475,10 +484,11 @@ const ListProject = () => {
                                                                 </Button>
                                                             </div>
                                                             <div style={{ display: 'flex', gap: '12px', marginTop: '32px', justifyContent: 'flex-end' }}>
-                                                                <Button kind={KIND.tertiary} shape={SHAPE.pill}>
+                                                                <Button kind={KIND.tertiary} shape={SHAPE.pill} onClick={openModaledit}>
                                                                     Project details
                                                                 </Button>
                                                                 <Button 
+                                                                onClick={openModaleditopenCheckpoint}
                                                                 shape={SHAPE.pill}
                                                                 overrides={{
                                                                     Root: {
@@ -503,7 +513,7 @@ const ListProject = () => {
                     </tbody>
                 </StyledTable>
             )}
-           <EditProject isOpenedit={isOpenedit} onCloseedit={closeModaledit} />
+           <EditProject isOpenedit={isOpenedit} onCloseedit={closeModaledit} expanded={expandedPanels} setExpanded={setExpandedPanels}  triggerCheckpoint={triggerCheckpoint} setTriggerCheckpoint={setTriggerCheckpoint}/>
         </div>
     );
 };

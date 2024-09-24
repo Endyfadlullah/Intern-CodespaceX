@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, KIND, SHAPE } from "baseui/button";
 import { ProgressSteps, Step } from "baseui/progress-steps";
 import { Figma, Link1 } from 'iconsax-react';
@@ -9,7 +9,7 @@ import { Input } from "baseui/input";
 import { FiPlus } from "react-icons/fi";
 import AddFileAttachment from './AddFileAttachment';
 
-const CheckpointProject = ({ onCloseedit }) => {
+const CheckpointProject = ({ triggerCheckpoint, setTriggerCheckpoint }) => {
     const [dataCheckpoint, setDataCheckpoint] = useState([
         { id: 4, title: "Kickoff meeting", description: "we successfully held kick off meeting, setting clear goals and expectations to start the project on the right track", figma: "https", meet: "https" },
         { id: 2, title: "Kickoff meeting", description: "we successfully held kick off meeting, setting clear goals and expectations to start the project on the right track", figma: "", meet: "https" },
@@ -31,6 +31,12 @@ const CheckpointProject = ({ onCloseedit }) => {
         setShowSteps(false);
     };
 
+    useEffect(() => {
+        if (triggerCheckpoint) {
+            handleAddCheckpoint(); 
+        }
+    }, [triggerCheckpoint, setTriggerCheckpoint]);
+
 
     const [isOpenFile, setIsOpenFile] = useState(false);
 
@@ -48,13 +54,15 @@ const CheckpointProject = ({ onCloseedit }) => {
 
     return (
         <div>
-            <Button
-                kind={KIND.secondary}
-                shape={SHAPE.pill}
-                onClick={handleAddCheckpoint}
-            >
-                Add Checkpoint
-            </Button>
+             {!showSteps && (
+                <Button
+                    kind={KIND.secondary}
+                    shape={SHAPE.pill}
+                    onClick={handleAddCheckpoint}
+                >
+                    Add Checkpoint
+                </Button>
+            )}
             {showSteps && (
                 <div >
                     <ProgressSteps

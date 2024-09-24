@@ -14,6 +14,9 @@ import { Button, SHAPE } from "baseui/button";
 
 const AddProject = ({ isOpen, onClose }) => {
     const [valuedate, setValuedate] = useState([new Date()]);
+    
+    const [selectedPlatforms,] = useState([]);
+    const [, setDisplayText] = useState([]);
     return (
         <Modal onClose={onClose} isOpen={isOpen}
             overrides={{
@@ -27,7 +30,7 @@ const AddProject = ({ isOpen, onClose }) => {
                 <TitleProject />
                 <h3 style={{ marginTop: '24px' }}>Project details</h3>
                 <ListItemLabel>Platform</ListItemLabel>
-                <PlatformSelector />
+                <PlatformSelector selectedPlatforms={selectedPlatforms} setSelectedText={(platform) => setDisplayText(platform)}/>
                 <ListItemLabel>Deadline</ListItemLabel>
                 <DatePicker
 

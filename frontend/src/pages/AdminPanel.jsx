@@ -14,7 +14,12 @@ import Notifications from './dashboard/Notifications';
 
 
 
+
+
+
 const AdminPanel = () => {
+
+   
     
     return (
         <div className='body'>
@@ -37,9 +42,11 @@ const AdminPanel = () => {
                         <Route path="addInvoice" element={<AddInvoice />}/>
                         <Route path="user" element={<User />}/>
                         <Route path="announcement" element={<Announcement />}/>
+                        
                     </Routes>
                 </div>
             </div>
+           
         </div>
     )
 }

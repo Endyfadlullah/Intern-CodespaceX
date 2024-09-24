@@ -5,7 +5,7 @@ import { Button, SHAPE, KIND } from "baseui/button";
 import { Whatsapp } from 'iconsax-react';
 import { ListItem, ListItemLabel, ARTWORK_SIZES } from "baseui/list";
 import { Avatar } from "baseui/avatar";
-import { Accordion, Panel } from 'baseui/accordion';
+import { StatelessAccordion, Panel } from "baseui/accordion";
 import TalentProject from './TalentProject';
 import CheckpointProject from './CheckpointProject';
 import PlatformSelector from '../../components/Button/SelectableButton';
@@ -14,19 +14,29 @@ import { DatePicker } from "baseui/datepicker";
 import { Input } from "baseui/input";
 import { Select } from "baseui/select";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
+import SelectableUserComponent from '../../components/Select/SelectClient';
 
 
 
-const EditProject = ({ isOpenedit, onCloseedit }) => {
+
+const EditProject = ({ isOpenedit, onCloseedit, expanded, setExpanded, triggerCheckpoint, setTriggerCheckpoint }) => {
 
     const [isEditing, setIsEditing] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date('2024-08-22T00:00:00'));
-    const [tempValue, setTempValue] = useState([{ label: 'On Going', id: '#F0F8FF', color:"#1774AC" }]);
-    const [newValue, setNewValue] = useState([{ label: 'On Going', id: '#F0F8FF', color:"#1774AC" }]);
+    const [tempValue, setTempValue] = useState([{ label: 'On Going', id: '#F0F8FF', color: "#1774AC" }]);
+    const [newValue, setNewValue] = useState([{ label: 'On Going', id: '#F0F8FF', color: "#1774AC" }]);
     const initialSelectedText = "Mobile App, UI/UX Design";
     const [selectedPlatforms, setSelectedPlatforms] = useState([]);
     const [displayText, setDisplayText] = useState(initialSelectedText);
     const [displayDate, setDisplayDate] = useState('22 Desember 2024');
+    const users = [
+        {
+            id: 4,
+            name: "Pak Mamat",
+            role: "Jaya Abadi Group",
+            image: "Filled.jpg",
+        },
+    ];
 
 
     const handleSave = () => {
@@ -45,6 +55,8 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
     const handleCancel = () => {
         setIsEditing(false);
     };
+
+    
     return (
         <Modal onClose={onCloseedit} isOpen={isOpenedit}
             overrides={{
@@ -56,34 +68,17 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
             </ModalHeader>
             <ModalBody style={{ padding: '10px', color: 'black' }}>
                 <h1>Manhattan Project</h1>
-                <ListItem
-                    onClick={() => console.log("click")}
-                    artworkSize={ARTWORK_SIZES.MEDIUM}
-                    endEnhancer={() => <Button kind={KIND.secondary} shape={SHAPE.circle} ><Whatsapp size="32" variant="Bold" /></Button>}
-                    overrides={{
-                        Root: {
-                            style: {
-                                border: '1px solid #EEEEEE',
-                                borderRadius: '8px',
-                                marginTop: '24px',
-                            },
-                        },
-                    }}
-                >
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <ListItemLabel>
-                            <Avatar
-                                name="Jane Doe"
-                                style={{ width: '36px', height: '36px' }}
-                                src={require('../../image/Filled.jpg')}
-                            />
-                        </ListItemLabel>
-                        <ListItemLabel description="Jaya Abadi Group">Pak Mamat</ListItemLabel>
-                    </div>
-                </ListItem>
 
-                <Accordion>
+
+                <StatelessAccordion
+                expanded={expanded}
+                onChange={({ key, expanded }) => {
+                  console.log(key);
+                  setExpanded(expanded);
+                }}
+                >
                     <Panel
+                    key="P1"
                         title="Project details"
                         overrides={{
                             Header: {
@@ -106,15 +101,40 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
                     >
                         {!isEditing ? (
                             <>
+                                <ListItem
+                                    onClick={() => console.log("click")}
+                                    artworkSize={ARTWORK_SIZES.MEDIUM}
+                                    endEnhancer={() => <Button kind={KIND.secondary} shape={SHAPE.circle} ><Whatsapp size="32" variant="Bold" /></Button>}
+                                    overrides={{
+                                        Root: {
+                                            style: {
+                                                border: '1px solid #EEEEEE',
+                                                borderRadius: '8px',
+                                                marginBottom: '16px',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <ListItemLabel>
+                                            <Avatar
+                                                name={users[0].name} // Menggunakan nama dari data users
+                                                style={{ width: '36px', height: '36px' }}
+                                                src={require(`../../image/${users[0].image}`)} // Menggunakan gambar dari data users
+                                            />
+                                        </ListItemLabel>
+                                        <ListItemLabel description={users[0].role}>{users[0].name}</ListItemLabel>
+                                    </div>
+                                </ListItem>
                                 <div style={{ display: 'flex', gap: '55px', fontSize: '15px', fontWeight: '500' }}>
                                     <div style={{ color: '#979899' }}>
                                         <p>Platform</p>
-                                        <p>Deadline</p>
+                                        <p style={{ marginBottom: '16px', marginTop: '16px', }}>Deadline</p>
                                         <p>Status</p>
                                     </div>
                                     <div>
                                         <p>{displayText}</p>
-                                        <p>{displayDate}</p>
+                                        <p style={{ marginBottom: '16px', marginTop: '16px', }}>{displayDate}</p>
                                         <p style={{ color: tempValue[0].color }}>{tempValue[0].label}</p>
                                     </div>
                                 </div>
@@ -136,6 +156,8 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
                             </>
                         ) : (
                             <>
+                                <ListItemLabel>Client Name</ListItemLabel>
+                                <SelectableUserComponent selectedUserId={users[0].id} />
                                 <ListItemLabel>Platform</ListItemLabel>
                                 <PlatformSelector
                                     selectedPlatforms={selectedPlatforms}
@@ -164,11 +186,11 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
                                     closeOnSelect={false}
                                     deleteRemoves={false}
                                     options={[
-                                        { label: "On Going", id: "#F0F8FF" , color:"#1774AC"},
-                                        { label: "In Review", id: "#FAEBD7",color:"#F39C12" },
-                                        { label: "Done", id: "#00FFFF", color:"#16A34A" },
+                                        { label: "On Going", id: "#F0F8FF", color: "#1774AC" },
+                                        { label: "In Review", id: "#FAEBD7", color: "#F39C12" },
+                                        { label: "Done", id: "#00FFFF", color: "#16A34A" },
                                     ]}
-                                    value={newValue} 
+                                    value={newValue}
                                     onChange={params => setNewValue(params.value)}
                                     overrides={{
                                         IconsContainer: {
@@ -217,10 +239,17 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
 
 
                     </Panel>
-                </Accordion>
+                </StatelessAccordion>
 
-                <Accordion>
+                <StatelessAccordion
+                expanded={expanded}
+                onChange={({ key, expanded }) => {
+                  console.log(key);
+                  setExpanded(expanded);
+                }}
+                >
                     <Panel
+                    key="P2"
                         title="Talent in Charge"
                         overrides={{
                             Header: {
@@ -244,10 +273,17 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
                     >
                         <TalentProject />
                     </Panel>
-                </Accordion>
+                </StatelessAccordion>
 
-                <Accordion>
+                <StatelessAccordion
+                expanded={expanded}
+                onChange={({ key, expanded }) => {
+                  console.log(key);
+                  setExpanded(expanded);
+                }}
+                >
                     <Panel
+                    key="P3"
                         title="Checkpoint"
                         overrides={{
                             Header: {
@@ -268,11 +304,17 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
                             },
                         }}
                     >
-                        <CheckpointProject onCloseedit={onCloseedit} />
+                        <CheckpointProject  triggerCheckpoint={triggerCheckpoint} setTriggerCheckpoint={setTriggerCheckpoint} />
                     </Panel>
-                </Accordion>
+                </StatelessAccordion>
 
-                <Accordion>
+                <StatelessAccordion
+                expanded={expanded}
+                onChange={({ key, expanded }) => {
+                  console.log(key);
+                  setExpanded(expanded);
+                }}
+                >
                     <Panel
                         title="Invoice"
                         overrides={{
@@ -296,7 +338,7 @@ const EditProject = ({ isOpenedit, onCloseedit }) => {
                     >
                         isi
                     </Panel>
-                </Accordion>
+                </StatelessAccordion>
 
             </ModalBody>
         </Modal>

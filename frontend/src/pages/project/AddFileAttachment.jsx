@@ -7,12 +7,49 @@ import { Input } from 'baseui/input';
 import { Button } from 'baseui/button';
 
 const AddFileAttachment = ({ isOpen, onClose }) => {
-    const [fileRows, setFileRows] = useState([]);
+    // const [fileRows, setFileRows] = useState([]);
     const [value, setValue] = useState('');
     const [css, theme] = useStyletron();
 
-    const handleFileUpload = (newFileRows) => {
-        setFileRows(newFileRows);
+    // const handleFileUpload = (newFileRows) => {
+    //     setFileRows(newFileRows);
+    // };
+
+    const [fileRows, setFileRows] = useState([]); // State for storing file info
+
+    // Handle file upload and save temporarily
+    const handleFileUpload = (files) => {
+        const newFile = files[0]; // Assuming you're handling a single file
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            // Save the file's base64 string for temporary use
+            const fileData = {
+                id: Date.now(), // Unique ID
+                name: newFile.name,
+                preview: reader.result // Base64 string to display
+            };
+
+            // Save in local state
+            setFileRows((prev) => [...prev, fileData]);
+
+            // Save in localStorage
+            localStorage.setItem(newFile.name, JSON.stringify(fileData));
+
+            console.log("File uploaded:", fileData.name);
+        };
+
+        // Convert file to base64 string
+        reader.readAsDataURL(newFile);
+    };
+
+    // Remove file and update state and localStorage
+    const handleFileRemove = (removedFileId) => {
+        setFileRows((prev) => prev.filter((fileRow) => fileRow.id !== removedFileId));
+        const removedFile = fileRows.find((file) => file.id === removedFileId);
+        if (removedFile) {
+            localStorage.removeItem(removedFile.name);
+        }
     };
 
     return (
@@ -31,48 +68,46 @@ const AddFileAttachment = ({ isOpen, onClose }) => {
                     </p>
                 </ModalHeader>
                 <ModalBody>
-                    <FileUploader
-                        fileRows={fileRows}
-                        itemPreview
-                        onFileAdd={handleFileUpload}
-                        onFileRemove={(removedFileId) => {
-                            setFileRows((prev) => prev.filter((fileRow) => fileRow.id !== removedFileId));
-                        }}
-                        overrides={{
-                            ButtonComponent: {
-                                props: {
-                                    children: 'Click or Drag',
-                                    overrides: {
-                                        BaseButton: {
-                                            style: {
-                                                display: 'none',
-                                            },
-                                        },
+                <FileUploader
+                fileRows={fileRows}
+                itemPreview
+                onFileAdd={handleFileUpload}
+                onFileRemove={handleFileRemove}
+                overrides={{
+                    ButtonComponent: {
+                        props: {
+                            children: 'Click or Drag',
+                            overrides: {
+                                BaseButton: {
+                                    style: {
+                                        display: 'none',
                                     },
                                 },
                             },
-                            ContentMessage: {
-                                component: () => (
-                                    <div style={{ color: theme.colors.black, textAlign: 'center' }}>
-                                        <div><MdOutlineBackup size={36} /></div>
-                                        <span>
-                                            Drag your file(s) or <b>browse</b>
-                                        </span>
-                                        <p style={{ fontSize: '14px', color: '#6b6b6b', marginTop: '10px' }}>
-                                            Max 10 MB files are allowed
-                                        </p>
-                                    </div>
-                                ),
-                            },
-                            FileDragAndDrop: {
-                                style: {
-                                    borderColor: '#101010',
-                                    borderStyle: 'dashed',
-                                    borderWidth: theme.sizing.scale0,
-                                },
-                            },
-                        }}
-                    />
+                        },
+                    },
+                    ContentMessage: {
+                        component: () => (
+                            <div style={{ color: theme.colors.black, textAlign: 'center' }}>
+                                <div><MdOutlineBackup size={36} /></div>
+                                <span>
+                                    Drag your file(s) or <b>browse</b>
+                                </span>
+                                <p style={{ fontSize: '14px', color: '#6b6b6b', marginTop: '10px' }}>
+                                    Max 10 MB files are allowed
+                                </p>
+                            </div>
+                        ),
+                    },
+                    FileDragAndDrop: {
+                        style: {
+                            borderColor: '#101010',
+                            borderStyle: 'dashed',
+                            borderWidth: theme.sizing.scale0,
+                        },
+                    },
+                }}
+            />
                     <p style={{ fontSize: '14px', color: '#6b6b6b', marginTop: '10px' }}>
                         You can upload files in PNG, JPG, or PDF format. Max size is 10 MB.
                     </p>
@@ -149,6 +184,15 @@ const AddFileAttachment = ({ isOpen, onClose }) => {
                             Upload
                         </Button>
                     </div>
+
+                    <div>
+                {fileRows.map((file) => (
+                    <div key={file.id}>
+                        <img src={file.preview} alt={file.name} width="100" />
+                        <p>{file.name}</p>
+                    </div>
+                ))}
+            </div>
                 </ModalBody>
             </Modal>
         </div>

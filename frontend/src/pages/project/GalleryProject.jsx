@@ -12,6 +12,7 @@ import { Tag, SIZE } from "baseui/tag";
 import '../../components/Card/cardProject.css';
 import NoDataProject from './NoDataProject';
 import AddProject from './AddProject';
+import EditProject from './EditProject';
 
 const GalleryProject = () => {
 
@@ -23,9 +24,9 @@ const GalleryProject = () => {
   ];
 
   const data = [
-    // ["Manhattan Project", "On Going", "Mobile apps, Website, Wo..", "Filled.jpg,Filled.jpg,Filled.jpg,Filled.jpg", "3 Juni 2024", "project.jpg"],
-    // ["Manhattan Project", "In Review", "Mobile apps, Website", "Filled.jpg", "3 Juni 2024", "project.jpg"],
-    // ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "project.jpg"],
+    ["Manhattan Project", "On Going", "Mobile apps, Website, Wo..", "Filled.jpg,Filled.jpg,Filled.jpg,Filled.jpg", "3 Juni 2024", "project.jpg"],
+    ["Manhattan Project", "In Review", "Mobile apps, Website", "Filled.jpg", "3 Juni 2024", "project.jpg"],
+    ["Manhattan Project", "Done", "Mobile apps, Website", "Filled.jpg,Filled.jpg", "3 Juni 2024", "project.jpg"],
 ];
 
 const getStatusTag = (status) => {
@@ -64,6 +65,22 @@ function openModalitem() {
 function closeModalitem() {
   setIsOpenitem(false);
 }
+
+
+const [isOpenedit, setIsOpenedit] = useState(false);
+const [expandedPanels, setExpandedPanels] = useState([]);
+const [triggerCheckpoint, setTriggerCheckpoint] = useState(false);
+
+const openModaledit = () => {
+    setIsOpenedit(true);
+    setExpandedPanels(["P1","P2","P3"]);
+    setTriggerCheckpoint(false);
+};
+
+const closeModaledit = () => {
+    setIsOpenedit(false);
+};
+
 
   return (
     <div>
@@ -114,10 +131,11 @@ function closeModalitem() {
       <div style={{ display: 'flex', gap:'40px' , flexWrap: 'wrap', marginTop:'24px'}}>
       {data.map((row, rowIndex) => (
         <Card
+        onClick={openModaledit}
           key={rowIndex}
            className="cardProject"
           overrides={{
-            Root: { style: { margin: '0', marginBottom: '16px' } },
+            Root: { style: { margin: '0', marginBottom: '16px', cursor:'pointer' } },
             Contents: { style: { margin: '0' } }
           }}
         >
@@ -161,6 +179,7 @@ function closeModalitem() {
 
       </div>
       )}
+         <EditProject isOpenedit={isOpenedit} onCloseedit={closeModaledit} expanded={expandedPanels} setExpanded={setExpandedPanels}  triggerCheckpoint={triggerCheckpoint} setTriggerCheckpoint={setTriggerCheckpoint}/>
     </div>
   )
 }
