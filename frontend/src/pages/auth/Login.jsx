@@ -21,7 +21,7 @@ const Login = () => {
 
         // Jika kedua input kosong
         if (!email && !password) {
-            showToast("Missing Information", "Masukkan email dan password Anda.");
+            showToast("Masukkan email dan password Anda.", "Jika anda belum memiliki akun silakan Registrasi");
             setEmailError(true);
             setPasswordError(true);
             isValid = false;
