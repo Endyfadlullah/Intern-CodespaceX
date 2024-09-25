@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, ModalHeader, ModalBody } from 'baseui/modal';
 import FileUploadproject from '../../components/fileuploadimage/fileUploadproject';
-import { Button, SHAPE, KIND } from "baseui/button";
+import { Button, SHAPE, KIND , SIZE} from "baseui/button";
 import { Whatsapp } from 'iconsax-react';
 import { ListItem, ListItemLabel, ARTWORK_SIZES } from "baseui/list";
 import { Avatar } from "baseui/avatar";
@@ -9,12 +9,13 @@ import { StatelessAccordion, Panel } from "baseui/accordion";
 import TalentProject from './TalentProject';
 import CheckpointProject from './CheckpointProject';
 import PlatformSelector from '../../components/Button/SelectableButton';
-import { Calendar1 } from 'iconsax-react';
+import { Calendar1, Document } from 'iconsax-react';
 import { DatePicker } from "baseui/datepicker";
 import { Input } from "baseui/input";
 import { Select } from "baseui/select";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
 import SelectableUserComponent from '../../components/Select/SelectClient';
+import ViewInvoice from '../invoice/ViewInvoice';
 
 
 
@@ -54,6 +55,20 @@ const EditProject = ({ isOpenedit, onCloseedit, expanded, setExpanded, triggerCh
 
     const handleCancel = () => {
         setIsEditing(false);
+    };
+
+
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleRowClick = (row) => {
+  
+      setIsModalOpen(true); // Buka modal
+    };
+  
+    const closeModal = () => {
+      setIsModalOpen(false);
+
     };
 
     
@@ -336,7 +351,26 @@ const EditProject = ({ isOpenedit, onCloseedit, expanded, setExpanded, triggerCh
                             },
                         }}
                     >
-                        isi
+                        <Button
+                        onClick={() => handleRowClick()}
+                        kind={KIND.secondary}
+                        size={SIZE.compact}
+                        overrides={{
+                            Root: {
+                                style: {
+                                    gap:'8px'
+                                },
+                            },
+                        }}
+                        >
+                        <Document size="16" variant="Bulk"/>
+                        <p>INV-526253</p>
+                        </Button>
+                        <ViewInvoice
+          isOpen={isModalOpen}
+          closeModal={closeModal}
+        
+        />
                     </Panel>
                 </StatelessAccordion>
 

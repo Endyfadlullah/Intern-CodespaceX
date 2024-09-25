@@ -1,16 +1,16 @@
 import React from 'react'
 import Sidebar from '../components/sidebar/Sidebar'
 import './AdminPanel.css'
-import { Avatar } from "baseui/avatar";
 import { Routes, Route } from 'react-router-dom';
 import Invoice from './invoice/Invoice';
 import AddInvoice from './invoice/AddInvoice';
-import profil from '../image/Filled.jpg'
 import User from './user/User';
 import Project from './project/Project';
 import Dashboard from './dashboard/Dashboard';
 import Announcement from './announcement/Announcement';
 import Notifications from './dashboard/Notifications';
+import Inquiry from './Inquiry/Inquiry';
+import Avatar from './dashboard/Profil';
 
 
 
@@ -27,16 +27,13 @@ const AdminPanel = () => {
             <div className='main'>
                 <div className='header'>
                     <Notifications/>
-                    <Avatar
-                        name="Jane Doe"
-                        style={{ width: '36px', height: '36px' }}
-                        src={profil}
-                    />
+                    <Avatar/>
                 </div>
                 <div className='submain'>
                     <Routes>
                         <Route path="*" element={<Dashboard />}/>
                         <Route path="dashboard" element={<Dashboard />}/>
+                        <Route path="inquiry" element={<Inquiry />}/>
                         <Route path="project" element={<Project />}/>
                         <Route path="invoice" element={<Invoice />}/>
                         <Route path="addInvoice" element={<AddInvoice />}/>

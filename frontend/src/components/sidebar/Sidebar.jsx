@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "baseui";
 import { IoPeopleSharp } from "react-icons/io5";
-import { Category, Wallet3, Messages2  } from 'iconsax-react';
+import { Category, Wallet3, Messages2 ,DirectboxReceive } from 'iconsax-react';
 import { AiFillProject } from "react-icons/ai";
 import '../../index.css';
 
@@ -79,6 +79,10 @@ function Sidebar() {
         <SidebarItem $active={activeItem === "Dashboard"} onClick={() => handleItemClick("Dashboard", "/admin/dashboard")}>
           <IconWrapper><Category variant="Bold"/></IconWrapper>
           <span>Dashboard</span>
+        </SidebarItem>
+        <SidebarItem $active={activeItem === "Inquiry"} onClick={() => handleItemClick("Inquiry", "/admin/inquiry")}>
+          <IconWrapper><DirectboxReceive variant="Bold" /></IconWrapper>
+          <span>Inquiry</span>
         </SidebarItem>
         <SidebarItem $active={activeItem === "Project"} onClick={() => handleItemClick("Project", "/admin/project")}>
           <IconWrapper><AiFillProject /></IconWrapper>

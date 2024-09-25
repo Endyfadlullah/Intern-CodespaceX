@@ -1,54 +1,101 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Modal, ModalHeader, ModalBody } from 'baseui/modal';
-import { FileUploader } from 'baseui/file-uploader';
-import { useStyletron } from 'baseui';
 import { MdOutlineBackup } from 'react-icons/md';
 import { Input } from 'baseui/input';
-import { Button } from 'baseui/button';
+import { Button, KIND } from 'baseui/button';
+import { Folder2, CloseCircle, DocumentText, Gallery, Figma1, Link1, VideoSquare } from 'iconsax-react';
+import { ListItem, ListItemLabel } from 'baseui/list';
 
 const AddFileAttachment = ({ isOpen, onClose }) => {
-    // const [fileRows, setFileRows] = useState([]);
-    const [value, setValue] = useState('');
-    const [css, theme] = useStyletron();
 
-    // const handleFileUpload = (newFileRows) => {
-    //     setFileRows(newFileRows);
-    // };
+    const fileInputRef = useRef(null);
+    const [url, setUrl] = useState('');
+    const [uploadedFiles, setUploadedFiles] = useState([]);
 
-    const [fileRows, setFileRows] = useState([]); // State for storing file info
-
-    // Handle file upload and save temporarily
     const handleFileUpload = (files) => {
-        const newFile = files[0]; // Assuming you're handling a single file
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            // Save the file's base64 string for temporary use
-            const fileData = {
-                id: Date.now(), // Unique ID
-                name: newFile.name,
-                preview: reader.result // Base64 string to display
-            };
-
-            // Save in local state
-            setFileRows((prev) => [...prev, fileData]);
-
-            // Save in localStorage
-            localStorage.setItem(newFile.name, JSON.stringify(fileData));
-
-            console.log("File uploaded:", fileData.name);
-        };
-
-        // Convert file to base64 string
-        reader.readAsDataURL(newFile);
+        const newFiles = Array.from(files).map(file => ({
+            name: file.name,
+            size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,  // Convert size to MB
+            type: file.type,
+        }));
+        setUploadedFiles([...uploadedFiles, ...newFiles]);
     };
 
-    // Remove file and update state and localStorage
-    const handleFileRemove = (removedFileId) => {
-        setFileRows((prev) => prev.filter((fileRow) => fileRow.id !== removedFileId));
-        const removedFile = fileRows.find((file) => file.id === removedFileId);
-        if (removedFile) {
-            localStorage.removeItem(removedFile.name);
+    const handleUrlUpload = () => {
+        if (url) {
+            const urlFile = {
+                name: url.split('/')[2],  // Menampilkan nama domain, misalnya 'www.figma.com'
+                size: url, // Memotong URL sesuai format yang diinginkan
+                type: 'url',
+            };
+            setUploadedFiles([...uploadedFiles, urlFile]);
+            setUrl('');
+        }
+    };
+
+    const isFigmaLink = (url) => {
+        return url.includes('figma.com');
+    };
+
+    const getFileIcon = (file) => {
+        if (file.type === 'url') {
+            return isFigmaLink(file.size) ? (
+                <Figma1 size="24" variant="Bulk" />
+            ) : (
+                <Link1 size="24" variant="Bulk" />
+            );
+        } else {
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            switch (fileExtension) {
+                case 'doc':
+                case 'docx':
+                    return <DocumentText size="24" variant="Bulk" />;
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                case 'gif':
+                case 'heic':
+                    return <Gallery size="24" variant="Bulk" />;
+                case 'mp4':
+                case 'mov':
+                    return <VideoSquare size="24" variant="Bulk" />;
+                case 'zip':
+                case 'rar':
+                    return <Folder2 size="24" variant="Bulk" />;
+                default:
+                    return <Folder2 size="24" variant="Bulk" />; // Default icon for unknown types
+            }
+        }
+    };
+
+    const handleFileRemove = (index) => {
+        const updatedFiles = uploadedFiles.filter((_, i) => i !== index);
+        setUploadedFiles(updatedFiles);
+    };
+
+
+    const handleButtonClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleChange = (event) => {
+        const files = event.target.files;
+        if (files.length > 0) {
+            handleFileUpload(files);
+        }
+    };
+    const handleDragOver = (event) => {
+        event.preventDefault(); // Mencegah perilaku default
+        event.stopPropagation();
+    };
+
+    // Fungsi untuk menangani drop
+    const handleDrop = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const files = event.dataTransfer.files; // Mengambil file dari event
+        if (files.length > 0) {
+            handleFileUpload(files); // Memanggil fungsi handleFileUpload
         }
     };
 
@@ -58,7 +105,7 @@ const AddFileAttachment = ({ isOpen, onClose }) => {
                 onClose={onClose}
                 isOpen={isOpen}
                 overrides={{
-                    Dialog: { style: { height: 'auto', padding: '0' } },
+                    Dialog: { style: { height: 'auto', padding: '0', width: '550px' } },
                 }}
             >
                 <ModalHeader>
@@ -68,46 +115,49 @@ const AddFileAttachment = ({ isOpen, onClose }) => {
                     </p>
                 </ModalHeader>
                 <ModalBody>
-                <FileUploader
-                fileRows={fileRows}
-                itemPreview
-                onFileAdd={handleFileUpload}
-                onFileRemove={handleFileRemove}
-                overrides={{
-                    ButtonComponent: {
-                        props: {
-                            children: 'Click or Drag',
-                            overrides: {
-                                BaseButton: {
-                                    style: {
-                                        display: 'none',
-                                    },
+                    <div
+                        onDragOver={handleDragOver}
+                        onDrop={handleDrop}
+                        style={{
+                            border: '2px dashed #101010',
+                            borderRadius: '8px',
+                            padding: '20px',
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                            marginTop: '16px',
+                            height: '144px'
+                        }}
+                    >
+                        <div><MdOutlineBackup size={36} /></div>
+                        <span>
+                            Drag your file(s) or <b>browse</b>
+                        </span>
+                        <p style={{ fontSize: '14px', color: '#6b6b6b', marginTop: '10px' }}>
+                            Max 10 MB files are allowed
+                        </p>
+                    </div>
+                    <input
+                        type="file"
+                        multiple
+                        ref={fileInputRef}
+                        style={{ display: 'none' }} // Hide the input
+                        onChange={handleChange}
+                    />
+                    <Button
+                        kind={KIND.secondary}
+                        overrides={{
+                            Root: {
+                                style: {
+                                    marginTop: '16px',
+                                    height: '40px',
+                                    width: '100%',
                                 },
                             },
-                        },
-                    },
-                    ContentMessage: {
-                        component: () => (
-                            <div style={{ color: theme.colors.black, textAlign: 'center' }}>
-                                <div><MdOutlineBackup size={36} /></div>
-                                <span>
-                                    Drag your file(s) or <b>browse</b>
-                                </span>
-                                <p style={{ fontSize: '14px', color: '#6b6b6b', marginTop: '10px' }}>
-                                    Max 10 MB files are allowed
-                                </p>
-                            </div>
-                        ),
-                    },
-                    FileDragAndDrop: {
-                        style: {
-                            borderColor: '#101010',
-                            borderStyle: 'dashed',
-                            borderWidth: theme.sizing.scale0,
-                        },
-                    },
-                }}
-            />
+                        }}
+                        onClick={handleButtonClick} // Trigger file input click
+                    >
+                        Choose a File
+                    </Button>
                     <p style={{ fontSize: '14px', color: '#6b6b6b', marginTop: '10px' }}>
                         You can upload files in PNG, JPG, or PDF format. Max size is 10 MB.
                     </p>
@@ -125,22 +175,20 @@ const AddFileAttachment = ({ isOpen, onClose }) => {
                         <div style={{ flex: 1, borderBottom: '1px solid #ccc' }}></div>
                     </div>
                     <h3 style={{ color: 'black' }}>Upload from URL</h3>
-                    <div
-                        className={css({
-                            display: 'flex',
-                            alignItems: 'center',
-                            border: `1px solid ${theme.colors.mono400}`,
-                            borderRadius: '8px',
-                            padding: '16px',
-                            backgroundColor: theme.colors.mono200,
-                            marginTop: '10px',
-                            marginBottom: '10px',
-                            gap: '8px',
-                        })}
-                    >
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        border: '1px solid #eee',
+                        borderRadius: '8px',
+                        padding: '16px',
+                        backgroundColor: '#f0f0f0',
+                        marginTop: '10px',
+                        marginBottom: '10px',
+                        gap: '8px',
+                    }}>
                         <Input
-                            value={value}
-                            onChange={(e) => setValue(e.target.value)}
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
                             placeholder="Add file URL"
                             clearOnEscape
                             overrides={{
@@ -159,6 +207,7 @@ const AddFileAttachment = ({ isOpen, onClose }) => {
                             }}
                         />
                         <Button
+                            onClick={handleUrlUpload}
                             overrides={{
                                 Root: {
                                     style: {
@@ -179,20 +228,91 @@ const AddFileAttachment = ({ isOpen, onClose }) => {
                                     },
                                 },
                             }}
-                            onClick={() => console.log('Uploading:', value)}
                         >
                             Upload
                         </Button>
                     </div>
 
-                    <div>
-                {fileRows.map((file) => (
-                    <div key={file.id}>
-                        <img src={file.preview} alt={file.name} width="100" />
-                        <p>{file.name}</p>
+                    <div style={{ marginTop: '16px' }}>
+                        {uploadedFiles.map((file, index) => (
+                            <ListItem
+                                key={index}
+                                overrides={{
+                                    Content: {
+                                        style: {
+                                            marginLeft: '0',
+                                            paddingLeft: '10px',
+                                            cursor: 'pointer',
+                                            paddingRight: '20px',
+                                            border: '1px solid #EEEEEE',
+                                            borderRadius: '8px',
+                                            height: 'auto',
+                                            width: 'auto',
+                                            minHeight: '0',
+                                            marginBottom: '16px',
+                                        },
+                                    },
+                                }}
+                            >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    {/* Select icon based on file type */}
+                                    {getFileIcon(file)}
+                                    <ListItemLabel
+                                        description={
+                                            <Input
+                                                value={file.size} // Set value to file.size or other related value
+                                                style={{ width: '100px', height: '100px' }} // Set size for the input
+                                                overrides={{
+                                                    Root: {
+                                                        style: {
+                                                            border: 'none',
+                                                            backgroundColor: 'transparent',
+                                                        },
+                                                    },
+                                                    Input: {
+                                                        style: {
+                                                            backgroundColor: 'transparent',
+                                                            width: '100%',
+                                                            height: '100%',
+                                                            resize: 'none',
+                                                            padding: '0',
+                                                            color: '#979899'
+                                                        },
+                                                    },
+                                                    InputContainer: {
+                                                        style: {
+                                                            backgroundColor: 'transparent',
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        }
+                                        overrides={{
+                                            LabelDescription: {
+                                                style: {
+                                                    color: '#979899',
+                                                    width: '400px',
+                                                    overflow: 'hidden'
+                                                },
+                                            },
+                                        }}
+                                    >
+                                        <p style={{ fontSize: '16px', fontWeight: '700' }}>{file.name}</p>
+                                    </ListItemLabel>
+                                </div>
+                                <ListItemLabel>
+                                    <CloseCircle
+                                        size="24"
+                                        variant="Bold"
+                                        onClick={() => handleFileRemove(index)}
+                                        style={{ cursor: 'pointer' }}
+                                    />
+                                </ListItemLabel>
+                            </ListItem>
+                        ))}
                     </div>
-                ))}
-            </div>
+
+
                 </ModalBody>
             </Modal>
         </div>

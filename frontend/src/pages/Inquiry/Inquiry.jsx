@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { TableBuilder, TableBuilderColumn } from "baseui/table-semantic";
 import { Checkbox } from "baseui/checkbox";
 import { Search } from "baseui/icon";
@@ -8,37 +8,27 @@ import { Button, KIND, } from "baseui/button";
 import { ChevronDown } from "baseui/icon";
 import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
-import { FiPlus } from "react-icons/fi";
 import { Tag, SIZE } from 'baseui/tag';
-import { Edit2, CloseSquare } from 'iconsax-react';
-import ViewInvoice from './ViewInvoice';
-import NoDataInvoice from './NoDataInvoice';
+import {  CloseSquare } from 'iconsax-react';
+import InquiryRequest from '../dashboard/InquiryRequest';
+import NoDataInquiry from './NoDataInquiry';
 
 
-const Invoice = () => {
-  const navigate = useNavigate();
+
+const Inquiry = () => {
+  // const navigate = useNavigate();
 
   const ITEMS = [
-    { label: "Draft" },
-    { label: "Paid" },
-    { label: "Sent" },
-    { label: "On Hold" },
+    { label: "Pending" },
+    { label: "Rejected" },
+    { label: "Accepted" },
   ];
 
   const [checkedItems, setCheckedItems] = useState([false, false]);
   const [selectAll, setSelectAll] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+ 
 
-  const handleRowClick = (row) => {
-    setSelectedRow(row); // Simpan data dari baris yang diklik
-    setIsModalOpen(true); // Buka modal
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedRow(null); // Reset setelah modal ditutup
-  };
+  
 
   const handleCheckboxChange = (rowIndex, checked) => {
     setCheckedItems(prev => {
@@ -54,70 +44,69 @@ const Invoice = () => {
   };
 
   const data = [
-    ["INV-23923", "Darft", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-    ["INV-23923", "Paid", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-    ["INV-23923", "Sent", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-    ["INV-23923", "On Hold", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+    ["Lionel Ronaldo", "PT. Sosro", "Pending", "Mobile apps, Websit..", "Lebih dari 6 bulan", "3 Juni 2024"],
+    ["Messi", "Indolakto", "Rejected", "Mobile apps", "3 Bulan", "3 Juni 2024"],
+    ["El Garnacho", "PT.Otsuka", "Accepted", "Mobile apps", "3 Bulan", "3 Juni 2024"],
   ];
+
+  const [isOpenModal, setIsOpenModal] = useState(false);
+    const [selectedRowData, setSelectedRowData] = useState(null);
+
+    const handleRowClick = (row) => {
+        setSelectedRowData(row); // Simpan data baris yang di-klik
+        setIsOpenModal(true); // Buka modal
+    };
+
+    const closeModal = () => {
+        setIsOpenModal(false); // Tutup modal
+        setSelectedRowData(null); // Reset data yang dipilih
+    };
 
   const getStatusTag = (status) => {
     switch (status) {
-      case "Darft":
-        return <Tag closeable={false} kind="neutral" size={SIZE.medium}
-          overrides={{
-            Root: {
-              style: {
-                paddingLeft: '22px !important',
-                paddingRight: '22px !important',
-              },
-            },
-          }}>
-          <b>Draft</b>
-        </Tag>;
-      case "Paid":
+      case "Accepted":
         return <Tag closeable={false} kind="positive" size={SIZE.medium}
           overrides={{
             Root: {
               style: {
-                paddingLeft: '25px !important',
-                paddingRight: '25px !important',
+                paddingLeft: '18px !important',
+                paddingRight: '18px !important',
               },
             },
           }}>
-          <b>Paid</b>
+          <b>Accepted</b>
         </Tag>;
-      case "Sent":
+      case "Pending":
         return <Tag closeable={false} kind="warning" size={SIZE.medium}
           overrides={{
             Root: {
               style: {
-                paddingLeft: '25px !important',
-                paddingRight: '25px !important',
+                paddingLeft: '18px !important',
+                paddingRight: '18px !important',
               },
             },
           }}>
-          <b>Sent</b>
+          <b>Pending</b>
         </Tag>;
-      case "On Hold":
-        return <Tag closeable={false} kind="negative" size={SIZE.medium}><b>On Hold</b></Tag>;
+      case "Rejected":
+        return <Tag closeable={false} kind="negative" size={SIZE.medium}
+        ><b>Rejected</b></Tag>;
       default:
         return null;
     }
   };
+ 
 
-  const handleItemClick = (path, mode = 'create') => {
-    navigate(path, { state: { mode } }); 
-  };
-  
+
 
   return (
     <div style={{ padding: '30px' }}>
-      <h1 style={{ marginBottom: '40px', fontSize: '28px' }}>Invoice</h1>
+      <h1 style={{ marginBottom: '40px', fontSize: '28px' }}>Inquiry</h1>
       <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between', height: '40px' }}>
         <div style={{ display: 'flex', gap: '10px' }}>
           <Input
             startEnhancer={<Search size="25px" title="" />}
-            placeholder="Search Invoice"
+            placeholder="Search User"
           />
           <StatefulPopover
             focusLock
@@ -129,7 +118,7 @@ const Invoice = () => {
                 overrides={{
                   List: {
                     style: {
-                      height: "150px",
+                      height: "120px",
                       width: "138px",
                       overflow: "hidden", // Menyembunyikan scroll
                     },
@@ -140,27 +129,25 @@ const Invoice = () => {
           >
             <Button
               endEnhancer={() => <ChevronDown size={24} title="" />}
-              style={{ width: "200px", fontSize: "14px" }}
+              style={{ width: "77px", fontSize: "14px" }}
               kind={KIND.secondary}
             >
-              All View
+              All
             </Button>
           </StatefulPopover>
         </div>
 
-        <Button startEnhancer={() => <FiPlus size={24} title="" />} onClick={() => handleItemClick('/admin/addInvoice', 'Create')}>
-          Add New
-        </Button>
+       
 
       </div>
 
 
 
       {data.length === 0 ? (
-        <NoDataInvoice />
+        <NoDataInquiry />
       ) : (
 
-      <TableBuilder data={data}>
+      <TableBuilder data={data} >
         <TableBuilderColumn header={
           <Checkbox
             checked={selectAll}
@@ -231,7 +218,7 @@ const Invoice = () => {
             />
           )}
         </TableBuilderColumn>
-        <TableBuilderColumn header="Invoice Number"
+        <TableBuilderColumn header="Client Name"
           overrides={{
             TableHeadCell: {
               style: {
@@ -248,14 +235,39 @@ const Invoice = () => {
                 verticalAlign: 'middle',
                 cursor: 'pointer',
               },
-              // onClick: ({ row }) => handleRowClick(row)
             },
           }}
         >
           {(row) => (
-            <div onClick={() => handleRowClick(row)}>
-              {row[0]}
-            </div>
+             <div onClick={() => handleRowClick(row)} style={{ cursor: 'pointer' }}>
+             {row[0]}
+         </div>
+          )}
+        </TableBuilderColumn>
+        <TableBuilderColumn header="Company Name"
+          overrides={{
+            TableHeadCell: {
+              style: {
+                fontSize: '16px',
+                fontFamily: 'Plus Jakarta Sans',
+                fontWeight: '800',
+              },
+            },
+            TableBodyCell: {
+              style: {
+                fontSize: '16px',
+                fontFamily: 'Plus Jakarta Sans',
+                fontWeight: '600',
+                verticalAlign: 'middle',
+                cursor: 'pointer',
+              },
+            },
+          }}
+        >
+          {(row) => (
+             <div onClick={() => handleRowClick(row)} style={{ cursor: 'pointer' }}>
+             {row[1]}
+         </div>
           )}
         </TableBuilderColumn>
         <TableBuilderColumn header="Status"
@@ -279,9 +291,9 @@ const Invoice = () => {
             },
           }}
         >
-          {(row) => getStatusTag(row[1])}
+          {(row) => getStatusTag(row[2])}
         </TableBuilderColumn>
-        <TableBuilderColumn header="Client Name"
+        <TableBuilderColumn header="Platform"
           overrides={{
             TableHeadCell: {
               style: {
@@ -302,12 +314,12 @@ const Invoice = () => {
           }}
         >
           {(row) => (
-            <div onClick={() => handleRowClick(row)}>
-              {row[2]}
-            </div>
+             <div onClick={() => handleRowClick(row)} style={{ cursor: 'pointer' }}>
+             {row[3]}
+         </div>
           )}
         </TableBuilderColumn>
-        <TableBuilderColumn header="Amount"
+        <TableBuilderColumn header="Deadline"
           overrides={{
             TableHeadCell: {
               style: {
@@ -328,12 +340,12 @@ const Invoice = () => {
           }}
         >
           {(row) => (
-            <div onClick={() => handleRowClick(row)}>
-              {row[3]}
-            </div>
+             <div onClick={() => handleRowClick(row)} style={{ cursor: 'pointer' }}>
+             {row[4]}
+         </div>
           )}
         </TableBuilderColumn>
-        <TableBuilderColumn header="Invoice Date"
+        <TableBuilderColumn header="Created at"
           overrides={{
             TableHeadCell: {
               style: {
@@ -354,35 +366,9 @@ const Invoice = () => {
           }}
         >
           {(row) => (
-            <div onClick={() => handleRowClick(row)}>
-              {row[4]}
-            </div>
-          )}
-        </TableBuilderColumn>
-        <TableBuilderColumn header="Invoice Deadline"
-          overrides={{
-            TableHeadCell: {
-              style: {
-                fontSize: '16px',
-                fontFamily: 'Plus Jakarta Sans',
-                fontWeight: 'bold',
-              },
-            },
-            TableBodyCell: {
-              style: {
-                fontSize: '16px',
-                fontFamily: 'Plus Jakarta Sans',
-                fontWeight: '600',
-                verticalAlign: 'middle',
-                cursor: 'pointer',
-              },
-            },
-          }}
-        >
-          {(row) => (
-            <div onClick={() => handleRowClick(row)}>
-              {row[5]}
-            </div>
+             <div onClick={() => handleRowClick(row)} style={{ cursor: 'pointer' }}>
+             {row[5]}
+         </div>
           )}
         </TableBuilderColumn>
         <TableBuilderColumn header=""
@@ -396,20 +382,7 @@ const Invoice = () => {
         >
           {(row) => (
             <>
-              <Button
-                onClick={() => handleItemClick('/admin/addInvoice', 'Edit')}
-                kind={KIND.tertiary}
-                size={SIZE.mini}
-                overrides={{
-                  Root: {
-                    style: {
-                      padding: '0',
-                    },
-                  },
-                }}
-              >
-                <Edit2 variant="Bold" />
-              </Button>
+             
 
               <Button
                 onClick={() => alert("Clicked another action for row: " + JSON.stringify(row))}
@@ -431,16 +404,13 @@ const Invoice = () => {
         </TableBuilderColumn>
       </TableBuilder>
       )}
-
-      {isModalOpen && (
-        <ViewInvoice
-          isOpen={isModalOpen}
-          closeModal={closeModal}
-          invoiceData={selectedRow} // Kirim data baris yang diklik ke modal
-        />
-      )}
+       <InquiryRequest
+                isOpen={isOpenModal}
+                onClose={closeModal}
+                data={selectedRowData} // Kirim data yang dipilih ke modal
+            />
     </div>
   );
 };
 
-export default Invoice;
+export default Inquiry;
