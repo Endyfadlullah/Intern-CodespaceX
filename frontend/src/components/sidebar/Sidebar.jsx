@@ -81,7 +81,7 @@ function Sidebar() {
           <span>Dashboard</span>
         </SidebarItem>
         <SidebarItem $active={activeItem === "Inquiry"} onClick={() => handleItemClick("Inquiry", "/admin/inquiry")}>
-          <IconWrapper><DirectboxReceive variant="Bold" /></IconWrapper>
+          <IconWrapper><DirectboxReceive variant="Bulk" /></IconWrapper>
           <span>Inquiry</span>
         </SidebarItem>
         <SidebarItem $active={activeItem === "Project"} onClick={() => handleItemClick("Project", "/admin/project")}>
