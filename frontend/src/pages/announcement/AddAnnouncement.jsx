@@ -11,7 +11,7 @@ import { ListItem, ListItemLabel } from "baseui/list";
 import { Input } from "baseui/input";
 import { Textarea } from "baseui/textarea";
 import SelectSendTo from '../../components/Select/SelectSendTo';
-import { Button, KIND } from "baseui/button";
+import { Button, KIND, SHAPE } from "baseui/button";
 import { FiPlus } from "react-icons/fi";
 
 import { ChevronDown } from "baseui/icon";
@@ -63,6 +63,16 @@ const AddAnnouncement = ({ isOpen, onClose, isEditMode }) => {
             };
             setUploadedFiles([...uploadedFiles, urlFile]);
             setUrl('');
+            closefile();
+        }else{
+            const urlFile = {
+                name: selectedUser ,  // Menampilkan nama domain, misalnya 'www.figma.com'
+                size: 'link from app', // Memotong URL sesuai format yang diinginkan
+                type: 'url',
+            };
+            setUploadedFiles([...uploadedFiles, urlFile]);
+            setUrl('');
+            closefile();
         }
     };
 
@@ -501,12 +511,7 @@ const AddAnnouncement = ({ isOpen, onClose, isEditMode }) => {
                                 <span style={{ padding: '0 10px', color: '#6b6b6b', fontSize: '14px' }}>OR</span>
                                 <div style={{ flex: 1, borderBottom: '1px solid #ccc' }}></div>
                             </div>
-                           
-                        </ModalBody>
-                    </>
-                )}
-                 <div style={{    marginLeft: '24px', marginRight: '24px'}}>
-                 <h3 style={{ color: 'black' }}>Upload from URL</h3>
+                            <h3 style={{ color: 'black' }}>Upload from URL</h3>
                             <div style={{ marginTop: '16px' }}>
                                 {uploadedFiles.map((file, index) => (
                                     <ListItem
@@ -585,6 +590,38 @@ const AddAnnouncement = ({ isOpen, onClose, isEditMode }) => {
                                     </ListItem>
                                 ))}
                             </div>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '28px' }}>
+                                <Button
+                                    onClick={closefile}
+                                    kind={KIND.secondary}
+                                    shape={SHAPE.pill}
+                                    overrides={{
+                                        Root: {
+                                            style: {
+                                                padding: '10px 35px 10px 35px',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    onClick={closefile}
+                                    shape={SHAPE.pill}
+                                    overrides={{
+                                        Root: {
+                                            style: {
+                                                padding: '10px 35px 10px 35px',
+                                            },
+                                        },
+                                    }}
+                                >Save</Button>
+                            </div>
+                        </ModalBody>
+                    </>
+                )}
+                 <div style={{    marginLeft: '24px', marginRight: '24px'}}>
+                
                 </div>
             </Modal>
         </div>
