@@ -7,7 +7,7 @@ const Register = () => {
     const [email, setEmail] = useState("");
     return (
         <div>
-            <div style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '36px' }}>
                 <p style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Full Name</p>
                 <Input
                     placeholder="Enter your full name"
@@ -23,14 +23,14 @@ const Register = () => {
                     email.includes("@gmail.com") ? <TickCircle size="20" color="green" /> : null
                 }
             />
-            <div style={{ marginBottom: '20px', marginTop: '20px' }}>
+            <div style={{ marginBottom: '36px', marginTop: '36px' }}>
                 <p style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Create Password</p>
                 <Input
                     placeholder="Input new password (min 8 char)"
                     type="password"
                 />
             </div>
-            <div style={{ marginBottom: '20px', marginTop: '20px' }}>
+            <div style={{ marginBottom: '36px', }}>
                 <p style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Confirm Password</p>
                 <Input
                     placeholder="repeat password"

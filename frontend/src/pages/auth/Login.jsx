@@ -105,7 +105,7 @@ const Login = () => {
                 error={emailError}
             />
 
-            <div style={{ marginBottom: '20px', marginTop: '20px' }}>
+            <div style={{ marginBottom: '20px', marginTop: '36px' }}>
                 <p style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Password</p>
                 <Input
                     placeholder="Your password"
@@ -128,7 +128,7 @@ const Login = () => {
                             style: {
                                 height: '46px',
                                 width: '100%',
-                                marginTop: '20px'
+                                marginTop: '36px'
                             },
                         },
                     }}

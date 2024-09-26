@@ -14,10 +14,10 @@ const LoginRegister = () => {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', }}>
             <div style={{ border: '1px solid #EEEEEE', borderRadius: '8px', padding: '32px' }}>
                 <h1 style={{fontSize:'30px'}}>Welcome to Codespace X</h1>
-                <p>Please Log in on existing account, or create new account</p>
+                <p style={{marginTop:'12px', marginBottom:'36px'}}>Please Log in on existing account, or create new account</p>
                 <div style={{ width: '476px', margin: '0 auto' }}>
                     {/* Tab buttons */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', marginTop: '20px', background: '#EEEEEE', height: '46px', borderRadius: '10px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '26px', marginTop: '20px', background: '#EEEEEE', height: '46px', borderRadius: '10px' }}>
                         <button
                             onClick={() => handleTabClick('login')}
                             style={{
