@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TableBuilder, TableBuilderColumn } from "baseui/table-semantic";
 import { Checkbox } from "baseui/checkbox";
@@ -13,6 +13,8 @@ import { Tag, SIZE } from 'baseui/tag';
 import { Edit2, CloseSquare } from 'iconsax-react';
 import ViewInvoice from './ViewInvoice';
 import NoDataInvoice from './NoDataInvoice';
+import axios from 'axios';
+import { API_URL } from '../../helper/network';
 
 
 const Invoice = () => {
@@ -53,16 +55,51 @@ const Invoice = () => {
     setCheckedItems(new Array(checkedItems.length).fill(checked));
   };
 
-  const data = [
-    ["INV-23923", "Darft", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-    ["INV-23923", "Paid", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-    ["INV-23923", "Sent", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-    ["INV-23923", "On Hold", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
-  ];
+  const [data, setData] = useState([]);
+
+  const fetchData = async () => {
+    const token = localStorage.getItem('token'); 
+    try {
+      const response = await axios.get(`${API_URL}/api/admin/invoice?status=All`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+  
+      console.log(response.data);
+      if (response.data) {
+        // Format data API ke dalam bentuk yang sesuai dengan tabel
+        const formattedData = response.data.map(invoice => [
+          invoice.ID_Invoice,
+          invoice.Status,
+          invoice.Username,
+          `Rp ${invoice.Amount.toLocaleString()}`,
+          new Date(invoice.Created_at).toLocaleDateString(),
+          new Date(invoice.Payment_Due).toLocaleDateString()
+        ]);
+        setData(formattedData);
+        console.log(formattedData);
+        setCheckedItems(new Array(formattedData.length).fill(false));
+      }
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // const data = [
+  //   ["INV-23923", "Darft", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+  //   ["INV-23923", "Paid", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+  //   ["INV-23923", "Sent", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+  //   ["INV-23923", "On Hold", "Supratman", "Rp 300.00", "3 Juni 2024", "3 Juni 2024"],
+  // ];
 
   const getStatusTag = (status) => {
     switch (status) {
-      case "Darft":
+      case "Draft":
         return <Tag closeable={false} kind="neutral" size={SIZE.medium}
           overrides={{
             Root: {
@@ -98,7 +135,7 @@ const Invoice = () => {
           }}>
           <b>Sent</b>
         </Tag>;
-      case "On Hold":
+      case "OnHold":
         return <Tag closeable={false} kind="negative" size={SIZE.medium}><b>On Hold</b></Tag>;
       default:
         return null;
