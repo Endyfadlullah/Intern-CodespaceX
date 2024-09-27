@@ -9,9 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const Profil = () => {
   const navigate = useNavigate();
-  const handleItemClick = (path) => {
-    navigate(path);
-};
+  
   return (
     <div>
       <StatefulPopover
@@ -71,7 +69,11 @@ const Profil = () => {
               </p>
             </Button>
             <Button
-            onClick={() => handleItemClick("/")}
+             onClick={(e) => {
+              e.preventDefault();
+              localStorage.removeItem("token");
+              navigate("/");
+            }}
             overrides={{
               BaseButton: {
                 style: ({ $theme }) => ({

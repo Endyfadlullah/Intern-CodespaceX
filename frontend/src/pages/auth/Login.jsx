@@ -76,8 +76,15 @@ const Login = () => {
               email: email,
               password: password,
             });
-            localStorage.setItem("token", response.data.token);
-            navigate("/admin/dashboard");
+            localStorage.setItem("token", response.data.data.token);
+            // console.log(response.data.data.role)
+            const userRole = response.data.data.role;
+            // navigate("/admin/dashboard");
+            if (userRole === "admin") {
+                navigate("/admin");
+              } else {
+                showToast("Login failed", "Maaf akun yang anda gunakan adalah customer");
+              }
           } catch (error) {
             console.error("Login failed:", error);
             let errorMessage = "An error occurred";
