@@ -7,6 +7,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Res,
   Post,
   Put,
   UseGuards,
@@ -34,6 +35,7 @@ import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagg
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from 'src/common/auth.decorator';
+import { Response } from 'express';
 
 @ApiTags('Admin')
 @Controller('/api/admin')
@@ -72,7 +74,7 @@ export class AdminController {
   @ApiOperation({
     summary: 'Get project dashboard',
     description:
-    'Fetches detailed information about projects, including project ID, title, status, platform, and the pictures of associated talents. Optionally filters projects by status (e.g., "On Going", "In Progress", "Done"). If no status or "All" is provided, returns all projects regardless of status.',
+      'Fetches detailed information about projects, including project ID, title, status, platform, and the pictures of associated talents. Optionally filters projects by status (e.g., "On Going", "In Progress", "Done"). If no status or "All" is provided, returns all projects regardless of status.',
   })
   async getProject(@Query('status') status?: string) {
     try {
@@ -93,7 +95,7 @@ export class AdminController {
   @ApiOperation({
     summary: 'Get project dashboard',
     description:
-    'Fetches detailed information about projects, including project ID, title, status, platform, and the pictures of associated talents. Optionally filters projects by status (e.g., "On Going", "In Progress", "Done"). If no status or "All" is provided, returns all projects regardless of status.',
+      'Fetches detailed information about projects, including project ID, title, status, platform, and the pictures of associated talents. Optionally filters projects by status (e.g., "On Going", "In Progress", "Done"). If no status or "All" is provided, returns all projects regardless of status.',
   })
   async getProjectbyid(@Query('ID Project') id?: number) {
     try {
@@ -403,14 +405,17 @@ export class AdminController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Create a new checkpoint',
-    description: 'Creates a new checkpoint with the provided details.'
+    description: 'Creates a new checkpoint with the provided details.',
   })
   async createCheckpoint(@Body() createChekpointRequest: CreateCheckpoint) {
     try {
       return await this.projectService.createCheckpoint(createChekpointRequest);
     } catch (error) {
       console.error('Error creating chekcpoint:', error);
-      throw new HttpException('Failed to create checkpoint', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Failed to create checkpoint',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -488,11 +493,14 @@ export class AdminController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Create a new project checkpoint attachment',
-    description: 'Adds a new attachment to a project checkpoint with the provided details.',
+    description:
+      'Adds a new attachment to a project checkpoint with the provided details.',
   })
-  async createCheckpointAttachment(@Body() createCheckpointAttachment: CreateCheckpointAttachment) {
+  async createCheckpointAttachment(
+    @Body() createCheckpointAttachment: CreateCheckpointAttachment,
+  ) {
     try {
-      return await this.projectService.createCheckpointAttachment(createCheckpointAttachment);
+      return await this.userService.createCheckpointAttachment(createCheckpointAttachment);
     } catch (error) {
       console.error('Error creating checkpoint attachment:', error);
       throw new HttpException(
@@ -501,20 +509,24 @@ export class AdminController {
       );
     }
   }
-  
+
   @Get('/project/checkpoint/attachment/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get checkpoint attachments by checkpoint ID',
-    description: 'Fetches attachments associated with a specific checkpoint by its ID.',
+    description:
+      'Fetches attachments associated with a specific checkpoint by its ID.',
   })
   async findCheckpointAttachments(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.projectService.findCheckpointAttachmentsById(id);
     } catch (error) {
-      console.error(`Error fetching attachments for checkpoint with ID ${id}:`, error);
+      console.error(
+        `Error fetching attachments for checkpoint with ID ${id}:`,
+        error,
+      );
       throw new HttpException(
         'Failed to fetch checkpoint attachments',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -528,7 +540,8 @@ export class AdminController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Update checkpoint attachment by ID',
-    description: 'Updates an attachment related to a specific checkpoint by its ID.',
+    description:
+      'Updates an attachment related to a specific checkpoint by its ID.',
   })
   async updateCheckpointAttachment(
     @Param('id', ParseIntPipe) id: number,
@@ -540,7 +553,10 @@ export class AdminController {
         updateCheckpointAttachment,
       );
     } catch (error) {
-      console.error(`Error updating checkpoint attachment with ID ${id}:`, error);
+      console.error(
+        `Error updating checkpoint attachment with ID ${id}:`,
+        error,
+      );
       throw new HttpException(
         'Failed to update checkpoint attachment',
         HttpStatus.BAD_REQUEST,
@@ -554,13 +570,17 @@ export class AdminController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Soft delete checkpoint attachment by ID',
-    description: 'Soft deletes a checkpoint attachment by its ID, marking it as deleted but not physically removing it from the database.',
+    description:
+      'Soft deletes a checkpoint attachment by its ID, marking it as deleted but not physically removing it from the database.',
   })
   async softDeleteCheckpointAttachment(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.projectService.softDeleteCheckpointAttachmentById(id);
     } catch (error) {
-      console.error(`Error soft deleting checkpoint attachment with ID ${id}:`, error);
+      console.error(
+        `Error soft deleting checkpoint attachment with ID ${id}:`,
+        error,
+      );
       throw new HttpException(
         'Failed to soft delete checkpoint attachment',
         HttpStatus.BAD_REQUEST,
@@ -576,7 +596,10 @@ export class AdminController {
     summary: 'Create a new invoice',
     description: 'Adds a new invoice with the provided details.',
   })
-  @ApiResponse({ status: 201, description: 'The invoice has been successfully created.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The invoice has been successfully created.',
+  })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async createInvoice(@Body() createInvoice: CreateInvoice) {
     try {
@@ -598,17 +621,23 @@ export class AdminController {
     summary: 'Update an invoice',
     description: 'Updates an invoice based on the provided ID and new details.',
   })
-  @ApiResponse({ status: 200, description: 'The invoice has been successfully updated.' })
+  @ApiResponse({
+    status: 200,
+    description: 'The invoice has been successfully updated.',
+  })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async updateInvoice(
-    @Param('id') id: string,  // Mengubah tipe menjadi string
+    @Param('id') id: string, // Mengubah tipe menjadi string
     @Body() updateInvoiceDto: UpdateInvoice,
   ) {
     try {
       return await this.invoiceService.updateInvoiceById(id, updateInvoiceDto);
     } catch (error) {
       console.error(`Error updating invoice with ID ${id}:`, error);
-      throw new HttpException('Failed to update invoice', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Failed to update invoice',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -618,16 +647,23 @@ export class AdminController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Soft delete an invoice',
-    description: 'Marks an invoice as deleted without removing it from the database.',
+    description:
+      'Marks an invoice as deleted without removing it from the database.',
   })
-  @ApiResponse({ status: 200, description: 'The invoice has been successfully soft deleted.' })
+  @ApiResponse({
+    status: 200,
+    description: 'The invoice has been successfully soft deleted.',
+  })
   @ApiResponse({ status: 404, description: 'Invoice not found.' })
   async softDeleteInvoice(@Param('id') id: string) {
     try {
       return await this.invoiceService.softDeleteInvoiceById(id);
     } catch (error) {
       console.error(`Error soft deleting invoice with ID ${id}:`, error);
-      throw new HttpException('Failed to soft delete invoice', HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        'Failed to soft delete invoice',
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
 
@@ -639,7 +675,10 @@ export class AdminController {
     summary: 'Create a new invoice',
     description: 'Adds a new invoice with the provided details.',
   })
-  @ApiResponse({ status: 201, description: 'The invoice has been successfully created.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The invoice has been successfully created.',
+  })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async createInvoiceItems(@Body() Items_Invoice: Items_Invoice) {
     try {
@@ -659,12 +698,12 @@ export class AdminController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Read Invoice',
-    description: 'Retrieves a summary of invoices filtered by the specified status. Status options are All, Draft, Paid, Sent, and OnHold.',
+    description:
+      'Retrieves a summary of invoices filtered by the specified status. Status options are All, Draft, Paid, Sent, and OnHold.',
   })
   async getInvoicesSummary(@Query('status') status: 'All' | 'Draft' | 'Paid' | 'Sent' | 'OnHold') {
-    return this.invoiceService.getInvoicesSummary(status);
+    return this.userService.getInvoicesSummary(status);
   }
-
 
   @Get('/invoice/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -689,5 +728,26 @@ export class AdminController {
     }
   }
 
+  // @Get('invoice/:id/pdf')
+  // @ApiOperation({ summary: 'Generate PDF for invoice' })
+  // @ApiParam({ name: 'id', type: String, description: 'Invoice ID' })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'PDF generated successfully',
+  //   type: Buffer,
+  // })
+  // @ApiResponse({ status: 404, description: 'Invoice not found' })
+  // async getInvoicePDF(@Param('id') id: string, @Res() res: Response) {
+  //   try {
+  //     const pdfBuffer = await this.adminService.generateInvoicePDF(id);
+  //     res.set({
+  //       'Content-Type': 'application/pdf',
+  //       'Content-Disposition': `attachment; filename=invoice-${id}.pdf`,
+  //       'Content-Length': pdfBuffer.length,
+  //     });
+  //     res.end(pdfBuffer);
+  //   } catch (error) {
+  //     throw new HttpException('Invoice not found', HttpStatus.NOT_FOUND);
+  //   }
+  // }
 }
-
