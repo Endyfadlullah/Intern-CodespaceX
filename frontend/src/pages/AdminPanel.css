@@ -1,0 +1,31 @@
+.body {
+    display: flex;           
+    height: 100vh;            
+    margin: 0 auto;        
+}
+
+.main {
+    flex: 1;                
+    display: flex;
+    flex-direction: column; 
+}
+
+.header {
+    height: 64px;
+    padding: 10px;
+    display: flex;
+  justify-content: flex-end;
+  border-bottom: 0.3px solid #e3dddd;
+  gap: 10px;
+}
+
+.submain {
+    height: 100vh; /* Atur tinggi sesuai kebutuhan */
+    overflow-y: scroll; /* Menambahkan scroll vertikal */
+    scrollbar-width: none; /* Menyembunyikan scrollbar di Firefox */
+  }
+  
+  .submain::-webkit-scrollbar {
+    width: 0px; /* Menyembunyikan scrollbar di WebKit browser */
+  }
+  
