@@ -5,6 +5,8 @@ import { Button } from "baseui/button";
 import { useNavigate } from "react-router-dom";
 import { toaster, ToasterContainer } from "baseui/toast";
 import { InfoCircle } from 'iconsax-react';
+import axios from "axios";
+import { API_URL } from "../../helper/network";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -65,13 +67,33 @@ const Login = () => {
         );
     };
 
-    // Fungsi untuk handle click login
-    const handleLoginClick = () => {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        
         if (validateInputs()) {
-            // Jika validasi berhasil, pindah ke halaman dashboard
+          try {
+            const response = await axios.post(`${API_URL}/api/login`, {
+              email: email,
+              password: password,
+            });
+            localStorage.setItem("token", response.data.token);
             navigate("/admin/dashboard");
+          } catch (error) {
+            console.error("Login failed:", error);
+            let errorMessage = "An error occurred";
+      
+            // Check if it's an AxiosError and if response exists
+            if (axios.isAxiosError(error) && error.response) {
+              errorMessage = error.response.data?.message || "Login failed"; // Use API message or fallback
+            } else {
+              errorMessage = error.message; // General error message if AxiosError does not contain response
+            }
+      
+            // Show toast with the detailed error message
+            showToast("Login failed", errorMessage);
+          }
         }
-    };
+      }; 
 
     const handleItemClick = (path) => {
         navigate(path);
@@ -122,7 +144,7 @@ const Login = () => {
 
             <div>
                 <Button
-                    onClick={handleLoginClick}
+                    onClick={handleSubmit}
                     overrides={{
                         Root: {
                             style: {
