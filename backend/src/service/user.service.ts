@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   UpdateUser,
   CreateUser,
+  CreateCheckpointAttachment,
 } from 'src/model/app.model';
 import { PrismaService } from 'src/common/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -29,6 +30,12 @@ function getAdjustedDate(): Date {
 
 @Injectable()
 export class UserService {
+  getInvoicesSummary(status: string) {
+    throw new Error('Method not implemented.');
+  }
+  createCheckpointAttachment(createCheckpointAttachment: CreateCheckpointAttachment) {
+    throw new Error('Method not implemented.');
+  }
   constructor(private readonly prisma: PrismaService) {}
 
   async findAllUsersByRole(role?: string): Promise<User[]> {

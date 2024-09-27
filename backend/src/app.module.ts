@@ -4,6 +4,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { MailerConfigModule } from './mailer/mailer.module'; 
 import { UserModule } from './app/app.module';
 import { CommonModule } from './common/common.module';
+import { InvoiceModule } from './invoice/invoice.module';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { CommonModule } from './common/common.module';
     MailerConfigModule,
     UserModule,
     CommonModule,
+    InvoiceModule,
   ],
-  
 })
 export class AppModule {}
